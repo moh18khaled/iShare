@@ -1,12 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const SignUpPage = () => {
-    const [userName, setUserName] = useState("");
+const LoginPage = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
     const [accept, setAccept] = useState(false);
     const [errorHandler, setErrorHandler] = useState("");
     const [status, setStatus] = useState(0);
@@ -18,7 +17,7 @@ const SignUpPage = () => {
         setAccept(true);
 
         if (
-            userName.length === 0 || 
+            username.length === 0 || 
             !emailPattern.test(email) || 
             password.length < 8 || 
             confirmPassword !== password
@@ -28,19 +27,14 @@ const SignUpPage = () => {
 
         try {
             if (flag) {
-                const response = await axios.post("http://localhost:1337/api/auth/local/register", {
-                    username: userName,
+                const response = await axios.post("http://localhost:1337/api/auth/local", {
                     email: email,
-                    password: password,
-                    password_confirmation: confirmPassword,
+                    identifier : password,
                 }).then((res)=>console.log(res));
                 
                 setStatus(200);
-                
-                    
-                    window.localStorage.setItem("email",email);
-                    window.location.pathname = "/";
-                
+                window.localStorage.getItem("email",email);
+                navigate("/");
             }
         } catch (error) {
             console.log(error);
@@ -64,29 +58,9 @@ const SignUpPage = () => {
                                 ""
                             )}
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-mainColor md:text-2xl">
-                                Create an account
+                                Login
                             </h1>
                             <form className="space-y-4 md:space-y-6" onSubmit={submitRules}>
-                                <div>
-                                    <label
-                                        htmlFor="username"
-                                        className="block mb-2 text-sm font-medium text-mainColor"
-                                    >
-                                        Username
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={userName}
-                                        name="username"
-                                        id="username"
-                                        onChange={(e) => setUserName(e.target.value)}
-                                        className="bg-gray-50 border border-gray-300 blur-0 focus:outline-none focus:border-mainColor text-gray-900 text-sm rounded-lg  block w-full p-2.5"
-                                        required=""
-                                    />
-                                    {userName.length === 0 && accept && (
-                                        <p className="text-red-500 mt-1">Username is required</p>
-                                    )}
-                                </div>
                                 <div>
                                     <label
                                         htmlFor="email"
@@ -134,44 +108,21 @@ const SignUpPage = () => {
                                         </p>
                                     ) : null}
                                 </div>
-                                <div>
-                                    <label
-                                        htmlFor="confirm-password"
-                                        className="block mb-2 text-sm font-medium text-mainColor"
-                                    >
-                                        Confirm password
-                                    </label>
-                                    <input
-                                        type="password"
-                                        value={confirmPassword}
-                                        name="confirm-password"
-                                        id="confirm-password"
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
-                                        required=""
-                                    />
-                                    {confirmPassword.length === 0 && accept ? (
-                                        <p className="text-red-500 mt-1">
-                                            Confirm Password is required
-                                        </p>
-                                    ) : confirmPassword !== password && accept ? (
-                                        <p className="text-red-500 mt-1">Password doesn't match</p>
-                                    ) : null}
-                                </div>
+                                
                                 
                                 <button
                                     type="submit"
                                     className="w-full text-white bg-mainColor hover:bg-[#653f75] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                                 >
-                                    Create an account
+                                    Login
                                 </button>
                                 <p className="text-sm font-light text-gray-500">
-                                    Already have an account?{' '}
+                                    Don't have an account?{' '}
                                     <Link
-                                        to="/login"
+                                        to="/register"
                                         className="font-medium text-mainColor hover:underline"
                                     >
-                                        Login here
+                                        Register here
                                     </Link>
                                 </p>
                             </form>
@@ -183,4 +134,4 @@ const SignUpPage = () => {
     );
 };
 
-export default SignUpPage;
+export default LoginPage;
