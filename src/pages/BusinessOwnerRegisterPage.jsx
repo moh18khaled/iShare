@@ -2,12 +2,18 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const SignUpPage = () => {
+const BusinesssOwnerRegisterPage = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [age, setAge] = useState(0);
+  const [businessName,setBusinessName] = useState("");
+  const [businessType,setBusinessType] = useState("");
+  const [addresscountry,setAddresscountry] = useState("");
+  const [addressCity,setAddressCity] = useState("");
+  const [phoneNumber,setPhoneNumber] = useState("");
+  const [description,setDescription] = useState("");
   const [accept, setAccept] = useState(false);
   const [errorHandler, setErrorHandler] = useState("");
   const [status, setStatus] = useState(0);
@@ -23,7 +29,13 @@ const SignUpPage = () => {
       !emailPattern.test(email) ||
       password.length < 8 ||
       confirmPassword !== password ||
-      age === 0
+      age === 0 ||
+      businessName.length ===0 ||
+      businessType.length ===0 ||
+      addresscountry.length === 0 ||
+      addressCity.length === 0 ||
+      phoneNumber.length === 0
+
     ) {
       flag = false;
     }
@@ -37,6 +49,12 @@ const SignUpPage = () => {
             password: password,
             password_confirmation: confirmPassword,
             age: age,
+            businessName : businessName,
+            businessType : businessType,
+            addressCounter : addresscountry,
+            addressCity : addressCity,
+            phoneNumber : phoneNumber,
+            description : description,
           })
           .then((res) => console.log(res));
 
@@ -196,7 +214,145 @@ const SignUpPage = () => {
                     </p>
                   ) : null}
                 </div>
-
+                <div>
+                  <label
+                    htmlFor="business-name"
+                    className="block mb-2 text-sm font-medium text-mainColor"
+                  >
+                    Business Name
+                  </label>
+                  <input
+                    type="text"
+                    value={businessName}
+                    name="business-name"
+                    id="business-name"
+                    onChange={(e) => {
+                        setBusinessName(e.target.value);
+                    }}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    required=""
+                  />
+                  {businessName.length === 0 && accept ? (
+                    <p className="text-red-500 mt-1">
+                      BusinessName is Required
+                    </p>
+                  ) : null}
+                </div>
+                <div>
+                  <label
+                    htmlFor="business-type"
+                    className="block mb-2 text-sm font-medium text-mainColor"
+                  >
+                    Business Type
+                  </label>
+                  <input
+                    type="text"
+                    value={businessType}
+                    name="business-type"
+                    id="business-type"
+                    onChange={(e) => {
+                        setBusinessType(e.target.value);
+                    }}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    required=""
+                  />
+                  {businessType.length === 0 && accept ? (
+                    <p className="text-red-500 mt-1">
+                      BusinessType is Required
+                    </p>
+                  ) : null}
+                </div>
+                <div>
+                  <label
+                    htmlFor="address-country"
+                    className="block mb-2 text-sm font-medium text-mainColor"
+                  >
+                    Address (Country)
+                  </label>
+                  <input
+                    type="text"
+                    value={addresscountry}
+                    name="address-country"
+                    id="address-country"
+                    onChange={(e) => {
+                        setAddresscountry(e.target.value);
+                    }}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    required=""
+                  />
+                  {addresscountry.length === 0 && accept ? (
+                    <p className="text-red-500 mt-1">
+                      Address Countery is Required
+                    </p>
+                  ) : null}
+                </div>
+                <div>
+                  <label
+                    htmlFor="address-city"
+                    className="block mb-2 text-sm font-medium text-mainColor"
+                  >
+                    Address (City)
+                  </label>
+                  <input
+                    type="text"
+                    value={addressCity}
+                    name="address-city"
+                    id="address-city"
+                    onChange={(e) => {
+                        setAddressCity(e.target.value);
+                    }}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    required=""
+                  />
+                  {addressCity.length === 0 && accept ? (
+                    <p className="text-red-500 mt-1">
+                      Address city is Required
+                    </p>
+                  ) : null}
+                </div>
+                <div>
+                  <label
+                    htmlFor="phoneNumber"
+                    className="block mb-2 text-sm font-medium text-mainColor"
+                  >
+                    Phone Number
+                  </label>
+                  <input
+                    type="text"
+                    value={phoneNumber}
+                    name="phoneNumber"
+                    id="phoneNumber"
+                    onChange={(e) => {
+                        setPhoneNumber(e.target.value);
+                    }}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    required=""
+                  />
+                  {phoneNumber.length === 0 && accept ? (
+                    <p className="text-red-500 mt-1">
+                      phoneNumber is Required
+                    </p>
+                  ) : null}
+                </div>
+                <div>
+                  <label
+                    htmlFor="description"
+                    className="block mb-2 text-sm font-medium text-mainColor"
+                  >
+                    Description
+                  </label>
+                  <input
+                    type="text"
+                    value={description}
+                    name="description"
+                    id="description"
+                    onChange={(e) => {
+                        setDescription(e.target.value);
+                    }}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    required=""
+                  />
+                </div>
                 <button
                   type="submit"
                   className="w-full text-white bg-mainColor hover:bg-[#653f75] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
@@ -221,4 +377,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default BusinesssOwnerRegisterPage;

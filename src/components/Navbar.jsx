@@ -7,15 +7,15 @@ const Navbar = () => {
   }
   return (
     <div>
-      <nav className="bg-[#F9F9F9] shadow-md fixed w-full top-0 start-0 border-b border-gray-200">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-8">
+      <nav className="bg-[#F9F9F9] z-50 shadow-md fixed w-full top-0 start-0 border-b border-gray-200">
+        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-6">
           <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
             <span className="self-center text-4xl text-mainColor font-bold whitespace-nowrap">iShare</span>
           </a>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
             {!window.localStorage.getItem("email") ?
             <div className="flex space-x-4">
-            <Link to="/register" type='button' className="text-white bg-mainColor hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">
+            <Link to="/register-select" type='button' className="text-white bg-mainColor hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">
               Register
             </Link>
             <Link to="/login" type='button' className="text-white bg-mainColor hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">

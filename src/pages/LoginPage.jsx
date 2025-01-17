@@ -47,9 +47,9 @@ const LoginPage = () => {
         <div className='h-screen bg-light-gray'>
             <div className="bg-white">
                 <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-full lg:py-0">
-                    <a href="#" className="flex items-center mb-6 mt-6 text-3xl font-bold sm:text-4xl text-mainColor">
+                    <Link to="/" className="flex items-center mb-6 mt-6 text-3xl font-bold sm:text-4xl text-mainColor">
                         iShare
-                    </a>
+                    </Link>
                     <div className="w-full bg-gray-100 rounded-lg shadow-md sm:max-w-md xl:p-0">
                         <div className="p-6 space-y-4 md:space-y-6">
                             {accept && status === 400 ? (
@@ -119,7 +119,7 @@ const LoginPage = () => {
                                 <p className="text-sm font-light text-gray-500">
                                     Don't have an account?{' '}
                                     <Link
-                                        to="/register"
+                                        to="/register-select"
                                         className="font-medium text-mainColor hover:underline"
                                     >
                                         Register here
