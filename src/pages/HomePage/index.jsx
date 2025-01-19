@@ -5,6 +5,11 @@ import StatsSection from './StatsSection'
 import TabsSection from './TabsSection'
 import TabContent from './DigitalExperience'
 import ServicesSection from './ServicesSection'
+import Pricing from './Pricing'
+import TeamSection from './TeamSection'
+import ContactSection from './ContactSection'
+import Footer from '../../components/Footer'
+import Testimonials from './TestominalsSection'
 
 const HomePage = () => {
   return (
@@ -15,6 +20,11 @@ const HomePage = () => {
       <TabsSection />
       <TabContent />
       <ServicesSection />
+      <Testimonials />
+      <Pricing />
+      <TeamSection />
+      <ContactSection />
+      <Footer />
     </div>
   )
 }

@@ -51,8 +51,10 @@ const BusinesssOwnerRegisterPage = () => {
             age: age,
             businessName : businessName,
             businessType : businessType,
-            addressCounter : addresscountry,
-            addressCity : addressCity,
+            address : {
+                country : addresscountry,
+                city : addressCity,
+            },
             phoneNumber : phoneNumber,
             description : description,
           })

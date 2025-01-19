@@ -29,7 +29,7 @@ const LoginPage = () => {
             if (flag) {
                 const response = await axios.post("http://localhost:1337/api/auth/local", {
                     email: email,
-                    identifier : password,
+                    password : password,
                 }).then((res)=>console.log(res));
                 
                 setStatus(200);
