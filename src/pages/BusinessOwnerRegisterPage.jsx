@@ -17,6 +17,7 @@ const BusinesssOwnerRegisterPage = () => {
   const [accept, setAccept] = useState(false);
   const [errorHandler, setErrorHandler] = useState("");
   const [status, setStatus] = useState(0);
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const submitRules = async (event) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -43,7 +44,7 @@ const BusinesssOwnerRegisterPage = () => {
     try {
       if (flag) {
         const response = await axios
-          .post("http://localhost:1337/api/auth/local/register", {
+          .post(`${apiBaseUrl}/businessOwner/login`, {
             username: userName,
             email: email,
             password: password,

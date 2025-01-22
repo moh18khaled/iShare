@@ -9,6 +9,7 @@ const LoginPage = () => {
     const [accept, setAccept] = useState(false);
     const [errorHandler, setErrorHandler] = useState("");
     const [status, setStatus] = useState(0);
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const submitRules = async (event) => {
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -17,17 +18,15 @@ const LoginPage = () => {
         setAccept(true);
 
         if (
-            username.length === 0 || 
             !emailPattern.test(email) || 
-            password.length < 8 || 
-            confirmPassword !== password
+            password.length < 8
         ) {
             flag = false;
         }
 
         try {
             if (flag) {
-                const response = await axios.post("http://localhost:1337/api/auth/local", {
+                const response = await axios.post(`${apiBaseUrl}/user/login`, {
                     email: email,
                     password : password,
                 }).then((res)=>console.log(res));
