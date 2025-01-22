@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build", 
+    "build": "vite build",
     "preview": "vite preview",
-    "start": "serve dist" 
+    "start": "serve dist"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -19,7 +19,7 @@
     "react-router-dom": "^7.1.1",
     "react-slick": "^0.30.3",
     "react-toastify": "^11.0.2",
-    "serve": "^14.2.4", 
+    "serve": "^14.2.4",
     "swiper": "^11.2.0"
   },
   "devDependencies": {
@@ -38,6 +38,6 @@
     "vite": "^6.0.5"
   },
   "engines": {
-    "node": "18.x" 
+    "node": "18.x"
   }
 }
