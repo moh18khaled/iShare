@@ -15,10 +15,10 @@ const Navbar = () => {
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
             {!window.localStorage.getItem("email") ?
             <div className="flex space-x-4">
-            <Link to="/register-select" type='button' className="text-white bg-mainColor hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">
+            <Link to="/register-select" type='button' className="text-white bg-mainColor hover:bg-hoverColor focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">
               Register
             </Link>
-            <Link to="/login" type='button' className="text-white bg-mainColor hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">
+            <Link to="/login" type='button' className="text-white bg-mainColor hover:bg-hoverColor focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">
               Login
             </Link>
             </div>

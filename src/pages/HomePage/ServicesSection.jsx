@@ -51,12 +51,12 @@ const ServicesSection = () => {
         {services.map((service, index) => (
           <div
             key={index}
-            className="relative max-w-xs md:w-auto bg-white border-2 z-20 border-[#208AB2] rounded-3xl shadow-md p-6 px-4 transition-transform transform hover:scale-105 min-h-[380px]"
+            className="relative max-w-xs md:w-auto bg-white border-2 z-20 border-mainColor rounded-3xl shadow-md p-6 px-4 transition-transform transform hover:scale-105 min-h-[380px]"
           >
-            <div className="absolute inset-1 border-2 border-[#208AB2] rounded-3xl pointer-events-none"></div>
+            <div className="absolute inset-1 border-2 border-mainColor rounded-3xl pointer-events-none"></div>
 
-            <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white border-2 border-[#208AB2] rounded-full h-20 w-20 flex items-center justify-center shadow-md">
-              <div className="border-2 border-[#208AB2] rounded-full h-16 w-16 flex items-center justify-center">
+            <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white border-2 border-mainColor rounded-full h-20 w-20 flex items-center justify-center shadow-md">
+              <div className="border-2 border-mainColor rounded-full h-16 w-16 flex items-center justify-center">
                 <img
                   src={service.icon}
                   alt={service.alt}
@@ -70,13 +70,7 @@ const ServicesSection = () => {
             </h3>
             <p className="text-med text-gray-600 mb-6 px-2 font-nunito">{service.description}</p>
 
-            <div className="absolute bottom-6 left-0 right-0 px-6">
-              <Link to="/">
-                <button className="w-full bg-[#208AB2] text-white py-2 px-4 rounded-3xl hover:bg-[#57a2be]">
-                  Discover now
-                </button>
-              </Link>
-            </div>
+            
           </div>
         ))}
       </div>

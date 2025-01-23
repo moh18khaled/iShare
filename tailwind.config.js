@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        mainColor : '#8e44ad',
+        mainColor : '#ea131d',
+        hoverColor: '#af1d24 ',
       },
     },
   },

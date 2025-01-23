@@ -2,10 +2,10 @@ import { FaSmile, FaBook, FaHeadset, FaUsers } from "react-icons/fa"; // Import 
 
 const StatsSection = () => {
   const stats = [
-    { icon: <FaSmile className="text-4xl text-blue-500 mb-2" />, end: 500, title: "Happy Clients" },
-    { icon: <FaBook className="text-4xl text-blue-500 mb-2" />, end: 200, title: "Businesses and SMEs" },
-    { icon: <FaHeadset className="text-4xl text-blue-500 mb-2" />, end: 1463, title: "Hours Of Support" },
-    { icon: <FaUsers className="text-4xl text-blue-500 mb-2" />, end: 15, title: "Hard Workers" },
+    { icon: <FaSmile className="text-4xl text-mainColor mb-2" />, end: 500, title: "Happy Clients" },
+    { icon: <FaBook className="text-4xl text-mainColor mb-2" />, end: 200, title: "Businesses and SMEs" },
+    { icon: <FaHeadset className="text-4xl text-mainColor mb-2" />, end: 1463, title: "Hours Of Support" },
+    { icon: <FaUsers className="text-4xl text-mainColor mb-2" />, end: 15, title: "Hard Workers" },
   ];
 
   return (

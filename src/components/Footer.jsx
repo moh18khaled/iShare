@@ -3,13 +3,13 @@ import { FaTwitter, FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-gray-400 py-12">
+    <footer className="bg-[#F5E6D3] py-12">
       {/* Footer Top */}
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Footer About */}
           <div>
-            <a href="index.html" className="text-white text-2xl font-bold">
+            <a href="index.html" className="text-mainColor text-2xl font-bold">
               iShare.
             </a>
             <div className="mt-4">
@@ -38,20 +38,20 @@ const Footer = () => {
           </div>
           {/* Useful Links */}
           <div>
-            <h4 className="text-white text-lg font-bold mb-4">Useful Links</h4>
+            <h4 className="text-mainColor text-lg font-bold mb-4">Useful Links</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="hover:text-white">
+                <a href="#" className="hover:text-mainColor">
                   Home
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">
+                <a href="#" className="hover:text-mainColor">
                   About us
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">
+                <a href="#" className="hover:text-mainColor">
                   Services
                 </a>
               </li>
@@ -59,30 +59,30 @@ const Footer = () => {
           </div>
           {/* Our Services */}
           <div>
-            <h4 className="text-white text-lg font-bold mb-4">Our Services</h4>
+            <h4 className="text-mainColor text-lg font-bold mb-4">Our Services</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="hover:text-white">
+                <a href="#" className="hover:text-mainColor">
                   Food and Beverage Insights
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">
+                <a href="#" className="hover:text-mainColor">
                   Healthcare Service Feedback
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">
+                <a href="#" className="hover:text-mainColor">
                   Education Program Insights
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">
+                <a href="#" className="hover:text-mainColor">
                   Stylish Fashion Perspectives
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">
+                <a href="#" className="hover:text-mainColor">
                   Business Promotion Opportunities
                 </a>
               </li>
@@ -90,7 +90,7 @@ const Footer = () => {
           </div>
           {/* Newsletter */}
           <div>
-            <h4 className="text-white text-lg font-bold mb-4">Our Newsletter</h4>
+            <h4 className="text-mainColor text-lg font-bold mb-4">Our Newsletter</h4>
             <p className="mb-4">
               Subscribe to our newsletter and receive the latest news about our
               products and services!
@@ -99,13 +99,13 @@ const Footer = () => {
               <input
                 type="email"
                 name="email"
-                className="w-full p-3 rounded bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full p-3 rounded bg-[#F5E6D3] border-2 border-gray-300 text-mainColor placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-mainColor focus:border-0"
                 placeholder="Your Email"
                 required
               />
               <button
                 type="submit"
-                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-all duration-300"
+                className="bg-mainColor hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-all duration-300"
               >
                 Subscribe
               </button>
@@ -119,7 +119,7 @@ const Footer = () => {
       {/* Footer Bottom */}
       <div className="mt-12 text-center text-gray-500">
         <p>
-          Copyright <strong className="text-green-500">iShare.</strong> All Rights Reserved
+          Copyright <strong className="text-mainColor">iShare.</strong> All Rights Reserved
         </p>
       </div>
     </footer>

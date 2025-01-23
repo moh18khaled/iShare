@@ -23,19 +23,19 @@ const TabContent = () => {
             {/* Feature List */}
             <div className="feature-list">
               <div className="feature-item mb-3 flex items-center">
-                <span className="bg-blue-500 text-white p-2 rounded-full mr-3">
+                <span className="bg-mainColor text-white p-2 rounded-full mr-3">
                   <FaCheckDouble size={20} />
                 </span>
                 <span>Save Time and Money: Avoid Unsuitable Products and Services</span>
               </div>
               <div className="feature-item mb-3 flex items-center">
-                <span className="bg-blue-500 text-white p-2 rounded-full mr-3">
+                <span className="bg-mainColor text-white p-2 rounded-full mr-3">
                   <FaCheckDouble size={20} />
                 </span>
                 <span>Enhance Decision-Making with Verified Insights</span>
               </div>
               <div className="feature-item mb-3 flex items-center">
-                <span className="bg-blue-500 text-white p-2 rounded-full mr-3">
+                <span className="bg-mainColor text-white p-2 rounded-full mr-3">
                   <FaCheckDouble size={20} />
                 </span>
                 <span>Monetize Your Experiences: Earn from Valuable Sharing Experiences</span>
@@ -50,15 +50,15 @@ const TabContent = () => {
               </p>
               <ul className="list-none text-gray-500 mt-3">
                 <li className="mb-2 flex items-center">
-                  <BsArrowRightShort className="text-blue-500 mr-2" size={20} />
+                  <BsArrowRightShort className="text-mainColor mr-2" size={20} />
                   Personalized recommendations based on user behavior and preferences
                 </li>
                 <li className="mb-2 flex items-center">
-                  <BsArrowRightShort className="text-blue-500 mr-2" size={20} />
+                  <BsArrowRightShort className="text-mainColor mr-2" size={20} />
                   Advanced review authenticity filtering
                 </li>
                 <li className="mb-2 flex items-center">
-                  <BsArrowRightShort className="text-blue-500 mr-2" size={20} />
+                  <BsArrowRightShort className="text-mainColor mr-2" size={20} />
                   Anonymized consumer behavior insights
                 </li>
               </ul>
