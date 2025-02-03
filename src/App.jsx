@@ -8,6 +8,7 @@ import BusinessOwnerRegisterPage from "./pages/BusinessOwnerRegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import PostsPage from "./pages/PostsPage";
 import CreatePostPage from "./pages/PostsPage/CreatePost";
+import ViewPosts from "./pages/PostsPage/ViewPosts";
 // import UpdateUser from "./pages/UpdateUser";
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
           {/* <Route path="update" element={<UpdateUser />} /> */}
         </Route>
         <Route path="/posts" element = {<PostsPage />} />
+        <Route path="/posts/:id" element = {<ViewPosts />} />
         <Route path="/create-post" element = {<CreatePostPage />} />
       </Routes>
     </div>

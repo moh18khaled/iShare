@@ -1,52 +1,70 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PostCard = () => {
+    const navigate = useNavigate();
+
     const postData = [
         {
+            id : 1,
             image : "https://img.freepik.com/premium-vector/encanto-valentine-card_1048941-690.jpg?size=626&ext=jpg",
             title : "Post Title", 
         },
         {
+            id : 2,
             image : "https://img.freepik.com/free-photo/digital-art-snake-illustration_23-2151674350.jpg?size=626&ext=jpg",
             title : "Post Title", 
         },
         {
+            id : 3,
             image : "https://img.freepik.com/free-photo/young-people-spending-quality-time-together_23-2151561894.jpg?size=626&ext=jpg",
             title : "Post Title", 
         },
         {
+            id : 4,
             image : "https://img.freepik.com/free-photo/stunning-nature-landscape_23-2151922428.jpg?size=626&ext=jpg",
             title : "Post Title", 
         },
         {
+            id : 5,
             image : "https://img.freepik.com/free-vector/hand-drawn-timeline-infographic_23-2148383097.jpg?size=626&ext=jpg",
             title : "Post Title", 
         },
         {
+            id : 6,
             image : "https://img.freepik.com/premium-photo/young-woman-holding-whatsapp-smartphone_23-2147842245.jpg?size=626&ext=jpg",
             title : "Post Title", 
         },
         {
+            id : 7,
             image : "https://cdn-front.freepik.com/images/ai/image-generator/gallery/pikaso-woman.webp",
             title : "Post Title", 
         },
         {
+            id : 8,
             image : "https://cdn-front.freepik.com/images/ai/image-generator/gallery/65446.webp",
             title : "Post Title", 
         },
         {
+            id : 9,
             image : "https://cdn-front.freepik.com/images/ai/image-generator/gallery/resource-tti-13.webp",
             title : "Post Title", 
         },
         {
+            id : 10,
             image : "https://cdn-front.freepik.com/images/ai/image-generator/gallery/pikaso-man-in-a-red-robe-standing-on-a-cliff.webp",
             title : "Post Title", 
         },
         {
+            id : 11,
             image : "https://cdn-front.freepik.com/images/ai/image-generator/gallery/pikaso-dog.webp",
             title : "Post Title", 
         },
     ]
+
+    const handleCardClick = (id)=>{
+      navigate(`/posts/${id}`);
+    }
   return (
     <div className='w-[95%] mx-auto mt-16 flex justify-center flex-wrap gap-10'>
     {postData.map((post, idx) => (
@@ -54,6 +72,7 @@ const PostCard = () => {
       key={idx} 
       className="max-w-72 h-auto rounded-lg overflow-hidden shadow-lg bg-white relative group"
       style={{ width: 'fit-content' }} // Adjust width dynamically
+      onClick={()=>handleCardClick(post.id)}
     >
       {/* Image */}
       <img className="w-fit h-full object-cover" src={post.image} alt="postImage" />

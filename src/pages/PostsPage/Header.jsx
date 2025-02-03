@@ -1,4 +1,6 @@
 import { FiSearch, FiBell } from 'react-icons/fi';
+import { FaPlus } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
@@ -17,7 +19,7 @@ const Header = () => {
           <input
             type="text"
             placeholder="Search..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-mainColor focus:ring-1 focus:ring-mainColor"
           />
         </div>
 
@@ -30,6 +32,19 @@ const Header = () => {
             </span>
           </button>
         </div>
+        {/* create post icon */}
+        <Link to="/create-post">
+        <button
+      className="flex items-center bg-mainColor text-white px-4 py-2 rounded-lg hover:bg-hoverColor transition-all"
+      onClick={() => {
+        // Add logic to handle create post action
+        console.log('Create Post clicked');
+      }}
+    >
+      <FaPlus className="mr-2" />
+      Create Post
+    </button>
+        </Link>
       </div>
     </nav>
   );
