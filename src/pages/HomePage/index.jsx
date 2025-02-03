@@ -3,7 +3,7 @@ import Navbar from '../../components/Navbar'
 import HeroSection from './HeroSection'
 import StatsSection from './StatsSection'
 import TabsSection from './TabsSection'
-import TabContent from './DigitalExperience'
+import DigitalExperience from './DigitalExperience'
 import ServicesSection from './ServicesSection'
 import Pricing from './Pricing'
 import TeamSection from './TeamSection'
@@ -18,7 +18,7 @@ const HomePage = () => {
       <HeroSection />
       <StatsSection />
       <TabsSection />
-      <TabContent />
+      <DigitalExperience />
       <ServicesSection />
       <Testimonials />
       <Pricing />

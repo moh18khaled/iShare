@@ -2,12 +2,11 @@ import React from "react";
 import { FaCheckDouble } from "react-icons/fa"; // For check2-all icon
 import { BsArrowRightShort } from "react-icons/bs"; // For arrow-right-short icon
 
-const TabContent = () => {
+const DigitalExperience = () => {
   return (
     <div
       className="tab-content mt-12"
-      data-aos="fade-up"
-      data-aos-delay="200"
+      
     >
       <div className="tab-pane fade active show w-[90%] mx-auto" id="tabs-tab-1">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -79,4 +78,4 @@ const TabContent = () => {
   );
 };
 
-export default TabContent;
+export default DigitalExperience;

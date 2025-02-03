@@ -11,6 +11,7 @@ const SignUpPage = () => {
   const [accept, setAccept] = useState(false);
   const [errorHandler, setErrorHandler] = useState("");
   const [status, setStatus] = useState(0);
+  const apiBaseUrl = "http://localhost:5000";
 
   const submitRules = async (event) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -31,7 +32,7 @@ const SignUpPage = () => {
     try {
       if (flag) {
         const response = await axios
-          .post("http://localhost:1337/api/auth/local/register", {
+          .post(`${apiBaseUrl}/user/signup`, {
             username: userName,
             email: email,
             password: password,

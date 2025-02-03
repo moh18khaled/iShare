@@ -61,8 +61,7 @@ const TeamSection = () => {
           <div
             key={index}
             className="group max-w-sm bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden"
-            data-aos="fade-up"
-            data-aos-delay={100 * (index + 1)}
+            
           >
             <div className="relative">
               <img

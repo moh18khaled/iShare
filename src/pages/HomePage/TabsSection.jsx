@@ -13,7 +13,7 @@ const TabsComponent = () => {
 
   return (
     <div className="w-[90%] mx-auto mt-16 mb-16">
-      <ul className="flex flex-wrap justify-between gap-6" data-aos="fade-up" data-aos-delay="100">
+      <ul className="flex flex-wrap justify-between gap-6">
         {tabs.map((tab) => (
           <li
             key={tab.id}

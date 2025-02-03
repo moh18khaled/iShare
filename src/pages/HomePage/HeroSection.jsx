@@ -1,6 +1,7 @@
 import React from 'react';
 
 const HeroSection = () => {
+  
   return (
     <div>
       <div className="min-h-screen text-white grid bg-cover bg-[url('https://i.postimg.cc/GtnRPG5k/hero-bg.jpg')]">

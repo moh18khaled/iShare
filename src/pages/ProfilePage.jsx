@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import image from "../assets/images/select.jfif";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import axios from "axios";
+const apiBaseUrl = "http://localhost:5000";
 
 const ProfilePage = () => {
   const location = useLocation();
@@ -8,18 +10,16 @@ const ProfilePage = () => {
   // Check if the current route is `/profile/update`
   const isUpdatePage = location.pathname.includes("/profile/update");
 
-  const [formData, setFormData] = useState({
-    username: "YANCHUI",
-    email: "yanchui@gmail.com",
-    password: "evfTbyVVcD",
-  });
+  const [user,setUseer] = useState([]);
+
+  useEffect(()=>{
+    axios.get(`${apiBaseUrl}/user/account`)
+    .then(res=>console.log(res));
+  },[])
 
   const [profileImage, setProfileImage] = useState(image);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -49,11 +49,10 @@ const ProfilePage = () => {
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={handleImageChange}
                 />
               </div>
-              <h2 className="mt-3 font-semibold text-xl">{formData.username}</h2>
-              <p className="text-sm text-gray-600">{formData.email}</p>
+              <h2 className="mt-3 font-semibold text-xl">username</h2>
+              <p className="text-sm text-gray-600">email</p>
             </div>
 
             {/* User Stats */}
@@ -77,7 +76,7 @@ const ProfilePage = () => {
             </div>
 
             {/* Form for Updating Profile */}
-            <form className="mt-6 space-y-4">
+            {/* <form className="mt-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Username
@@ -122,7 +121,7 @@ const ProfilePage = () => {
                   Update
                 </button>
               </Link>
-            </form>
+            </form> */}
           </>
         )}
 

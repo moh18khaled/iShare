@@ -6,10 +6,10 @@ const Pricing = () => {
     <section id="pricing" className="text-white py-16">
       {/* Section Title */}
       <div className="container mx-auto text-center mb-12">
-        <h2 className="text-3xl text-black font-bold mb-4" data-aos="fade-up">
+        <h2 className="text-3xl text-black font-bold mb-4">
           Membership Tiers
         </h2>
-        <p className="text-gray-500" data-aos="fade-up">
+        <p className="text-gray-500">
           Unlock More Value, Insights, and Opportunities with iShare Community Memberships
         </p>
       </div>
@@ -18,8 +18,7 @@ const Pricing = () => {
         {/* Free Tier */}
         <div
           className="bg-gray-700 rounded-lg shadow-lg p-10"
-          data-aos="zoom-in"
-          data-aos-delay="100"
+          
         >
           <h3 className="text-2xl font-semibold text-center mb-4">
             Community Explorer
@@ -62,8 +61,7 @@ const Pricing = () => {
         {/* Pro Tier */}
         <div
           className="bg-gray-700 rounded-lg shadow-lg p-10"
-          data-aos="zoom-in"
-          data-aos-delay="200"
+          
         >
           <h3 className="text-2xl font-semibold text-center mb-4">
             Experience Pro
@@ -106,8 +104,7 @@ const Pricing = () => {
         {/* Enterprise Tier */}
         <div
           className="bg-gray-700 rounded-lg shadow-lg p-10"
-          data-aos="zoom-in"
-          data-aos-delay="300"
+          
         >
           <h3 className="text-2xl font-semibold text-center mb-4">
             Business Insights

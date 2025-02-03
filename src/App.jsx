@@ -6,8 +6,9 @@ import LoginPage from "./pages/LoginPage";
 import SelesctRPage from "./pages/SelesctRPage";
 import BusinessOwnerRegisterPage from "./pages/BusinessOwnerRegisterPage";
 import ProfilePage from "./pages/ProfilePage";
-import UpdateUser from "./pages/UpdateUser";
-import PostForm from "./pages/PostsPage";
+import PostsPage from "./pages/PostsPage";
+import CreatePostPage from "./pages/PostsPage/CreatePost";
+// import UpdateUser from "./pages/UpdateUser";
 
 const App = () => {
   return (
@@ -20,9 +21,10 @@ const App = () => {
         <Route path="/business-owner-register" element={<BusinessOwnerRegisterPage />} />
         <Route path="/profile" element={<ProfilePage />}>
           {/* Nested route for UpdateUser */}
-          <Route path="update" element={<UpdateUser />} />
+          {/* <Route path="update" element={<UpdateUser />} /> */}
         </Route>
-        <Route path="/posts" element={<PostForm />} />
+        <Route path="/posts" element = {<PostsPage />} />
+        <Route path="/create-post" element = {<CreatePostPage />} />
       </Routes>
     </div>
   );
