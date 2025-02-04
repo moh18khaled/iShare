@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { FaImage, FaVideo } from "react-icons/fa";
 
@@ -11,28 +12,21 @@ const CreatePostPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare the post data
-    const postData = {
-      text,
-      imageUrl,
-      imagePublicId,
-      videoUrl,
-      videoPublicId,
-    };
+   
 
     try {
       // Send the post data to your backend API
-      const response = await fetch("https://your-backend-api.com/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
-      });
+      
+      const response = await axios.post("backend endpoint",{
+        title : text,
+        imageUrl : imageUrl,
+        imagePublicId : imagePublicId,
+        videoUrl : videoUrl,
+        videoPublicId : videoPublicId,
+      })
 
       if (response.ok) {
-        const result = await response.json();
-        console.log("Post created successfully:", result);
+        console.log("Post created successfully:", response);
         alert("Post created successfully!");
         // Reset the form
         setText("");

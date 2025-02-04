@@ -78,11 +78,11 @@ const Navbar = () => {
                 </a>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/posts"
                   className="text-gray-900 hover:text-mainColor py-2 px-3">
                   Users Experience
-                </a>
+                </Link>
               </li>
               <li>
                 <a
