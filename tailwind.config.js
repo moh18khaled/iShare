@@ -7,8 +7,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        mainColor : '#800020',
+        mainColor : '#FF0000',
         hoverColor: '#af1d24 ',
+      },
+      fontFamily: {
+        roboto: ['Roboto', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
+        raleway: ['Raleway', 'sans-serif'],
       },
     },
   },

@@ -16,16 +16,16 @@ const ContactSection = () => {
         {/* Contact Info */}
         <div className="space-y-8">
           <div
-            className="shadow-xl p-8 rounded-lg flex flex-col justify-center items-center"
+            className="bg-white shadow-lg px-6 py-12 rounded-lg flex flex-col justify-center items-center"
            
           >
             <FaMapMarkerAlt className="text-4xl text-mainColor mb-4" />
             <h3 className="text-lg font-bold">Address</h3>
             <p className="text-gray-400">Degla Square, Maadi, Cairo Governorate</p>
           </div>
-          <div className="grid grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div
-              className="shadow-xl p-8 rounded-lg flex flex-col justify-center items-center"
+              className="bg-white shadow-lg p-8 rounded-lg flex flex-col justify-center items-center"
               
             >
               <FaPhoneAlt className="text-4xl text-mainColor mb-4" />
@@ -33,7 +33,7 @@ const ContactSection = () => {
               <p className="text-gray-400">+201011031845</p>
             </div>
             <div
-              className="shadow-xl p-8 rounded-lg flex flex-col justify-center items-center overflow-x-auto sm:overflow-clip"
+              className="bg-white shadow-lg p-8 rounded-lg flex flex-col justify-center items-center overflow-x-auto sm:overflow-clip"
               
             >
               <FaEnvelope className="text-4xl text-mainColor mb-4" />
@@ -44,22 +44,22 @@ const ContactSection = () => {
         </div>
         {/* Contact Form */}
         <div
-          className="shadow-xl rounded-lg"
+          className="bg-white shadow-lg rounded-lg"
          
         >
-          <form action="forms/contact.php" method="post" className="space-y-6">
+          <form action="forms/contact.php" method="post" className="space-y-6 p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
                 name="name"
-                className="form-control w-full p-3 rounded  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-mainColor"
+                className="form-control border-2 border-[#CDCDCD] w-full p-3 rounded  placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-0 focus:ring-mainColor"
                 placeholder="Your Name"
                 required
               />
               <input
                 type="email"
                 name="email"
-                className="form-control w-full p-3 rounded  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-mainColor"
+                className="form-control border-2 border-[#CDCDCD] w-full p-3 rounded  placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-0 focus:ring-mainColor"
                 placeholder="Your Email"
                 required
               />
@@ -67,21 +67,21 @@ const ContactSection = () => {
             <input
               type="text"
               name="subject"
-              className="form-control w-full p-3 rounded placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-mainColor"
+              className="form-control border-2 border-[#CDCDCD] w-full p-3 rounded placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-0 focus:ring-mainColor"
               placeholder="Subject"
               required
             />
             <textarea
               name="message"
-              rows="4"
-              className="form-control w-full p-3 rounded  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-mainColor"
+              rows="4" focus:border-0
+              className="form-control border-2 border-[#CDCDCD] w-full p-3 rounded  placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-0 focus:ring-mainColor"
               placeholder="Message"
               required
             ></textarea>
-            <div className="text-center">
+            <div className="text-center pb-6">
               <button
                 type="submit"
-                className="bg-mainColor hover:bg-green-600 text-white font-bold py-3 px-6 rounded transition-all duration-300"
+                className="bg-mainColor hover:bg-hoverColor text-white font-bold py-3 px-10 rounded-full transition-all duration-300"
               >
                 Send Message
               </button>

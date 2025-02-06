@@ -22,16 +22,16 @@ const Footer = () => {
               </p>
             </div>
             <div className="flex space-x-4 mt-4">
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="#" className=" bg-[#E6D5C1] p-3 rounded-full hover:text-white hover:bg-[#8B4513]">
                 <FaTwitter size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="#" className="bg-[#E6D5C1] p-3 rounded-full hover:text-white hover:bg-[#8B4513]">
                 <FaFacebook size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="#" className="bg-[#E6D5C1] p-3 rounded-full hover:text-white hover:bg-[#8B4513]">
                 <FaInstagram size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="#" className="bg-[#E6D5C1] p-3 rounded-full hover:text-white hover:bg-[#8B4513]">
                 <FaLinkedin size={20} />
               </a>
             </div>
@@ -95,17 +95,16 @@ const Footer = () => {
               Subscribe to our newsletter and receive the latest news about our
               products and services!
             </p>
-            <form action="forms/newsletter.php" method="post" className="flex flex-col space-y-4">
+            <form action="forms/newsletter.php" method="post" className="flex">
               <input
                 type="email"
                 name="email"
-                className="w-full p-3 rounded bg-[#F5E6D3] border-2 border-gray-300 text-mainColor placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-mainColor focus:border-0"
-                placeholder="Your Email"
+                className="w-full p-3 rounded bg-[#F5E6D3] border-2 border-r-0 border-[#CDCDCD] text-mainColor placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-mainColor focus:border-0"
                 required
               />
               <button
                 type="submit"
-                className="bg-mainColor hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-all duration-300"
+                className="bg-mainColor hover:bg-hoverColor text-white font-bold py-2 px-4 rounded transition-all duration-300"
               >
                 Subscribe
               </button>

@@ -12,8 +12,6 @@ const CreatePostPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-   
-
     try {
       // Send the post data to your backend API
       

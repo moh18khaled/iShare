@@ -10,6 +10,7 @@ import TeamSection from './TeamSection'
 import ContactSection from './ContactSection'
 import Footer from '../../components/Footer'
 import Testimonials from './TestominalsSection'
+import UsersExperience from './UserExperience'
 
 const HomePage = () => {
   return (
@@ -20,6 +21,7 @@ const HomePage = () => {
       <TabsSection />
       <DigitalExperience />
       <ServicesSection />
+      <UsersExperience />
       <Testimonials />
       <Pricing />
       <TeamSection />
