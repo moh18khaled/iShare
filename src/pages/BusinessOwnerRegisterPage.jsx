@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 
 const BusinesssOwnerRegisterPage = () => {
   const [userName, setUserName] = useState("");
@@ -8,16 +9,21 @@ const BusinesssOwnerRegisterPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [age, setAge] = useState(0);
-  const [businessName,setBusinessName] = useState("");
-  const [businessType,setBusinessType] = useState("");
-  const [addresscountry,setAddresscountry] = useState("");
-  const [addressCity,setAddressCity] = useState("");
-  const [phoneNumber,setPhoneNumber] = useState("");
-  const [description,setDescription] = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [businessType, setBusinessType] = useState("");
+  const [addresscountry, setAddresscountry] = useState("");
+  const [addressCity, setAddressCity] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [description, setDescription] = useState("");
   const [accept, setAccept] = useState(false);
   const [errorHandler, setErrorHandler] = useState("");
   const [status, setStatus] = useState(0);
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to toggle confirm password visibility
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+  // Password validation regex
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const submitRules = async (event) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -28,15 +34,14 @@ const BusinesssOwnerRegisterPage = () => {
     if (
       userName.length === 0 ||
       !emailPattern.test(email) ||
-      password.length < 8 ||
+      !passwordRegex.test(password) || // Validate password using regex
       confirmPassword !== password ||
       age === 0 ||
-      businessName.length ===0 ||
-      businessType.length ===0 ||
+      businessName.length === 0 ||
+      businessType.length === 0 ||
       addresscountry.length === 0 ||
       addressCity.length === 0 ||
       phoneNumber.length === 0
-
     ) {
       flag = false;
     }
@@ -50,14 +55,14 @@ const BusinesssOwnerRegisterPage = () => {
             password: password,
             password_confirmation: confirmPassword,
             age: age,
-            businessName : businessName,
-            businessType : businessType,
-            address : {
-                country : addresscountry,
-                city : addressCity,
+            businessName: businessName,
+            businessType: businessType,
+            address: {
+              country: addresscountry,
+              city: addressCity,
             },
-            phoneNumber : phoneNumber,
-            description : description,
+            phoneNumber: phoneNumber,
+            description: description,
           })
           .then((res) => console.log(res));
 
@@ -79,25 +84,26 @@ const BusinesssOwnerRegisterPage = () => {
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-full lg:py-0">
           <Link
             to="/"
-            className="flex items-center mb-6 mt-6 text-3xl font-bold sm:text-4xl text-mainColor"
+            className="flex items-center mb-6 mt-6 text-3xl font-bold sm:text-4xl text-[#8B4513]"
           >
             iShare
           </Link>
-          <div className="w-full bg-gray-100 rounded-lg shadow-md sm:max-w-md xl:p-0">
+          <div className="w-full bg-[#E8D8C5] rounded-lg shadow-md sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6">
               {accept && status === 400 ? (
                 <p className="text-red-500">*{errorHandler}</p>
               ) : (
                 ""
               )}
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-mainColor md:text-2xl">
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-[#8B4513] md:text-2xl">
                 Create an account
               </h1>
               <form className="space-y-4 md:space-y-6" onSubmit={submitRules}>
+                {/* Username Field */}
                 <div>
                   <label
                     htmlFor="username"
-                    className="block mb-2 text-sm font-medium text-mainColor"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
                   >
                     Username
                   </label>
@@ -107,17 +113,19 @@ const BusinesssOwnerRegisterPage = () => {
                     name="username"
                     id="username"
                     onChange={(e) => setUserName(e.target.value)}
-                    className="bg-gray-50 border border-gray-300 blur-0 focus:outline-none focus:border-mainColor text-gray-900 text-sm rounded-lg  block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 blur-0 focus:outline-none focus:border-[#8B4513] text-gray-900 text-sm rounded-lg  block w-full p-2.5"
                     required=""
                   />
                   {userName.length === 0 && accept && (
                     <p className="text-red-500 mt-1">Username is required</p>
                   )}
                 </div>
+
+                {/* Email Field */}
                 <div>
                   <label
                     htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-mainColor"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
                   >
                     Your email
                   </label>
@@ -127,7 +135,7 @@ const BusinesssOwnerRegisterPage = () => {
                     name="email"
                     id="email"
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
                   {accept && email.length === 0 && (
@@ -141,46 +149,71 @@ const BusinesssOwnerRegisterPage = () => {
                       <p className="text-red-500 mt-1">Email is not valid</p>
                     )}
                 </div>
-                <div>
+
+                {/* Password Field */}
+                <div className="relative">
                   <label
                     htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-mainColor"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
                   >
                     Password
                   </label>
-                  <input
-                    type="password"
-                    value={password}
-                    name="password"
-                    id="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
-                    required=""
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"} // Toggle input type
+                      value={password}
+                      name="password"
+                      id="password"
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5 pr-10" // Add padding for icon
+                      required=""
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 focus:outline-none"
+                      onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                      style={{ top: "50%", transform: "translateY(-50%)" }} // Ensure icon stays centered vertically
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle eye icon */}
+                    </button>
+                  </div>
                   {password.length === 0 && accept ? (
                     <p className="text-red-500 mt-1">Password is required</p>
-                  ) : password.length < 8 && accept ? (
+                  ) : !passwordRegex.test(password) && accept ? (
                     <p className="text-red-500 mt-1">
-                      Password should be at least 8 characters
+                      Password must be at least 8 characters contain at least one uppercase letter, one lowercase letter, one number, and one special character.
                     </p>
-                  ) : null}
+                  ) 
+                : null}
                 </div>
-                <div>
+
+                {/* Confirm Password Field */}
+                <div className="relative">
                   <label
                     htmlFor="confirm-password"
-                    className="block mb-2 text-sm font-medium text-mainColor"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
                   >
                     Confirm password
                   </label>
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    name="confirm-password"
-                    id="confirm-password"
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
-                    required=""
-                  />
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"} // Toggle input type
+                      value={confirmPassword}
+                      name="confirm-password"
+                      id="confirm-password"
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5 pr-10" // Add padding for icon
+                      required=""
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 focus:outline-none"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle confirm password visibility
+                      style={{ top: "50%", transform: "translateY(-50%)" }} // Ensure icon stays centered vertically
+                    >
+                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle eye icon */}
+                    </button>
+                  </div>
                   {confirmPassword.length === 0 && accept ? (
                     <p className="text-red-500 mt-1">
                       Confirm Password is required
@@ -189,10 +222,12 @@ const BusinesssOwnerRegisterPage = () => {
                     <p className="text-red-500 mt-1">Password doesn't match</p>
                   ) : null}
                 </div>
+
+                {/* Age Field */}
                 <div>
                   <label
                     htmlFor="age"
-                    className="block mb-2 text-sm font-medium text-mainColor"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
                   >
                     Age
                   </label>
@@ -208,7 +243,7 @@ const BusinesssOwnerRegisterPage = () => {
                         setAge(e.target.value);
                       }
                     }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
                   {age === 0 && accept ? (
@@ -217,10 +252,12 @@ const BusinesssOwnerRegisterPage = () => {
                     </p>
                   ) : null}
                 </div>
+
+                {/* Business Name Field */}
                 <div>
                   <label
                     htmlFor="business-name"
-                    className="block mb-2 text-sm font-medium text-mainColor"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
                   >
                     Business Name
                   </label>
@@ -230,9 +267,9 @@ const BusinesssOwnerRegisterPage = () => {
                     name="business-name"
                     id="business-name"
                     onChange={(e) => {
-                        setBusinessName(e.target.value);
+                      setBusinessName(e.target.value);
                     }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
                   {businessName.length === 0 && accept ? (
@@ -241,10 +278,12 @@ const BusinesssOwnerRegisterPage = () => {
                     </p>
                   ) : null}
                 </div>
+
+                {/* Business Type Field */}
                 <div>
                   <label
                     htmlFor="business-type"
-                    className="block mb-2 text-sm font-medium text-mainColor"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
                   >
                     Business Type
                   </label>
@@ -254,9 +293,9 @@ const BusinesssOwnerRegisterPage = () => {
                     name="business-type"
                     id="business-type"
                     onChange={(e) => {
-                        setBusinessType(e.target.value);
+                      setBusinessType(e.target.value);
                     }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
                   {businessType.length === 0 && accept ? (
@@ -265,10 +304,12 @@ const BusinesssOwnerRegisterPage = () => {
                     </p>
                   ) : null}
                 </div>
+
+                {/* Address (Country) Field */}
                 <div>
                   <label
                     htmlFor="address-country"
-                    className="block mb-2 text-sm font-medium text-mainColor"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
                   >
                     Address (Country)
                   </label>
@@ -278,21 +319,23 @@ const BusinesssOwnerRegisterPage = () => {
                     name="address-country"
                     id="address-country"
                     onChange={(e) => {
-                        setAddresscountry(e.target.value);
+                      setAddresscountry(e.target.value);
                     }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
                   {addresscountry.length === 0 && accept ? (
                     <p className="text-red-500 mt-1">
-                      Address Countery is Required
+                      Address Country is Required
                     </p>
                   ) : null}
                 </div>
+
+                {/* Address (City) Field */}
                 <div>
                   <label
                     htmlFor="address-city"
-                    className="block mb-2 text-sm font-medium text-mainColor"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
                   >
                     Address (City)
                   </label>
@@ -302,9 +345,9 @@ const BusinesssOwnerRegisterPage = () => {
                     name="address-city"
                     id="address-city"
                     onChange={(e) => {
-                        setAddressCity(e.target.value);
+                      setAddressCity(e.target.value);
                     }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
                   {addressCity.length === 0 && accept ? (
@@ -313,10 +356,12 @@ const BusinesssOwnerRegisterPage = () => {
                     </p>
                   ) : null}
                 </div>
+
+                {/* Phone Number Field */}
                 <div>
                   <label
                     htmlFor="phoneNumber"
-                    className="block mb-2 text-sm font-medium text-mainColor"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
                   >
                     Phone Number
                   </label>
@@ -326,21 +371,23 @@ const BusinesssOwnerRegisterPage = () => {
                     name="phoneNumber"
                     id="phoneNumber"
                     onChange={(e) => {
-                        setPhoneNumber(e.target.value);
+                      setPhoneNumber(e.target.value);
                     }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
                   {phoneNumber.length === 0 && accept ? (
                     <p className="text-red-500 mt-1">
-                      phoneNumber is Required
+                      Phone Number is Required
                     </p>
                   ) : null}
                 </div>
+
+                {/* Description Field */}
                 <div>
                   <label
                     htmlFor="description"
-                    className="block mb-2 text-sm font-medium text-mainColor"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
                   >
                     Description
                   </label>
@@ -350,23 +397,27 @@ const BusinesssOwnerRegisterPage = () => {
                     name="description"
                     id="description"
                     onChange={(e) => {
-                        setDescription(e.target.value);
+                      setDescription(e.target.value);
                     }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
                 </div>
+
+                {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full text-white bg-mainColor hover:bg-[#653f75] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  className="w-full text-white bg-[#8B4513] hover:bg-[#030303] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
                   Create an account
                 </button>
-                <p className="text-sm font-light text-gray-500">
+
+                {/* Login Link */}
+                <p className="text-sm font-light text-[#030303]">
                   Already have an account?{" "}
                   <Link
                     to="/login"
-                    className="font-medium text-mainColor hover:underline"
+                    className="font-medium text-[#8B4513] hover:underline"
                   >
                     Login here
                   </Link>
