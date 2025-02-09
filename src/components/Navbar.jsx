@@ -127,9 +127,9 @@ const Navbar = () => {
               ) : (
                 <div className="flex flex-col space-y-4">
                   <Link
-                    to="/"
+                    to="/profile"
                     type="button"
-                    className="text-white bg-mainColor hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
+                    className="text-white bg-mainColor hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
                   >
                     Profile
                   </Link>
@@ -168,9 +168,9 @@ const Navbar = () => {
             ) : (
               <div className="flex space-x-4">
                 <Link
-                  to="/"
+                  to="/profile"
                   type="button"
-                  className="text-white bg-mainColor hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
+                  className="text-white bg-mainColor hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
                 >
                   Profile
                 </Link>
