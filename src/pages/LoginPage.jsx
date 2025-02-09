@@ -9,7 +9,7 @@ const LoginPage = () => {
     const [accept, setAccept] = useState(false);
     const [errorHandler, setErrorHandler] = useState("");
     const [status, setStatus] = useState(0);
-    const apiBaseUrl = "http://localhost:5000";
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const submitRules = async (event) => {
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

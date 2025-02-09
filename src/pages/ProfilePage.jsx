@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import image from "../assets/images/select.jfif";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import axios from "axios";
-const apiBaseUrl = "http://localhost:5000";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const ProfilePage = () => {
   const location = useLocation();

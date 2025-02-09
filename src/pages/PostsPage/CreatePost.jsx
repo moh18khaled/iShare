@@ -7,48 +7,47 @@ const CreatePostPage = () => {
   const [imagePublicId,setImagePublicId] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [videoPublicId,setVideoPublicId] = useState("");
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // Prepare the post data
-    const postData = {
-      text,
-      imageUrl,
-      imagePublicId,
-      videoUrl,
-      videoPublicId,
-    };
-
-    try {
-      // Send the post data to your backend API
-      const response = await fetch("https://your-backend-api.com/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Post created successfully:", result);
-        alert("Post created successfully!");
-        // Reset the form
-        setText("");
-        setImageUrl("");
-        setImagePublicId("");
-        setVideoUrl("");
-        setVideoPublicId("");
-      } else {
-        console.error("Failed to create post:", response.statusText);
-        alert("Failed to create post. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error creating post:", error);
-      alert("An error occurred. Please try again.");
-    }
+  // Prepare the post data
+  const postData = {
+    text,
+    imageUrl,
+    imagePublicId,
+    videoUrl,
+    videoPublicId,
   };
+
+  try {
+    console.log(postData);
+    // Send the post data to your backend API
+    const response = await fetch(`${apiBaseUrl}/posts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(postData),
+      credentials: "include", // This is equivalent to withCredentials: true
+    })     //     .then((res) => console.log(res));
+    .then(async (response) => {
+      console.log("Response type:", response.type); // Logs "cors"
+      console.log("Response status:", response.status); // Logs 400
+  
+      const data = await response.json(); // ✅ Extracts error message
+      console.log("Error message:", data.message); // Logs backend message
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+    });
+
+  } catch (error) {
+    console.error("Error creating post:", error);
+    alert("An error occurred. Please try again.");
+  }
+};
 
   const handleImageUpload = async (event) => {
     event.preventDefault();
