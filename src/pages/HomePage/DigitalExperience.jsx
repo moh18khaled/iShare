@@ -5,7 +5,7 @@ import { BsArrowRightShort } from "react-icons/bs"; // For arrow-right-short ico
 const DigitalExperience = () => {
   return (
     <div
-      className="tab-content mt-12"
+      className="tab-content mt-12 font-roboto"
       
     >
       <div className="tab-pane fade active show w-[90%] mx-auto" id="tabs-tab-1">

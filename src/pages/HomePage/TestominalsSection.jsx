@@ -50,7 +50,7 @@ const Testimonials = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="font-roboto py-16 bg-gray-50">
       <div className="container mx-auto px-6">
         {/* Section Title */}
         <div className="text-center mb-12" >
@@ -94,9 +94,9 @@ const Testimonials = () => {
                       ))}
                   </div>
                   <p className="text-gray-600 mt-4 italic">
-                    <FaQuoteLeft className="inline-block mr-2 text-blue-400" />
+                    <FaQuoteLeft className="inline-block mr-2 text-mainColor" />
                     {testimonial.feedback}
-                    <FaQuoteRight className="inline-block ml-2 text-blue-400" />
+                    <FaQuoteRight className="inline-block ml-2 text-mainColor" />
                   </p>
                 </div>
               </SwiperSlide>

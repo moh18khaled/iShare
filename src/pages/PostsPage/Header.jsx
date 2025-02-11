@@ -34,16 +34,9 @@ const Header = () => {
         </div>
         {/* create post icon */}
         <Link to="/create-post">
-        <button
-      className="flex items-center bg-mainColor text-white px-4 py-2 rounded-lg hover:bg-hoverColor transition-all"
-      onClick={() => {
-        // Add logic to handle create post action
-        console.log('Create Post clicked');
-      }}
-    >
-      <FaPlus className="mr-2" />
-      Create Post
-    </button>
+        
+      <FaPlus className="mr-2 ml-2" />
+      
         </Link>
       </div>
     </nav>

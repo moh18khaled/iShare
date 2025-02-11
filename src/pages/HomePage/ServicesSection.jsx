@@ -42,8 +42,8 @@ const ServicesSection = () => {
 
   return (
     <div>
-      <section className="pt-36 pb-16 bg-gray-50 text-center z-10">
-        <h1 className="md:text-4xl sm:text-2xl font-semibold font-montserrat text-mainColor mb-[40px]">SERVICES</h1>
+      <section id="services" className="font-poppins pt-36 pb-16 bg-[#F5E6D3] mt-20 text-center z-10">
+        <h1 className="md:text-4xl sm:text-2xl font-semibold font-montserrat mb-[40px]">SERVICES</h1>
       <h2 className="md:text-2xl sm:text-xl text-black mb-[80px]">
       Discover, Share, and Empower Your Experiences Across Multiple Domains
       </h2>
@@ -51,11 +51,11 @@ const ServicesSection = () => {
         {services.map((service, index) => (
           <div
             key={index}
-            className="relative max-w-xs md:w-auto bg-white border-2 z-20 border-mainColor rounded-3xl shadow-md p-6 px-4 transition-transform transform hover:scale-105 min-h-[380px]"
+            className="relative max-w-xs md:w-auto bg-[#E8D8C5] border-2 z-20 border-mainColor rounded-3xl shadow-md p-6 px-4 transition-transform transform hover:scale-105 min-h-[380px]"
           >
             <div className="absolute inset-1 border-2 border-mainColor rounded-3xl pointer-events-none"></div>
 
-            <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white border-2 border-mainColor rounded-full h-20 w-20 flex items-center justify-center shadow-md">
+            <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-[#E8D8C5] border-2 border-mainColor rounded-full h-20 w-20 flex items-center justify-center shadow-md">
               <div className="border-2 border-mainColor rounded-full h-16 w-16 flex items-center justify-center">
                 <img
                   src={service.icon}

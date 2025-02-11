@@ -47,7 +47,7 @@ const TeamSection = () => {
   };
 
   return (
-    <section id="team" className=" py-16">
+    <section id="team" className="font-poppins bg-[#F5E6D3] py-16 pt-64 pb-52">
       {/* Section Title */}
       <div className="w-[95%] mx-auto text-center mb-12">
         <h2 className="text-3xl font-bold mb-6">Team</h2>
@@ -60,7 +60,7 @@ const TeamSection = () => {
         {teamMembers.map((member, index) => (
           <div
             key={index}
-            className="group max-w-sm bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden"
+            className="group max-w-sm bg-[#E6D5C1] rounded-lg shadow-lg overflow-hidden"
             
           >
             <div className="relative">
@@ -75,7 +75,7 @@ const TeamSection = () => {
                     <a
                       key={i}
                       href={url}
-                      className="bg-gray-700 text-gray-400 mt-40 hover:text-white w-12 h-12 flex items-center justify-center rounded-full text-xl transition-transform duration-300 transform translate-y-6 group-hover:translate-y-0"
+                      className="bg-gray-600 text-gray-400 mt-40 hover:text-white w-12 h-12 flex items-center justify-center rounded-full text-xl transition-transform duration-300 transform translate-y-6 group-hover:translate-y-0"
                       aria-label={platform}
                     >
                       {socialIcons[platform]}
@@ -86,7 +86,7 @@ const TeamSection = () => {
             </div>
             <div className="p-6 text-center">
               <h4 className="text-lg font-bold">{member.name}</h4>
-              <p className="text-sm text-gray-400">{member.position}</p>
+              <p className="text-sm">{member.position}</p>
             </div>
           </div>
         ))}

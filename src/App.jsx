@@ -15,7 +15,7 @@ import NotFound from "./pages/NotFound";
 
 const App = () => {
   return (
-    <div>
+    <div className="scroll-smooth">
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/register-select" element={<SelesctRPage />} />

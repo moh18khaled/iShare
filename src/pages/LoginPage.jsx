@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -9,6 +10,7 @@ const LoginPage = () => {
     const [accept, setAccept] = useState(false);
     const [errorHandler, setErrorHandler] = useState("");
     const [status, setStatus] = useState(0);
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const submitRules = async (event) => {
@@ -28,11 +30,11 @@ const LoginPage = () => {
             if (flag) {
                 const response = await axios.post(`${apiBaseUrl}/user/login`, {
                     email: email,
-                    password : password,
-                }).then((res)=>console.log(res));
-                
+                    password: password,
+                }).then((res) => console.log(res));
+
                 setStatus(200);
-                window.localStorage.getItem("email",email);
+                window.localStorage.setItem("email", email); // Corrected localStorage usage
                 navigate("/");
             }
         } catch (error) {
@@ -46,24 +48,24 @@ const LoginPage = () => {
         <div className='h-screen bg-light-gray'>
             <div className="bg-white">
                 <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-full lg:py-0">
-                    <Link to="/" className="flex items-center mb-6 mt-6 text-3xl font-bold sm:text-4xl text-mainColor">
+                    <Link to="/" className="flex items-center mb-6 mt-6 text-3xl font-bold sm:text-4xl text-[#8B4513]">
                         iShare
                     </Link>
-                    <div className="w-full bg-gray-100 rounded-lg shadow-md sm:max-w-md xl:p-0">
+                    <div className="w-full bg-[#E8D8C5] rounded-lg shadow-md sm:max-w-md xl:p-0">
                         <div className="p-6 space-y-4 md:space-y-6">
                             {accept && status === 400 ? (
                                 <p className="text-red-500">*{errorHandler}</p>
                             ) : (
                                 ""
                             )}
-                            <h1 className="text-xl font-bold leading-tight tracking-tight text-mainColor md:text-2xl">
+                            <h1 className="text-xl font-bold leading-tight tracking-tight text-[#8B4513] md:text-2xl">
                                 Login
                             </h1>
                             <form className="space-y-4 md:space-y-6" onSubmit={submitRules}>
                                 <div>
                                     <label
                                         htmlFor="email"
-                                        className="block mb-2 text-sm font-medium text-mainColor"
+                                        className="block mb-2 text-sm font-medium text-[#8B4513]"
                                     >
                                         Your email
                                     </label>
@@ -73,7 +75,7 @@ const LoginPage = () => {
                                         name="email"
                                         id="email"
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                                         required=""
                                     />
                                     {accept && email.length === 0 && (
@@ -83,22 +85,32 @@ const LoginPage = () => {
                                         <p className="text-red-500 mt-1">Email is not valid</p>
                                     )}
                                 </div>
-                                <div>
+                                <div className="relative">
                                     <label
                                         htmlFor="password"
-                                        className="block mb-2 text-sm font-medium text-mainColor"
+                                        className="block mb-2 text-sm font-medium text-[#8B4513]"
                                     >
                                         Password
                                     </label>
-                                    <input
-                                        type="password"
-                                        value={password}
-                                        name="password"
-                                        id="password"
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-mainColor block w-full p-2.5"
-                                        required=""
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showPassword ? "text" : "password"} // Toggle input type
+                                            value={password}
+                                            name="password"
+                                            id="password"
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5 pr-10" // Add padding for icon
+                                            required=""
+                                        />
+                                        <button
+                                            type="button"
+                                            className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 focus:outline-none"
+                                            onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                                            style={{ top: "50%", transform: "translateY(-50%)" }} // Ensure icon stays centered vertically
+                                        >
+                                            {showPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle eye icon */}
+                                        </button>
+                                    </div>
                                     {password.length === 0 && accept ? (
                                         <p className="text-red-500 mt-1">Password is required</p>
                                     ) : password.length < 8 && accept ? (
@@ -108,18 +120,17 @@ const LoginPage = () => {
                                     ) : null}
                                 </div>
                                 
-                                
                                 <button
                                     type="submit"
-                                    className="w-full text-white bg-mainColor hover:bg-[#653f75] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                                    className="w-full text-white bg-[#8B4513] hover:bg-[#030303] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                                 >
                                     Login
                                 </button>
-                                <p className="text-sm font-light text-gray-500">
+                                <p className="text-sm font-light text-[#030303]">
                                     Don't have an account?{' '}
                                     <Link
                                         to="/register-select"
-                                        className="font-medium text-mainColor hover:underline"
+                                        className="font-medium text-[#8B4513] hover:underline"
                                     >
                                         Register here
                                     </Link>

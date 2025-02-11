@@ -12,12 +12,12 @@ const TabsComponent = () => {
   ];
 
   return (
-    <div className="w-[90%] mx-auto mt-16 mb-16">
+    <div className="font-roboto w-[90%] mx-auto mt-16 mb-16">
       <ul className="flex flex-wrap justify-between gap-6">
         {tabs.map((tab) => (
           <li
             key={tab.id}
-            className={`flex-1 text-center border border-gray-300 rounded-lg shadow-lg transition-all ${
+            className={`flex-1 text-center border border-gray-300 hover:border-mainColor rounded-lg shadow-lg transition-all ${
               active === tab.id ? "border-red-500 shadow-xl" : "hover:shadow-md"
             }`}
           >
