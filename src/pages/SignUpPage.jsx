@@ -362,7 +362,7 @@ const SignUpPage = () => {
           value={option}
           checked={hearAboutUs === option}
           onChange={(e) => setHearAboutUs(e.target.value)}
-          className="h-4 w-4 text-[#8B4513] focus:bg-mainColor focus:ring-[#8B4513] border-gray-300"
+          className="h-4 w-4 text-[#8B4513] focus: focus:ring-[#8B4513] border-gray-300"
         />
         <span className="ml-2 text-sm text-[#8B4513]">{option}</span>
       </label>

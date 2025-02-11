@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { FaImage, FaVideo, FaStar, FaCheckCircle } from "react-icons/fa"; // Import FaCheckCircle for checkmark
+import { FaImage, FaVideo, FaStar } from "react-icons/fa"; // Import FaStar for stars
 
 const apiBaseUrl = "http://localhost:5000";
 
@@ -117,6 +117,7 @@ const CreatePostPage = () => {
       setVideoUrl(uploadVideo.url); // Store the video URL in the state
       setVideoPublicId(uploadVideo.public_id);
       setVideoUploaded(true);
+
     } catch (error) {
       console.error("Error uploading video:", error);
     }
@@ -153,11 +154,11 @@ const CreatePostPage = () => {
             required
           ></textarea>
 
-          {/* Category Dropdown */}
+          {/* BusinessName Dropdown */}
           {/* Radio Buttons for Single Selection */}
           <div>
             <label className="block mb-2 text-sm font-medium text-[#8B4513]">
-              Select one option
+              Select one Business Name
             </label>
             <div className="space-y-2">
               {["option1", "option2", "option3", "option4"].map((option) => (

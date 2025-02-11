@@ -11,10 +11,12 @@ import CreatePostPage from "./pages/PostsPage/CreatePost";
 import ViewPosts from "./pages/PostsPage/ViewPosts";
 import VerifyAccount from "./pages/VerifyAccount";
 import NotFound from "./pages/NotFound"; 
+import { PostProvider } from "./context/context";
 // import UpdateUser from "./pages/UpdateUser";
 
 const App = () => {
   return (
+    <PostProvider>
     <div className="scroll-smooth">
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -33,6 +35,7 @@ const App = () => {
         <Route path="*" element={<NotFound />} /> {/* Handles all unknown routes */}
       </Routes>
     </div>
+    </PostProvider>
   );
 };
 
