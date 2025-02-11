@@ -10,16 +10,18 @@ const ViewPosts = () => {
   const [user, setUser] = useState(null); // State to store the user who created the post
   const [loading, setLoading] = useState(true); // State to handle loading
   const [error, setError] = useState(null); // State to handle errors
+  const apiBaseUrl = "http://localhost:5000";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch all posts from the API
-        const postsResponse = await axios.get('https://dummyjson.com/products');
-        const posts = postsResponse.data.products;
-
+        const postsResponse = await axios.get(`${apiBaseUrl}/posts`);
+console.log(postsResponse.data.posts)
+const posts =postsResponse.data.posts;
         // Find the post with the matching ID
-        const foundPost = posts.find((p) => p.id === parseInt(id));
+        const foundPost = posts.find((p) => p._id === id);
+        console.log(foundPost)
 
         if (foundPost) {
           setPost(foundPost); // Set the found post in state
@@ -84,14 +86,14 @@ const ViewPosts = () => {
 
       {/* Image */}
       <img
-        src={post.thumbnail}
+        src={post.image.url}
         alt={post.title}
         className="w-72 h-auto mx-auto object-cover rounded-lg"
       />
 
       {/* Additional Details */}
       <div className="mt-6">
-        <p className="text-gray-700">{post.description}</p>
+        <p className="text-gray-700">{post.content}</p>
       </div>
 
       {/* Icons for Like, Comment, Share */}

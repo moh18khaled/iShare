@@ -7,21 +7,26 @@ const PostCard = () => {
     const [postedData,setPostedData] = useState([]);
     const [loading,setLoading] = useState(true);
     const [error,setError] = useState(null);
+    const apiBaseUrl = "http://localhost:5000";
 
-    useEffect(()=>{
-      const fetchData = async()=>{
-        try {
-         const response =  await axios.get("https://dummyjson.com/products");
-          console.log(response.data.products);
-          setPostedData(response.data.products);
-        } catch (error) {
-          setError(error.message);
-        } finally {
-          setLoading(false);
-        }
-      }
+    useEffect(() => {
+      const fetchData = async () => {
+          try {
+            
+              const response = await axios.get(`${apiBaseUrl}/posts`);
+              console.log(response)
+              console.log(response.data.posts)
+              setPostedData(response.data.posts);
+
+          } catch (error) {
+              setError(error.message);
+          } finally {
+              setLoading(false);
+          }
+      };
+
       fetchData();
-    },[])
+  }, []);
 
     // Display loading state
   if (loading) {
@@ -48,13 +53,13 @@ const PostCard = () => {
     <div className='w-[95%] mx-auto mt-16 flex justify-center flex-wrap gap-10'>
     {postedData.map((post) => (
     <div 
-      key={post.id} 
+      key={post._id} 
       className="max-w-72 h-auto rounded-lg overflow-hidden shadow-lg bg-white relative group"
       style={{ width: 'fit-content' }} // Adjust width dynamically
-      onClick={()=>handleCardClick(post.id)}
+      onClick={()=>handleCardClick(post._id)}
     >
       {/* Image */}
-      <img className="w-fit h-full object-cover" src={post.thumbnail} alt={post.title} />
+      <img className="w-fit h-full object-cover" src={post.image.url} alt={post.title} />
 
       {/* Title (hidden by default, appears on hover) */}
       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300">

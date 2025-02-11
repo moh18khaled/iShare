@@ -1,12 +1,12 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { FaImage, FaVideo, FaStar } from "react-icons/fa"; // Import FaStar for stars
+import React, { useState, useEffect } from "react";
+import { FaImage, FaVideo, FaStar, FaCheckCircle } from "react-icons/fa"; // Import FaCheckCircle for checkmark
 
 const apiBaseUrl = "http://localhost:5000";
 
 const CreatePostPage = () => {
   const [title, setTitle] = useState("");
-  const [text, setContent] = useState("");
+  const [text, settext] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [imagePublicId, setImagePublicId] = useState("");
@@ -15,40 +15,55 @@ const CreatePostPage = () => {
   const [rating, setRating] = useState(0); // State for rating
   const [imageUploaded, setImageUploaded] = useState(false); // State for image upload success
   const [videoUploaded, setVideoUploaded] = useState(false); // State for video upload success
+  const [businessNames, setBusinessNames] = useState([]); // State to store business names
+
+  // Fetch business names from the backend
+  useEffect(() => {
+    const fetchBusinessNames = async () => {
+      try {
+        const response = await axios.get(`${apiBaseUrl}/businessOwner/business-names`); // Replace with your backend endpoint
+        console.log(response.data.businessNames);
+        setBusinessNames(response.data.businessNames); // Store the fetched business names in state
+      } catch (error) {
+        console.error("Error fetching business names:", error);
+      }
+    };
+
+    fetchBusinessNames();
+  }, []); // Run only once when the component mounts
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       // Prepare the post data
       const postData = {
         title,
         text,
-        businessName, // Use businessName instead of category
+        businessName,
         imageUrl,
         imagePublicId,
         videoUrl,
         videoPublicId,
         rating, // Include the rating in the post data
       };
-  
+
       // Send the post data to your backend API
       const response = await axios.post(`${apiBaseUrl}/posts`, postData);
-  
       if (response.status === 200 || response.status === 201) {
         console.log("Post created successfully:", response.data);
         alert("Post created successfully!");
         // Reset the form
         setTitle("");
-        setContent("");
-        setBusinessName(""); // Reset businessName instead of category
+        settext("");
+        setBusinessName("");
         setImageUrl("");
         setImagePublicId("");
         setVideoUrl("");
         setVideoPublicId("");
-        setRating(0);
-        setImageUploaded(false);
-        setVideoUploaded(false);
+        setRating(0); // Reset the rating
+        setImageUploaded(false); // Reset image upload state
+        setVideoUploaded(false); // Reset video upload state
       } else {
         console.error("Failed to create post:", response.statusText);
         alert("Failed to create post. Please try again.");
@@ -58,7 +73,6 @@ const CreatePostPage = () => {
       alert("An error occurred. Please try again.");
     }
   };
-  
 
   const handleImageUpload = async (event) => {
     event.preventDefault();
@@ -85,7 +99,6 @@ const CreatePostPage = () => {
       setImageUrl(uploadImage.url); // Store the image URL in the state
       setImagePublicId(uploadImage.public_id);
       setImageUploaded(true);
-
     } catch (error) {
       console.error("Error uploading image:", error);
     }
@@ -117,7 +130,6 @@ const CreatePostPage = () => {
       setVideoUrl(uploadVideo.url); // Store the video URL in the state
       setVideoPublicId(uploadVideo.public_id);
       setVideoUploaded(true);
-
     } catch (error) {
       console.error("Error uploading video:", error);
     }
@@ -150,28 +162,27 @@ const CreatePostPage = () => {
             rows="4"
             placeholder="What's on your mind?"
             value={text}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={(e) => settext(e.target.value)}
             required
           ></textarea>
 
           {/* BusinessName Dropdown */}
-          {/* Radio Buttons for Single Selection */}
           <div>
             <label className="block mb-2 text-sm font-medium text-[#8B4513]">
               Select one Business Name
             </label>
             <div className="space-y-2">
-              {["option1", "option2", "option3", "option4"].map((option) => (
-                <label key={option} className="flex items-center">
+              {businessNames.map((business) => (
+                <label key={business.id} className="flex items-center">
                   <input
                     type="radio"
                     name="single-select"
-                    value={option}
-                    checked={businessName === option}
+                    value={business}
+                    checked={businessName === business}
                     onChange={(e) => setBusinessName(e.target.value)}
                     className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300"
                   />
-                  <span className="ml-2 text-sm text-[#8B4513]">{option}</span>
+                  <span className="ml-2 text-sm text-[#8B4513]">{business}</span>
                 </label>
               ))}
             </div>
