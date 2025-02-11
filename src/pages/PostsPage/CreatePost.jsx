@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { FaImage, FaVideo, FaStar } from "react-icons/fa"; // Import FaStar for stars
+import { FaImage, FaVideo, FaStar, FaCheckCircle } from "react-icons/fa"; // Import FaCheckCircle for checkmark
 
 const apiBaseUrl = "http://localhost:5000";
 
@@ -13,6 +13,8 @@ const CreatePostPage = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [videoPublicId, setVideoPublicId] = useState("");
   const [rating, setRating] = useState(0); // State for rating
+  const [imageUploaded, setImageUploaded] = useState(false); // State for image upload success
+  const [videoUploaded, setVideoUploaded] = useState(false); // State for video upload success
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,6 +47,8 @@ const CreatePostPage = () => {
         setVideoUrl("");
         setVideoPublicId("");
         setRating(0); // Reset the rating
+        setImageUploaded(false); // Reset image upload state
+        setVideoUploaded(false); // Reset video upload state
       } else {
         console.error("Failed to create post:", response.statusText);
         alert("Failed to create post. Please try again.");
@@ -66,15 +70,21 @@ const CreatePostPage = () => {
     data.append("cloud_name", "dqmp5l622");
 
     try {
-      const imageResponse = await axios.post(
+      const imageResponse = await fetch(
         "https://api.cloudinary.com/v1_1/dqmp5l622/image/upload",
-        data
+        {
+          method: "POST",
+          body: data,
+        }
       );
 
-      console.log("Image URL:", imageResponse.data.url);
-      console.log("Image Public_id:", imageResponse.data.public_id);
-      setImageUrl(imageResponse.data.url); // Store the image URL in the state
-      setImagePublicId(imageResponse.data.public_id);
+      const uploadImage = await imageResponse.json();
+      console.log("Image URL:", uploadImage.url);
+      console.log("Image Public_id:", uploadImage.public_id);
+      setImageUrl(uploadImage.url); // Store the image URL in the state
+      setImagePublicId(uploadImage.public_id);
+      setImageUploaded(true);
+
     } catch (error) {
       console.error("Error uploading image:", error);
     }
@@ -92,15 +102,20 @@ const CreatePostPage = () => {
     data.append("chunk_size", 6000000);
 
     try {
-      const videoResponse = await axios.post(
+      const videoResponse = await fetch(
         "https://api.cloudinary.com/v1_1/dqmp5l622/video/upload",
-        data
+        {
+          method: "POST",
+          body: data,
+        }
       );
 
-      console.log("Video URL:", videoResponse.data.url);
-      console.log("Video Public_id:", videoResponse.data.public_id);
-      setVideoUrl(videoResponse.data.url); // Store the video URL in the state
-      setVideoPublicId(videoResponse.data.public_id);
+      const uploadVideo = await videoResponse.json();
+      console.log("Video URL:", uploadVideo.url);
+      console.log("Video Public_id:", uploadVideo.public_id);
+      setVideoUrl(uploadVideo.url); // Store the video URL in the state
+      setVideoPublicId(uploadVideo.public_id);
+      setVideoUploaded(true);
     } catch (error) {
       console.error("Error uploading video:", error);
     }
@@ -137,28 +152,28 @@ const CreatePostPage = () => {
             required
           ></textarea>
 
-          {/* Category Dropdown */}
+          {/* BusinessName Dropdown */}
           {/* Radio Buttons for Single Selection */}
-<div>
-  <label className="block mb-2 text-sm font-medium text-[#8B4513]">
-    Select one option
-  </label>
-  <div className="space-y-2">
-    {["option1", "option2", "option3", "option4"].map((option) => (
-      <label key={option} className="flex items-center">
-        <input
-          type="radio"
-          name="single-select"
-          value={option}
-          checked={businessName === option}
-          onChange={(e) => setBusinessName(e.target.value)}
-          className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300"
-        />
-        <span className="ml-2 text-sm text-[#8B4513]">{option}</span>
-      </label>
-    ))}
-  </div>
-</div>
+          <div>
+            <label className="block mb-2 text-sm font-medium text-[#8B4513]">
+              Select one Business Name
+            </label>
+            <div className="space-y-2">
+              {["option1", "option2", "option3", "option4"].map((option) => (
+                <label key={option} className="flex items-center">
+                  <input
+                    type="radio"
+                    name="single-select"
+                    value={option}
+                    checked={businessName === option}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300"
+                  />
+                  <span className="ml-2 text-sm text-[#8B4513]">{option}</span>
+                </label>
+              ))}
+            </div>
+          </div>
 
           {/* Star Rating */}
           <div className="flex items-center space-x-2 mb-4 mt-4">
@@ -187,6 +202,7 @@ const CreatePostPage = () => {
               />
               <FaImage className="text-red-500 text-2xl" />
               <span className="ml-2 text-red-700">Image</span>
+              {imageUploaded && <FaCheckCircle className="text-green-500 ml-2" />}
             </label>
             <label className="flex items-center cursor-pointer">
               <input
@@ -197,6 +213,7 @@ const CreatePostPage = () => {
               />
               <FaVideo className="text-red-500 text-2xl" />
               <span className="ml-2 text-red-700">Video</span>
+              {videoUploaded && <FaCheckCircle className="text-green-500 ml-2" />}
             </label>
           </div>
 

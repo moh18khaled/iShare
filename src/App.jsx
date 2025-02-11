@@ -9,10 +9,12 @@ import ProfilePage from "./pages/ProfilePage";
 import PostsPage from "./pages/PostsPage";
 import CreatePostPage from "./pages/PostsPage/CreatePost";
 import ViewPosts from "./pages/PostsPage/ViewPosts";
+import { PostProvider } from "./context/context";
 // import UpdateUser from "./pages/UpdateUser";
 
 const App = () => {
   return (
+    <PostProvider>
     <div className="scroll-smooth">
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -29,6 +31,7 @@ const App = () => {
         <Route path="/create-post" element = {<CreatePostPage />} />
       </Routes>
     </div>
+    </PostProvider>
   );
 };
 
