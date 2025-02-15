@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { FaHeart, FaComment, FaShare } from 'react-icons/fa'; // Import icons
+import { FaHeart, FaComment, FaShare , FaTrash } from 'react-icons/fa'; // Import icons
 import image from "./../../assets/images/select.jfif"
 import axios from 'axios';
 
 const ViewPosts = () => {
   const { id } = useParams(); // Get the post ID from the URL
   const [post, setPost] = useState(null); // State to store the specific post
-  const [user, setUser] = useState(null); // State to store the user who created the post
+  // State to store the user who created the post
+  const [user, setUser] = useState({
+    username : "",
+    profilePicture : "",
+    userId : "",
+  }); 
   const [loading, setLoading] = useState(true); // State to handle loading
   const [error, setError] = useState(null); // State to handle errors
+  const [showCommentInput,setShowCommentInput] = useState(false);
+  const [comment,setComment] = useState("");
+  const [comments,setComments] = useState([]);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const apiBaseUrl = "http://localhost:5000";
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,10 +34,23 @@ const posts =postsResponse.data.posts;
 
         if (foundPost) {
           setPost(foundPost); // Set the found post in state
+          setUser({
+            username : foundPost.author.username,
+            profilePicture : foundPost.author.profilePicture.url,
+            userId : foundPost.author._id
+          });
+          setLikeCount(foundPost.likeCount || 0);
+           
+          console.log(foundPost.likesCount);
+          // fetch comments for the post
+          const commentsResponse = await axios.get(`${apiBaseUrl}/posts/${id}/comments`);
+          console.log(commentsResponse.data.comments);
+          setComments(commentsResponse.data.comments);
 
-          // Fetch user data based on the userId in the post
-          // const userResponse = await axios.get(`https://dummyjson.com/users/${foundPost.userId}`);
-          // setUser(userResponse.data); // Set the user data in state
+
+          // Check if the current user has liked the post (replace with actual logic)
+          const userLiked = false; // Replace with actual check from the backend
+          setLiked(userLiked);
         } else {
           setError('Post not found'); 
         }
@@ -41,6 +63,60 @@ const posts =postsResponse.data.posts;
 
     fetchData();
   }, [id]); // Re-run effect when the `id` changes
+
+  // Handle like/unlike
+  const handleLike = async () => {
+    try {
+      await axios.patch(`${apiBaseUrl}/posts/${id}/toggleLike`);
+      if (liked) {
+        // Unlike the post
+        setLikeCount((prev) => prev - 1);
+      } else {
+        setLikeCount((prev) => prev + 1);
+      }
+      setLiked((prev) => !prev); // Toggle like status
+    } catch (error) {
+      console.error('Failed to update like:', error);
+    }
+  };
+
+  // handle comment submission
+  const handleCommentSubmit = async()=>{
+    if(comment.trim()){
+      try {
+        const response = axios.post(`${apiBaseUrl}/posts/${id}/addComment`,{
+          text : comment,
+          userId : user.userId,
+        });
+        console.log(response);
+        setComments([...comments,(await response).data]);
+        setComment("");
+        setShowCommentInput(false);
+      } catch (error) {
+        console.error('Failed to submit comment:', error);
+      }
+    }
+  } 
+
+  // Handle delete comment
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await axios.delete(`${apiBaseUrl}/posts/${id}/removeComment/${comments._id}`);
+      setComments(comments.filter((comment) => comment._id !== commentId)); // Remove the deleted comment from the list
+    } catch (error) {
+      console.error('Failed to delete comment:', error);
+    }
+  };
+
+  // Handle delete post
+  const handleDeletePost = async () => {
+    try {
+      await axios.delete(`${apiBaseUrl}/posts/${id}`);
+      navigate('/posts');
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+    }
+  };
 
   // Display loading state
   if (loading) {
@@ -64,22 +140,21 @@ const posts =postsResponse.data.posts;
   if (!post) {
     return <div className="text-center mt-16">Post not found!</div>;
   }
-  const x=true;
   return (
     <div className="w-[95%] mx-auto text-center  max-w-4xl shadow-2xl p-10 rounded-lg">
       {/* User Details */}
-      {x && (
+      
         <div className="flex items-center mb-6">
           <img
-            src={image}
+            src={user.profilePicture}
             alt="kareem"
             className="w-12 h-12 rounded-full object-cover"
           />
           <div className="ml-4">
-            <p className="text-lg font-semibold">kareem Ragab</p>
+            <p className="text-lg font-semibold">{user.username}</p>
           </div>
         </div>
-      )}
+      
 
       {/* Title */}
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
@@ -99,16 +174,68 @@ const posts =postsResponse.data.posts;
       {/* Icons for Like, Comment, Share */}
       <div className="flex justify-between items-center mt-6 p-4 border-t border-gray-200">
         <div className="w-full flex justify-between items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <FaHeart className="text-red-500 cursor-pointer" />
-            <span>{post.likes || 0}</span>
+          <div
+           className="flex items-center space-x-2"
+           onClick={handleLike}
+           >
+            <FaHeart className={liked ? 'text-red-500' : 'text-gray-500'} />
+            <span>{likeCount}</span>
           </div>
-          <div className="flex items-center space-x-2">
+          <div onClick={()=>setShowCommentInput(!showCommentInput)} className="flex items-center space-x-2">
             <FaComment className="text-gray-500 cursor-pointer" />
-            <span>{post.comments || 0}</span>
+            <span>{comments.length}</span>
           </div>
-          <FaShare className="text-green-500 cursor-pointer" />
+          <button
+            onClick={handleDeletePost}
+            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 flex items-center"
+          >
+            <FaTrash className="mr-2" /> Delete
+          </button>        </div>
+      </div>
+      {/* Comment Input Area */}
+      {showCommentInput && (
+        <div className="mt-4">
+          <textarea
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-mainColor"
+            rows="3"
+            placeholder="Write a comment..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          ></textarea>
+          <button
+            className="mt-2 px-4 py-2 bg-mainColor text-white rounded-lg hover:bg-hoverColor"
+            onClick={handleCommentSubmit}
+          >
+            Submit
+          </button>
         </div>
+      )}
+
+      {/* Display Comments */}
+      <div className="mt-6 text-left">
+        <h2 className="text-xl font-semibold mb-4">Comments</h2>
+        {comments.length > 0 ? (
+          comments.map((comment,idx) => (
+            <div key={idx} className="mb-4 p-4 border border-gray-200 rounded-lg flex justify-between items-center">
+              <div>
+                <div className='flex items-center gap-1 mb-2'>
+                  <img className='w-6 h-6 rounded-full' src={comment.user.profilePicture.url} alt="user that create the comment" />
+                <p className="text-sm text-gray-500 mt-2">{comment.user.username}</p>
+                </div>
+                <p className="text-gray-700">{comment.text}</p>
+                
+              </div>
+              <button
+                onClick={() => handleDeleteComment(comment.id)}
+                className="p-2 text-red-500 hover:text-red-700"
+              >
+                <FaTrash />
+              </button>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500">No comments yet.</p>
+        )}
       </div>
     </div>
   );
