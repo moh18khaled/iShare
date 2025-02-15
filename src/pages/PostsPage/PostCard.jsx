@@ -46,9 +46,10 @@ const PostCard = () => {
     return <div className="text-center mt-16 text-red-500">Error: {error}</div>;
   }
     
-    const handleCardClick = (id)=>{
-      navigate(`/posts/${id}`);
-    }
+  const handleCardClick = (id) => {
+    console.log("Navigating to post:", id);
+    navigate(`/posts/${id}`);
+};
   return (
     <div className='w-[95%] mx-auto mt-16 flex justify-center flex-wrap gap-10'>
     {postedData.map((post) => (

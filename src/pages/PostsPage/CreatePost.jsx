@@ -6,7 +6,7 @@ const apiBaseUrl = "http://localhost:5000";
 
 const CreatePostPage = () => {
   const [title, setTitle] = useState("");
-  const [text, settext] = useState("");
+  const [content, setcontent] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [imagePublicId, setImagePublicId] = useState("");
@@ -39,7 +39,7 @@ const CreatePostPage = () => {
       // Prepare the post data
       const postData = {
         title,
-        text,
+        content,
         businessName,
         imageUrl,
         imagePublicId,
@@ -55,7 +55,7 @@ const CreatePostPage = () => {
         alert("Post created successfully!");
         // Reset the form
         setTitle("");
-        settext("");
+        setcontent("");
         setBusinessName("");
         setImageUrl("");
         setImagePublicId("");
@@ -161,8 +161,8 @@ const CreatePostPage = () => {
             className="w-full p-3 rounded-lg border border-red-200 focus:outline-none focus:ring-2 focus:ring-red-300 bg-white mb-4"
             rows="4"
             placeholder="What's on your mind?"
-            value={text}
-            onChange={(e) => settext(e.target.value)}
+            value={content}
+            onChange={(e) => setcontent(e.target.value)}
             required
           ></textarea>
 
