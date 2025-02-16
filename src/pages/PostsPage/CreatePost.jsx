@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { FaImage, FaVideo, FaStar, FaCheckCircle } from "react-icons/fa"; // Import FaCheckCircle for checkmark
 
-const apiBaseUrl = "http://localhost:5000";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const CreatePostPage = () => {
   const [title, setTitle] = useState("");

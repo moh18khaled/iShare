@@ -72,7 +72,7 @@ const ProfilePage = () => {
             {/* Dashboard Button */}
             <div className="absolute top-4 right-4">
               <button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/user/dashboard')}
                 className="flex items-center gap-2 bg-[#8B4513] text-white px-4 py-2 rounded-lg hover:bg-[#A0522D] transition-colors"
               >
                 <FaChartLine />

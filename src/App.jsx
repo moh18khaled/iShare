@@ -15,11 +15,11 @@ import PaymentCancel from "./pages/PaymentCancel";
 import NotFound from "./pages/NotFound";
 import DashboardPage from "./pages/dashboard";
 import UserProfile from "./components/UserProfile";
-import { PostProvider } from "./context/context";
+import { UserProvider } from "./context/context";
 
 const App = () => {
   return (
-    <PostProvider>
+    <UserProvider>
       <div className="scroll-smooth">
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -29,17 +29,17 @@ const App = () => {
           <Route path="/business-owner-register" element={<BusinessOwnerRegisterPage />} />
           <Route path="/verify-account" element={<VerifyAccount />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/user/account/:id" element={<UserProfile />} /> {/* Fixed the issue */}
-          <Route path="/posts" element={<PostsPage />} />
-          <Route path="/posts/:id" element={<ViewPosts />} />
+          <Route path="/otherUser/account/:id" element={<UserProfile />} /> {/* Fixed the issue */}
+          <Route path="/all/posts" element={<PostsPage />} />
+          <Route path="/post/:id" element={<ViewPosts />} />
           <Route path="/create-post" element={<CreatePostPage />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-cancel" element={<PaymentCancel />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/user/dashboard" element={<DashboardPage />} />
           <Route path="*" element={<NotFound />} /> {/* Handles all unknown routes */}
         </Routes>
       </div>
-    </PostProvider>
+    </UserProvider>
   );
 };
 

@@ -56,7 +56,7 @@ const ExpandableBoxForUsers = ({ icon, title, value, endpoint }) => {
               <div className="space-y-4">
                 {data.map((user) => (
                   <Link
-                    to={`/user/account/${user._id}`}
+                    to={`/otherUser/account/${user._id}`}
                     key={user._id}
                     className="flex items-center gap-4 p-4 border rounded-lg shadow-md hover:bg-gray-100 transition"
                   >

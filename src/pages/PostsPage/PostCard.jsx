@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const PostCard = () => {
@@ -7,7 +7,7 @@ const PostCard = () => {
     const [postedData,setPostedData] = useState([]);
     const [loading,setLoading] = useState(true);
     const [error,setError] = useState(null);
-    const apiBaseUrl = "http://localhost:5000";
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
       const fetchData = async () => {
@@ -48,7 +48,7 @@ const PostCard = () => {
     
   const handleCardClick = (id) => {
     console.log("Navigating to post:", id);
-    navigate(`/posts/${id}`);
+    navigate(`/post/${id}`);
 };
   return (
     <div className='w-[95%] mx-auto mt-16 flex justify-center flex-wrap gap-10'>

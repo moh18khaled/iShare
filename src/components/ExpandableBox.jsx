@@ -72,7 +72,7 @@ const ExpandableBox = ({ icon, title, value, endpoint, type }) => {
                   ))
                 ) : (
                   data.map((post) => (
-                    <Link to={`/posts/${post._id}`} key={post._id}>
+                    <Link to={`/post/${post._id}`} key={post._id}>
                       <div className="max-w-64 rounded-lg overflow-hidden shadow-lg bg-white relative group cursor-pointer">
                         <img className="w-full h-40 object-cover" src={post.image?.url || "default-image.jpg"} alt={post.title} />
                         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300">

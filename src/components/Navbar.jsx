@@ -103,6 +103,14 @@ const Navbar = () => {
                   Contact
                 </a>
               </li>
+              <li>
+                <Link
+                  to="/posts"
+                  className="block py-2 px-3 text-gray-900 hover:text-mainColor rounded md:p-0"
+                >
+                  Posts
+                </Link>
+              </li>
             </ul>
 
             {/* Auth Buttons for Mobile Menu */}
@@ -133,6 +141,8 @@ const Navbar = () => {
                   >
                     Profile
                   </Link>
+                  
+
                   <Link
                     to="/"
                     onClick={handleLogout}
@@ -148,6 +158,7 @@ const Navbar = () => {
 
           {/* Auth Buttons for Larger Screens */}
           <div className="hidden md:flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+            
             {!window.localStorage.getItem("email") ? (
               <div className="flex space-x-4">
                 <Link
@@ -174,6 +185,13 @@ const Navbar = () => {
                 >
                   Profile
                 </Link>
+                <Link
+              to="/all/posts"
+              type="button"
+                    className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
+                  >
+                    Posts
+                  </Link>
                 <Link
                   to="/"
                   onClick={handleLogout}
