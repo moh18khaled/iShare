@@ -1,12 +1,23 @@
+import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Navbar = () => {
+  const userEmail = Cookies.get("userEmail");
+  console.log(userEmail);
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    window.localStorage.removeItem("email");
-    window.location.pathname = "/";
+  const handleLogout = async() => {
+   try {
+    await axios.post(`${apiBaseUrl}/user/logout`,{},{withCredentials : true});
+   Cookies.remove("userEmail");
+   navigate("/login");
+   } catch (error) {
+    console.log(error);
+   }
   };
 
   const toggleMenu = () => {
@@ -18,7 +29,7 @@ const Navbar = () => {
       <nav className="bg-[#F9F9F9] font-roboto z-50 shadow-md fixed w-full top-0 start-0 border-b border-gray-200">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-6">
           <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
-            <span className="self-center text-4xl text-mainColor font-bold whitespace-nowrap">iShare</span>
+            <span className="self-center text-4xl text-mainColor font-bold whitespace-nowrap">weinfluence</span>
           </a>
 
           {/* Mobile Menu Toggle Button */}
@@ -107,7 +118,7 @@ const Navbar = () => {
 
             {/* Auth Buttons for Mobile Menu */}
             <div className="md:hidden mt-4">
-              {!window.localStorage.getItem("email") ? (
+              {!userEmail ? (
                 <div className="flex flex-col space-y-4">
                   <Link
                     to="/register-select"

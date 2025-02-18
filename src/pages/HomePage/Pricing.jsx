@@ -1,7 +1,21 @@
+import axios from "axios";
 import React from "react";
 import { FaCheck, FaTimes } from "react-icons/fa";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Pricing = () => {
+
+  const handlePayment = async()=>{
+    try {
+      const response = axios.post(`${apiBaseUrl}/payments/create-order`,{
+        amount : "25",
+        currency : "USD",
+      });
+      window.location.href = response.data.paypalLink;
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <section id="pricing" className="font-raleway bg-[#F5E6D3] py-16">
       {/* Section Title */}
@@ -50,12 +64,11 @@ const Pricing = () => {
             </li>
           </ul>
           <div className="text-center mt-16 pb-10">
-            <a
-              href="#"
+            <button
               className="px-10 py-3 bg-[#F5E6D3] text-[#8B8175] font-medium rounded-lg hover:bg-mainColor hover:text-white transition duration-300"
             >
               Start Free
-            </a>
+            </button>
           </div>
         </div>
         {/* Pro Tier */}
@@ -93,12 +106,12 @@ const Pricing = () => {
             </li>
           </ul>
           <div className="text-center mt-8 pb-10">
-            <a
-              href="#"
+            <button
+              onClick={handlePayment}
               className="px-10 py-3 bg-[#030303] text-white font-medium rounded-lg hover:bg-[#8B4513] transition duration-300"
             >
               Go Pro
-            </a>
+            </button>
           </div>
         </div>
         {/* Enterprise Tier */}

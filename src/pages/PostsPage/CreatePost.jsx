@@ -1,36 +1,34 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { FaImage, FaVideo, FaStar, FaCheckCircle } from "react-icons/fa"; // Import FaCheckCircle for checkmark
+import { FaImage, FaVideo, FaStar, FaCheckCircle } from "react-icons/fa";
 
 const apiBaseUrl = "http://localhost:5000";
 
 const CreatePostPage = () => {
   const [title, setTitle] = useState("");
-  const [text, settext] = useState("");
+  const [text, setText] = useState("");
   const [businessName, setBusinessName] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [imagePublicId, setImagePublicId] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
-  const [videoPublicId, setVideoPublicId] = useState("");
-  const [rating, setRating] = useState(0); // State for rating
-  const [imageUploaded, setImageUploaded] = useState(false); // State for image upload success
-  const [videoUploaded, setVideoUploaded] = useState(false); // State for video upload success
-  const [businessNames, setBusinessNames] = useState([]); // State to store business names
+  const [mediaUrl, setMediaUrl] = useState(""); // Single state for media URL (image or video)
+  const [mediaPublicId, setMediaPublicId] = useState(""); // Single state for media public ID
+  const [mediaType, setMediaType] = useState(null); // Track whether the media is an image or video
+  const [rating, setRating] = useState(0);
+  const [mediaUploaded, setMediaUploaded] = useState(false); // State for media upload success
+  const [businessNames, setBusinessNames] = useState([]);
 
   // Fetch business names from the backend
   useEffect(() => {
     const fetchBusinessNames = async () => {
       try {
-        const response = await axios.get(`${apiBaseUrl}/businessOwner/business-names`); // Replace with your backend endpoint
-        console.log(response.data.businessNames);
-        setBusinessNames(response.data.businessNames); // Store the fetched business names in state
+        const response = await axios.get(`${apiBaseUrl}/businessOwner/business-names`);
+        console.log(response);
+        setBusinessNames(response.data.businessNames);
       } catch (error) {
         console.error("Error fetching business names:", error);
       }
     };
 
     fetchBusinessNames();
-  }, []); // Run only once when the component mounts
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,11 +39,10 @@ const CreatePostPage = () => {
         title,
         text,
         businessName,
-        imageUrl,
-        imagePublicId,
-        videoUrl,
-        videoPublicId,
-        rating, // Include the rating in the post data
+        mediaUrl,
+        mediaPublicId,
+        mediaType, // Include the media type (image or video)
+        rating,
       };
 
       // Send the post data to your backend API
@@ -55,15 +52,13 @@ const CreatePostPage = () => {
         alert("Post created successfully!");
         // Reset the form
         setTitle("");
-        settext("");
+        setText("");
         setBusinessName("");
-        setImageUrl("");
-        setImagePublicId("");
-        setVideoUrl("");
-        setVideoPublicId("");
-        setRating(0); // Reset the rating
-        setImageUploaded(false); // Reset image upload state
-        setVideoUploaded(false); // Reset video upload state
+        setMediaUrl("");
+        setMediaPublicId("");
+        setMediaType(null);
+        setRating(0);
+        setMediaUploaded(false);
       } else {
         console.error("Failed to create post:", response.statusText);
         alert("Failed to create post. Please try again.");
@@ -74,7 +69,7 @@ const CreatePostPage = () => {
     }
   };
 
-  const handleImageUpload = async (event) => {
+  const handleMediaUpload = async (event, type) => {
     event.preventDefault();
     const file = event.target.files[0]; // Access the first file in the FileList
     if (!file) return;
@@ -84,54 +79,27 @@ const CreatePostPage = () => {
     data.append("upload_preset", "original");
     data.append("cloud_name", "dqmp5l622");
 
-    try {
-      const imageResponse = await fetch(
-        "https://api.cloudinary.com/v1_1/dqmp5l622/image/upload",
-        {
-          method: "POST",
-          body: data,
-        }
-      );
-
-      const uploadImage = await imageResponse.json();
-      console.log("Image URL:", uploadImage.url);
-      console.log("Image Public_id:", uploadImage.public_id);
-      setImageUrl(uploadImage.url); // Store the image URL in the state
-      setImagePublicId(uploadImage.public_id);
-      setImageUploaded(true);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
-  };
-
-  const handleVideoUpload = async (event) => {
-    event.preventDefault();
-    const file = event.target.files[0]; // Access the first file in the FileList
-    if (!file) return;
-
-    const data = new FormData();
-    data.append("file", file);
-    data.append("upload_preset", "original");
-    data.append("cloud_name", "dqmp5l622");
-    data.append("chunk_size", 6000000);
+    // Set the endpoint based on the media type
+    const endpoint =
+      type === "image"
+        ? "https://api.cloudinary.com/v1_1/dqmp5l622/image/upload"
+        : "https://api.cloudinary.com/v1_1/dqmp5l622/video/upload";
 
     try {
-      const videoResponse = await fetch(
-        "https://api.cloudinary.com/v1_1/dqmp5l622/video/upload",
-        {
-          method: "POST",
-          body: data,
-        }
-      );
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: data,
+      });
 
-      const uploadVideo = await videoResponse.json();
-      console.log("Video URL:", uploadVideo.url);
-      console.log("Video Public_id:", uploadVideo.public_id);
-      setVideoUrl(uploadVideo.url); // Store the video URL in the state
-      setVideoPublicId(uploadVideo.public_id);
-      setVideoUploaded(true);
+      const uploadData = await response.json();
+      console.log("Media URL:", uploadData.url);
+      console.log("Media Public_id:", uploadData.public_id);
+      setMediaUrl(uploadData.url); // Store the media URL in the state
+      setMediaPublicId(uploadData.public_id);
+      setMediaType(type); // Set the media type (image or video)
+      setMediaUploaded(true);
     } catch (error) {
-      console.error("Error uploading video:", error);
+      console.error("Error uploading media:", error);
     }
   };
 
@@ -162,7 +130,7 @@ const CreatePostPage = () => {
             rows="4"
             placeholder="What's on your mind?"
             value={text}
-            onChange={(e) => settext(e.target.value)}
+            onChange={(e) => setText(e.target.value)}
             required
           ></textarea>
 
@@ -172,8 +140,8 @@ const CreatePostPage = () => {
               Select one Business Name
             </label>
             <div className="space-y-2">
-              {businessNames.map((business) => (
-                <label key={business.id} className="flex items-center">
+              {businessNames.map((business,idx) => (
+                <label key={idx} className="flex items-center">
                   <input
                     type="radio"
                     name="single-select"
@@ -203,30 +171,35 @@ const CreatePostPage = () => {
             <span className="text-red-700 ml-2">{rating} / 5</span>
           </div>
 
-          {/* Image and Video Upload */}
+          {/* Media Upload (Image or Video) */}
           <div className="flex items-center space-x-4 mt-4">
             <label className="flex items-center cursor-pointer">
               <input
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={handleImageUpload}
-                required
+                onChange={(e) => handleMediaUpload(e, "image")}
+                disabled={mediaType === "video"} // Disable if video is already selected
               />
               <FaImage className="text-red-500 text-2xl" />
               <span className="ml-2 text-red-700">Image</span>
-              {imageUploaded && <FaCheckCircle className="text-green-500 ml-2" />}
+              {mediaUploaded && mediaType === "image" && (
+                <FaCheckCircle className="text-green-500 ml-2" />
+              )}
             </label>
             <label className="flex items-center cursor-pointer">
               <input
                 type="file"
                 accept="video/*"
                 className="hidden"
-                onChange={handleVideoUpload}
+                onChange={(e) => handleMediaUpload(e, "video")}
+                disabled={mediaType === "image"} // Disable if image is already selected
               />
               <FaVideo className="text-red-500 text-2xl" />
               <span className="ml-2 text-red-700">Video</span>
-              {videoUploaded && <FaCheckCircle className="text-green-500 ml-2" />}
+              {mediaUploaded && mediaType === "video" && (
+                <FaCheckCircle className="text-green-500 ml-2" />
+              )}
             </label>
           </div>
 

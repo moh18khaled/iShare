@@ -2,14 +2,15 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
+import Cookies from 'js-cookie'; // Import js-cookie
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const [emailError,setEmailError] =  useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [accept, setAccept] = useState(false);
     const [errorHandler, setErrorHandler] = useState("");
-    const [status, setStatus] = useState(0);
     const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -31,16 +32,26 @@ const LoginPage = () => {
                 const response = await axios.post(`${apiBaseUrl}/user/login`, {
                     email: email,
                     password: password,
-                }).then((res) => console.log(res));
+                }, {
+                    withCredentials: true, // Include cookies in the request
+                });
+                console.log(response);
 
                 setStatus(200);
-                window.localStorage.setItem("email", email); // Corrected localStorage usage
+
+                // Store the user's email in a cookie
+                Cookies.set("userEmail", email, { expires: 7 }); // Expires in 7 days
+
+                // Redirect to the home page
                 navigate("/");
             }
         } catch (error) {
             console.log(error);
-            setStatus(error.response.status);
+            if(error.response.status===400){
+                setEmailError(true);
             setErrorHandler(error.response.data.error.message);
+            }
+            
         }
     };
 
@@ -49,15 +60,11 @@ const LoginPage = () => {
             <div className="bg-white">
                 <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-full lg:py-0">
                     <Link to="/" className="flex items-center mb-6 mt-6 text-3xl font-bold sm:text-4xl text-[#8B4513]">
-                        iShare
+                        weinfluence
                     </Link>
                     <div className="w-full bg-[#E8D8C5] rounded-lg shadow-md sm:max-w-md xl:p-0">
                         <div className="p-6 space-y-4 md:space-y-6">
-                            {accept && status === 400 ? (
-                                <p className="text-red-500">*{errorHandler}</p>
-                            ) : (
-                                ""
-                            )}
+                            
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-[#8B4513] md:text-2xl">
                                 Login
                             </h1>
@@ -126,6 +133,11 @@ const LoginPage = () => {
                                 >
                                     Login
                                 </button>
+                                {accept && emailError ? (
+                                <p className="text-red-500">*{errorHandler}</p>
+                            ) : (
+                                ""
+                            )}
                                 <p className="text-sm font-light text-[#030303]">
                                     Don't have an account?{' '}
                                     <Link
