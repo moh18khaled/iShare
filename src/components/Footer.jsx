@@ -10,7 +10,7 @@ const Footer = () => {
           {/* Footer About */}
           <div>
             <a href="index.html" className="text-mainColor text-2xl font-bold">
-              iShare.
+            weinfluence.
             </a>
             <div className="mt-4">
               <p>Degla Square, Maadi, Cairo Governorate</p>
@@ -118,7 +118,7 @@ const Footer = () => {
       {/* Footer Bottom */}
       <div className="mt-12 text-center text-gray-500">
         <p>
-          Copyright <strong className="text-mainColor">iShare.</strong> All Rights Reserved
+          Copyright <strong className="text-mainColor">weinfluence.</strong> All Rights Reserved
         </p>
       </div>
     </footer>

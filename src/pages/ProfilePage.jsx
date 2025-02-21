@@ -19,6 +19,7 @@ const ProfilePage = () => {
   const navigate = useNavigate();
 
   // Check if the current route is `/profile/update`
+  
   const isUpdatePage = location.pathname.includes("/profile/update");
 
   const [userAccount, setUserAccount] = useState({
@@ -32,19 +33,22 @@ const ProfilePage = () => {
   useEffect(() => {
     axios.get(`${apiBaseUrl}/user/account`)
       .then(res => {
-        console.log(res);
+        console.log(res.data);
         setUserAccount({
           id: res.data.id,
           username: res.data.username,
           email: res.data.email,
+          profilePicture: res.data.profilePicture,
         })
       });
+
   }, [runUseEffect])
+      console.log(userAccount);
 
   // function to delete the account
   const deleteAccount = async(id) => {
     try {
-      const res = await axios.delete(`http://localhost:1337/api/users/${id}`);
+      const res = await axios.delete(`${apiBaseUrl}/users/${id}`);
       if(res.status === 200) {
         setRunUseEffect((prev) => prev + 1);
       }

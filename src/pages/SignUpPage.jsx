@@ -1,21 +1,27 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignUpPage = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [age, setAge] = useState(0);
-  const [interests, setInterests] = useState([]); // State for selected interests
+  const [availableInterests, setAvailableInterests] = useState([]); // All available interests
+  const [selectedInterests, setSelectedInterests] = useState([]); // User-selected interests
   const [walletNumber, setWalletNumber] = useState(""); // State for wallet number
-  const [walletTypes, setWalletTypes] = useState([]); // State for selected wallet types
-  const [hearAboutUs,setHearAboutUs] = useState("");
+  const [availableWalletTypes, setAvailableWalletTypes] = useState([]); // All available wallet types
+  const [selectedWalletTypes, setSelectedWalletTypes] = useState([]); // User-selected wallet types
+  const [availableHearAboutUs, setAvailableHearAboutUs] = useState([]); // All available "How did you hear about us?" options
+  const [selectedHearAboutUs, setSelectedHearAboutUs] = useState(""); // User-selected "How did you hear about us?" option
   const [accept, setAccept] = useState(false);
-  const [errorHandler, setErrorHandler] = useState("");
-  const [status, setStatus] = useState(0);
+  const [errorHandler, setErrorHandler] = useState(""); // State for single error message
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to toggle confirm password visibility
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -23,23 +29,23 @@ const SignUpPage = () => {
   // Password validation regex
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-  // List of wallet types
-  const walletOptions = [
-    "Vodafone Cash",
-    "Etisalat Cash",
-    "Orange Cash",
-    "WE Pay",
-    "Meeza",
-    "Fawry Wallet",
-    "BM Wallet",
-    "CIB Smart Wallet",
-    "Ahly Phone Cash",
-    "QNB Mobile Wallet",
-    "Alex Bank Mobile Wallet",
-    "ADIB Wallet",
-    "ValU",
-  ];
+  // Fetch signup data (interests, wallet types, etc.) from the backend
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${apiBaseUrl}/user/signup-data`);
+        setAvailableInterests(response.data.categories); // Set available interests
+        setAvailableHearAboutUs(response.data.heardAboutUs); // Set "How did you hear about us?" options
+        setAvailableWalletTypes(response.data.walletTypes); // Set available wallet types
+      } catch (error) {
+        console.error("Error fetching signup data:", error);
+      }
+    };
 
+    fetchData();
+  }, [apiBaseUrl]);
+
+  // Handle form submission
   const submitRules = async (event) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     let flag = true;
@@ -53,8 +59,9 @@ const SignUpPage = () => {
       !passwordRegex.test(password) || // Validate password using regex
       confirmPassword !== password ||
       age === 0 ||
-      interests.length === 0 || // Ensure at least one interest is selected
-      (walletNumber.length > 0 && walletTypes.length === 0) // Ensure at least one wallet type is selected if wallet number is provided
+      selectedInterests.length === 0 || // Ensure at least one interest is selected
+      (walletNumber.length > 0 && selectedWalletTypes.length === 0)||
+      (walletNumber.length === 0 && selectedWalletTypes.length > 0) // Ensure at least one wallet type is selected if wallet number is provided
     ) {
       flag = false;
     }
@@ -67,34 +74,51 @@ const SignUpPage = () => {
           password: password,
           password_confirmation: confirmPassword,
           age: age,
-          interests: interests,
-          heardAboutUs:hearAboutUs,
-          walletNumber: walletNumber, // Include wallet number in the request
-          walletTypes: walletTypes, // Include selected wallet types in the request
+          interests: selectedInterests, // Use selectedInterests
+          heardAboutUs: selectedHearAboutUs, // Use selectedHearAboutUs
+          walletNumber: walletNumber,
+          walletTypes: selectedWalletTypes, // Use selectedWalletTypes
         });
         console.log(response);
 
-        setStatus(200);
+        // Show success toast
+        toast.success("Signup successful! Redirecting...", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
 
-        window.localStorage.setItem("email", email);
-        window.location.pathname = "/";
+        // Store user email in a cookie
+        Cookies.set("userEmail", email, { expires: 7 });
+
+        // Redirect after a delay
+        setTimeout(() => {
+          window.location.pathname = "/";
+        }, 3000);
       }
     } catch (error) {
-      console.log(error);
-      setStatus(error.response.status);
-      setErrorHandler(error.response.data.error.message);
+      console.log(error.response);
+
+      if (error.response.status === 409) {
+        setEmailError(true);
+        setErrorHandler(error.response.data.error);
+      }
     }
   };
 
   // Handle wallet type selection
   const handleWalletTypeChange = (e) => {
     const value = e.target.value;
-    if (walletTypes.includes(value)) {
+    if (selectedWalletTypes.includes(value)) {
       // Remove the wallet type if already selected
-      setWalletTypes(walletTypes.filter((type) => type !== value));
+      setSelectedWalletTypes(selectedWalletTypes.filter((type) => type !== value));
     } else {
       // Add the wallet type if not selected
-      setWalletTypes([...walletTypes, value]);
+      setSelectedWalletTypes([...selectedWalletTypes, value]);
     }
   };
 
@@ -106,11 +130,11 @@ const SignUpPage = () => {
             to="/"
             className="flex items-center mb-6 mt-6 text-3xl font-bold sm:text-4xl text-[#8B4513]"
           >
-            iShare
+            weinfluence
           </Link>
           <div className="w-full bg-[#E8D8C5] rounded-lg shadow-md sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6">
-              {accept && status === 400 ? (
+              {accept && emailError ? (
                 <p className="text-red-500">*{errorHandler}</p>
               ) : (
                 ""
@@ -133,7 +157,7 @@ const SignUpPage = () => {
                     name="username"
                     id="username"
                     onChange={(e) => setUserName(e.target.value)}
-                    className="bg-gray-50 border border-gray-300 blur-0 focus:outline-none focus:border-[#8B4513] text-gray-900 text-sm rounded-lg  block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 blur-0 focus:outline-none focus:border-[#8B4513] text-gray-900 text-sm rounded-lg block w-full p-2.5"
                     required=""
                   />
                   {userName.length === 0 && accept && (
@@ -163,9 +187,7 @@ const SignUpPage = () => {
                   )}
                   {accept &&
                     email.length > 0 &&
-                    !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-                      email
-                    ) && (
+                    !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email) && (
                       <p className="text-red-500 mt-1">Email is not valid</p>
                     )}
                 </div>
@@ -201,7 +223,7 @@ const SignUpPage = () => {
                     <p className="text-red-500 mt-1">Password is required</p>
                   ) : !passwordRegex.test(password) && accept ? (
                     <p className="text-red-500 mt-1">
-                      Password must be at least 8 characters contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+                      Password must be at least 8 characters, contain at least one uppercase letter, one lowercase letter, one number, and one special character.
                     </p>
                   ) : null}
                 </div>
@@ -278,20 +300,20 @@ const SignUpPage = () => {
                     Select your interests
                   </label>
                   <div className="space-y-2">
-                    {["option1", "option2", "option3", "option4"].map((option) => (
+                    {availableInterests.map((option) => (
                       <label key={option} className="flex items-center">
                         <input
                           type="checkbox"
                           value={option}
-                          checked={interests.includes(option)}
+                          checked={selectedInterests.includes(option)} // Track selected interests
                           onChange={(e) => {
                             const value = e.target.value;
-                            if (interests.includes(value)) {
+                            if (selectedInterests.includes(value)) {
                               // Remove the option if already selected
-                              setInterests(interests.filter((item) => item !== value));
+                              setSelectedInterests(selectedInterests.filter((item) => item !== value));
                             } else {
                               // Add the option if not selected
-                              setInterests([...interests, value]);
+                              setSelectedInterests([...selectedInterests, value]);
                             }
                           }}
                           className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300 rounded"
@@ -300,7 +322,7 @@ const SignUpPage = () => {
                       </label>
                     ))}
                   </div>
-                  {accept && interests.length === 0 && (
+                  {accept && selectedInterests.length === 0 && (
                     <p className="text-red-500 mt-1">Please select at least one interest</p>
                   )}
                 </div>
@@ -330,12 +352,12 @@ const SignUpPage = () => {
                       Select Wallet Type(s)
                     </label>
                     <div className="space-y-2">
-                      {walletOptions.map((option) => (
+                      {availableWalletTypes.map((option) => (
                         <label key={option} className="flex items-center">
                           <input
                             type="checkbox"
                             value={option}
-                            checked={walletTypes.includes(option)}
+                            checked={selectedWalletTypes.includes(option)} // Track selected wallet types
                             onChange={handleWalletTypeChange}
                             className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300 rounded"
                           />
@@ -343,32 +365,37 @@ const SignUpPage = () => {
                         </label>
                       ))}
                     </div>
-                    {accept && walletNumber.length > 0 && walletTypes.length === 0 && (
+                    {accept && walletNumber.length > 0 && selectedWalletTypes.length === 0 && (
                       <p className="text-red-500 mt-1">Please select at least one wallet type</p>
                     )}
                   </div>
                 )}
-{/* Radio Buttons for from where did you hear about us */}
-<div>
-  <label className="block mb-2 text-sm font-medium text-[#8B4513]">
-    From wher did you hear about us ? 
-  </label>
-  <div className="space-y-2">
-    {["option1", "option2", "option3", "option4" , "other"].map((option) => (
-      <label key={option} className="flex items-center">
-        <input
-          type="radio"
-          name="single-select"
-          value={option}
-          checked={hearAboutUs === option}
-          onChange={(e) => setHearAboutUs(e.target.value)}
-          className="h-4 w-4 text-[#8B4513] focus: focus:ring-[#8B4513] border-gray-300"
-        />
-        <span className="ml-2 text-sm text-[#8B4513]">{option}</span>
-      </label>
-    ))}
-  </div>
-</div>
+
+                {/* Radio Buttons for "From where did you hear about us?" */}
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-[#8B4513]">
+                    From where did you hear about us?
+                  </label>
+                  <div className="space-y-2">
+                    {availableHearAboutUs.map((option) => (
+                      <label key={option} className="flex items-center">
+                        <input
+                          type="radio"
+                          name="hearAboutUs"
+                          value={option}
+                          checked={selectedHearAboutUs === option} // Track selected option
+                          onChange={(e) => setSelectedHearAboutUs(e.target.value)} // Update selected option
+                          className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300"
+                        />
+                        <span className="ml-2 text-sm text-[#8B4513]">{option}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {accept && selectedHearAboutUs.length === 0 && (
+                      <p className="text-red-500 mt-1">Please select one option </p>
+                    )}
+                </div>
+
                 {/* Submit Button */}
                 <button
                   type="submit"

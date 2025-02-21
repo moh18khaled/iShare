@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 
@@ -10,6 +10,9 @@ const BusinesssOwnerRegisterPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [age, setAge] = useState(0);
   const [businessName, setBusinessName] = useState("");
+  const [availableCategories, setAvailableCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [customCategory, setCustomCategory] = useState("");
   const [businessType, setBusinessType] = useState("");
   const [addresscountry, setAddresscountry] = useState("");
   const [addressCity, setAddressCity] = useState("");
@@ -23,8 +26,24 @@ const BusinesssOwnerRegisterPage = () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   // Password validation regex
+  
+
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${apiBaseUrl}/businessOwner/signup-data`);
+        setAvailableCategories(response.data.categories);
+      } catch (error) {
+        console.error("Error fetching signup data:", error);
+      }
+    };
+
+    fetchData();
+  }, [apiBaseUrl]);
+
+  
   const submitRules = async (event) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     let flag = true;
@@ -38,7 +57,7 @@ const BusinesssOwnerRegisterPage = () => {
       confirmPassword !== password ||
       age === 0 ||
       businessName.length === 0 ||
-      businessType.length === 0 ||
+      selectedCategories.length === 0 ||
       addresscountry.length === 0 ||
       addressCity.length === 0 ||
       phoneNumber.length === 0
@@ -49,14 +68,14 @@ const BusinesssOwnerRegisterPage = () => {
     try {
       if (flag) {
         const response = await axios
-          .post(`${apiBaseUrl}/businessOwner/login`, {
+          .post(`${apiBaseUrl}/businessOwner/signup`, {
             username: userName,
             email: email,
             password: password,
             password_confirmation: confirmPassword,
             age: age,
             businessName: businessName,
-            businessType: businessType,
+            categories: selectedCategories,
             address: {
               country: addresscountry,
               city: addressCity,
@@ -75,6 +94,21 @@ const BusinesssOwnerRegisterPage = () => {
       console.log(error);
       setStatus(error.response.status);
       setErrorHandler(error.response.data.error.message);
+    }
+  };
+  const handleCategoryChange = (value) => {
+    if (selectedCategories.includes(value)) {
+      setSelectedCategories(selectedCategories.filter((item) => item !== value));
+    } else {
+      setSelectedCategories([...selectedCategories, value]);
+    }
+  };
+
+  const handleCustomCategoryAdd = () => {
+    if (customCategory.trim() && !availableCategories.includes(customCategory)) {
+      setAvailableCategories([...availableCategories, customCategory]); // Add to available categories
+      setSelectedCategories([...selectedCategories, customCategory]); // Select it by default
+      setCustomCategory(""); // Clear input after adding
     }
   };
 
@@ -281,29 +315,45 @@ const BusinesssOwnerRegisterPage = () => {
 
                 {/* Business Type Field */}
                 <div>
-                  <label
-                    htmlFor="business-type"
-                    className="block mb-2 text-sm font-medium text-[#8B4513]"
-                  >
-                    Business Type
-                  </label>
-                  <input
-                    type="text"
-                    value={businessType}
-                    name="business-type"
-                    id="business-type"
-                    onChange={(e) => {
-                      setBusinessType(e.target.value);
-                    }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
-                    required=""
-                  />
-                  {businessType.length === 0 && accept ? (
-                    <p className="text-red-500 mt-1">
-                      BusinessType is Required
-                    </p>
-                  ) : null}
-                </div>
+      <label className="block mb-2 text-sm font-medium text-[#8B4513]">
+        Select Business Categories
+      </label>
+      <div className="space-y-2">
+        {availableCategories.map((option) => (
+          <label key={option} className="flex items-center">
+            <input
+              type="checkbox"
+              value={option}
+              checked={selectedCategories.includes(option)}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300 rounded"
+            />
+            <span className="ml-2 text-sm text-[#8B4513]">{option}</span>
+          </label>
+        ))}
+      </div>
+
+      {/* Custom category input */}
+      <div className="mt-4">
+        <input
+          type="text"
+          value={customCategory}
+          onChange={(e) => setCustomCategory(e.target.value)}
+          placeholder="Enter custom category"
+          className="w-full p-2 border rounded-md text-sm focus:ring-[#8B4513] focus:border-[#8B4513]"
+        />
+        <button
+          onClick={handleCustomCategoryAdd}
+          className="mt-2 bg-[#8B4513] text-white px-4 py-1 rounded-md text-sm"
+        >
+          Add Category
+        </button>
+      </div>
+
+      {accept && selectedCategories.length === 0 && (
+        <p className="text-red-500 mt-1">Please select at least one category</p>
+      )}
+    </div>
 
                 {/* Address (Country) Field */}
                 <div>
