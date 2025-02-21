@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import Cookies from "js-cookie";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Swal from 'sweetalert2'
 
 const SignUpPage = () => {
   const [userName, setUserName] = useState("");
@@ -81,14 +80,14 @@ const SignUpPage = () => {
         console.log(response);
 
         // Show success toast
-        toast.success("Signup successful! Redirecting...", {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
+        Swal.fire({
+          title: "Account Created Successfully",
+          icon: "success",
           draggable: true,
-          progress: undefined,
+        }).then((result)=>{
+          if(result.isConfirmed){
+              navigate("/");
+          }
         });
 
         // Store user email in a cookie
@@ -100,6 +99,12 @@ const SignUpPage = () => {
         }, 3000);
       }
     } catch (error) {
+      console.log(error.response);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to Create Account",
+        text: "Something went wrong!",
+      });
       if (error.response.status === 409) {
         setEmailError(true);
         setErrorHandler(error.response.data.error);

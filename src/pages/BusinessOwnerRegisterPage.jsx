@@ -1,11 +1,14 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import { FaEye, FaEyeSlash, FaPlus } from "react-icons/fa"; // Import icons
+import Cookies from 'js-cookie';
+import Swal from 'sweetalert2';
 
 const BusinesssOwnerRegisterPage = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [age, setAge] = useState(0);
@@ -17,13 +20,51 @@ const BusinesssOwnerRegisterPage = () => {
   const [description, setDescription] = useState("");
   const [accept, setAccept] = useState(false);
   const [errorHandler, setErrorHandler] = useState("");
-  const [status, setStatus] = useState(0);
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to toggle confirm password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [categories, setCategories] = useState([]); // Selected categories
+  const [otherCategory, setOtherCategory] = useState(""); // Input for "Other" category
+  const [customCategories, setCustomCategories] = useState([]); // List of custom categories
+  const [showOtherInput, setShowOtherInput] = useState(false); // Toggle "Other" input field
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+  // Predefined categories
+  const predefinedCategories = [
+    "Restaurant",
+    "Retail",
+    "Technology",
+    "Healthcare",
+    "Education",
+    "Other",
+  ];
 
   // Password validation regex
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  // Handle category selection
+  const handleCategoryChange = (e) => {
+    const { value, checked } = e.target;
+    if (value === "Other") {
+      setShowOtherInput(checked); // Show/hide "Other" input field
+      if (!checked) {
+        setOtherCategory(""); // Clear "Other" input if unchecked
+        setCustomCategories([]); // Clear custom categories
+      }
+    }
+    if (checked) {
+      setCategories([...categories, value]); // Add category to selected list
+    } else {
+      setCategories(categories.filter((cat) => cat !== value)); // Remove category from selected list
+    }
+  };
+
+  // Handle adding custom categories
+  const handleAddCustomCategory = () => {
+    if (otherCategory.trim()) {
+      setCustomCategories([...customCategories, otherCategory.trim()]); // Add custom category
+      setOtherCategory(""); // Clear input field
+    }
+  };
 
   const submitRules = async (event) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -34,47 +75,62 @@ const BusinesssOwnerRegisterPage = () => {
     if (
       userName.length === 0 ||
       !emailPattern.test(email) ||
-      !passwordRegex.test(password) || // Validate password using regex
+      !passwordRegex.test(password) ||
       confirmPassword !== password ||
       age === 0 ||
       businessName.length === 0 ||
       businessType.length === 0 ||
       addresscountry.length === 0 ||
       addressCity.length === 0 ||
-      phoneNumber.length === 0
+      phoneNumber.length === 0 ||
+      categories.length === 0 // Ensure at least one category is selected
     ) {
       flag = false;
     }
 
     try {
       if (flag) {
-        const response = await axios
-          .post(`${apiBaseUrl}/businessOwner/login`, {
-            username: userName,
-            email: email,
-            password: password,
-            password_confirmation: confirmPassword,
-            age: age,
-            businessName: businessName,
-            businessType: businessType,
-            address: {
-              country: addresscountry,
-              city: addressCity,
-            },
-            phoneNumber: phoneNumber,
-            description: description,
-          })
-          .then((res) => console.log(res));
+        const response = await axios.post(`${apiBaseUrl}/businessOwner/login`, {
+          username: userName,
+          email: email,
+          password: password,
+          password_confirmation: confirmPassword,
+          age: age,
+          businessName: businessName,
+          businessType: businessType,
+          address: {
+            country: addresscountry,
+            city: addressCity,
+          },
+          phoneNumber: phoneNumber,
+          description: description,
+          categories: [...categories, ...customCategories], // Include both predefined and custom categories
+        });
 
-        setStatus(200);
+        // Store user email in a cookie
+        Cookies.set("userEmail", email, { expires: 7 });
 
-        window.localStorage.setItem("email", email);
-        window.location.pathname = "/";
+        Swal.fire({
+          title: "Business Owner Account Created Successfully",
+          icon: "success",
+          draggable: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.pathname = "/";
+          }
+        });
       }
     } catch (error) {
       console.log(error);
-      setStatus(error.response.status);
-      setErrorHandler(error.response.data.error.message);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to Create Business Owner Account",
+        text: "Something went wrong!",
+      });
+      if (error.response.status === 409) {
+        setEmailError(true);
+        setErrorHandler(error.response.data.error);
+      }
     }
   };
 
@@ -90,7 +146,7 @@ const BusinesssOwnerRegisterPage = () => {
           </Link>
           <div className="w-full bg-[#E8D8C5] rounded-lg shadow-md sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6">
-              {accept && status === 400 ? (
+              {accept && emailError ? (
                 <p className="text-red-500">*{errorHandler}</p>
               ) : (
                 ""
@@ -160,21 +216,21 @@ const BusinesssOwnerRegisterPage = () => {
                   </label>
                   <div className="relative">
                     <input
-                      type={showPassword ? "text" : "password"} // Toggle input type
+                      type={showPassword ? "text" : "password"}
                       value={password}
                       name="password"
                       id="password"
                       onChange={(e) => setPassword(e.target.value)}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5 pr-10" // Add padding for icon
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5 pr-10"
                       required=""
                     />
                     <button
                       type="button"
                       className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 focus:outline-none"
-                      onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
-                      style={{ top: "50%", transform: "translateY(-50%)" }} // Ensure icon stays centered vertically
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{ top: "50%", transform: "translateY(-50%)" }}
                     >
-                      {showPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle eye icon */}
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
                   {password.length === 0 && accept ? (
@@ -183,8 +239,7 @@ const BusinesssOwnerRegisterPage = () => {
                     <p className="text-red-500 mt-1">
                       Password must be at least 8 characters contain at least one uppercase letter, one lowercase letter, one number, and one special character.
                     </p>
-                  ) 
-                : null}
+                  ) : null}
                 </div>
 
                 {/* Confirm Password Field */}
@@ -197,21 +252,21 @@ const BusinesssOwnerRegisterPage = () => {
                   </label>
                   <div className="relative">
                     <input
-                      type={showConfirmPassword ? "text" : "password"} // Toggle input type
+                      type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       name="confirm-password"
                       id="confirm-password"
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5 pr-10" // Add padding for icon
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5 pr-10"
                       required=""
                     />
                     <button
                       type="button"
                       className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 focus:outline-none"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle confirm password visibility
-                      style={{ top: "50%", transform: "translateY(-50%)" }} // Ensure icon stays centered vertically
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      style={{ top: "50%", transform: "translateY(-50%)" }}
                     >
-                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle eye icon */}
+                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
                   {confirmPassword.length === 0 && accept ? (
@@ -237,9 +292,8 @@ const BusinesssOwnerRegisterPage = () => {
                     name="age"
                     id="age"
                     onChange={(e) => {
-                      const value = parseInt(e.target.value, 10); // Convert input to number
+                      const value = parseInt(e.target.value, 10);
                       if (value >= 0 || e.target.value === "") {
-                        // Allow only non-negative values
                         setAge(e.target.value);
                       }
                     }}
@@ -402,6 +456,63 @@ const BusinesssOwnerRegisterPage = () => {
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
+                </div>
+
+                {/* Categories Field */}
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-[#8B4513]">
+                    Categories
+                  </label>
+                  {predefinedCategories.map((cat) => (
+                    <div key={cat} className="flex items-center mb-2">
+                      <input
+                        type="checkbox"
+                        id={cat}
+                        value={cat}
+                        checked={categories.includes(cat)}
+                        onChange={handleCategoryChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor={cat} className="text-sm text-gray-900">
+                        {cat}
+                      </label>
+                    </div>
+                  ))}
+                  {showOtherInput && (
+                    <div className="mt-2">
+                      <div className="flex items-center">
+                        <input
+                          type="text"
+                          value={otherCategory}
+                          onChange={(e) => setOtherCategory(e.target.value)}
+                          placeholder="Enter custom category"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleAddCustomCategory}
+                          className="ml-2 p-2 text-[#8B4513] hover:text-[#030303]"
+                        >
+                          <FaPlus />
+                        </button>
+                      </div>
+                      {customCategories.length > 0 && (
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-900">Custom Categories:</p>
+                          <ul className="list-disc list-inside">
+                            {customCategories.map((cat, index) => (
+                              <li key={index}>{cat}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {accept && categories.length === 0 && (
+                    <p className="text-red-500 mt-1">
+                      At least one category is required
+                    </p>
+                  )}
                 </div>
 
                 {/* Submit Button */}

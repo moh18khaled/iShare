@@ -12,6 +12,7 @@ import ViewPosts from "./pages/PostsPage/ViewPosts";
 import VerifyAccount from "./pages/VerifyAccount";
 import NotFound from "./pages/NotFound"; 
 import { UserProvider } from "./context/context";
+import UpdateProfilePage from "./pages/UpdateProfilePage";
 // import UpdateUser from "./pages/UpdateUser";
 
 const App = () => {
@@ -27,7 +28,7 @@ const App = () => {
         <Route path="/verify-account" element={<VerifyAccount />} />
         <Route path="/profile" element={<ProfilePage />}>
           {/* Nested route for UpdateUser */}
-          {/* <Route path="update" element={<UpdateUser />} /> */}
+          <Route path="update" element={<UpdateProfilePage />} />
         </Route>
         <Route path="/posts" element = {<PostsPage />} />
         <Route path="/posts/:id" element = {<ViewPosts />} />

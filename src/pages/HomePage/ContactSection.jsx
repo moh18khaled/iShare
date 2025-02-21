@@ -1,7 +1,48 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
+import Swal from 'sweetalert2'
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const ContactSection = () => {
+  const [confirmSendMessage,setConfirmSendMessage] = useState("");
+  const [formData,setFormData] = useState({
+    name : "",
+    email : "",
+    subject : "",
+    message : "",
+  });
+
+  const handleChange = (e)=>{
+    const {name,value} = e.target;
+    setFormData({
+      ...formData,
+      [name] : value,
+    });
+  };
+
+  const handleSubmit = async(e)=>{
+    e.preventDefault();
+    try {
+      const response =await axios.post(`${apiBaseUrl}/user/contact`,formData);
+      console.log(response);
+      setConfirmSendMessage(response.data.message);
+      setFormData({
+        name : "",
+        email : "",
+        subject : "",
+        message : "",
+      });
+      Swal.fire({
+        title: `${confirmSendMessage}`,
+        icon: "success",
+        draggable: true,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <section id="contact" className="py-16">
       {/* Section Title */}
@@ -47,11 +88,13 @@ const ContactSection = () => {
           className="bg-white shadow-lg rounded-lg"
          
         >
-          <form action="forms/contact.php" method="post" className="space-y-6 p-6">
+          <form onSubmit={handleSubmit} className="space-y-6 p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
                 name="name"
+                value={formData.name}
+                onChange={handleChange}
                 className="form-control border-2 border-[#CDCDCD] w-full p-3 rounded  placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-0 focus:ring-mainColor"
                 placeholder="Your Name"
                 required
@@ -59,6 +102,8 @@ const ContactSection = () => {
               <input
                 type="email"
                 name="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="form-control border-2 border-[#CDCDCD] w-full p-3 rounded  placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-0 focus:ring-mainColor"
                 placeholder="Your Email"
                 required
@@ -67,12 +112,16 @@ const ContactSection = () => {
             <input
               type="text"
               name="subject"
+              value={formData.subject}
+              onChange={handleChange}
               className="form-control border-2 border-[#CDCDCD] w-full p-3 rounded placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-0 focus:ring-mainColor"
               placeholder="Subject"
               required
             />
             <textarea
               name="message"
+              value={formData.message}
+              onChange={handleChange}
               rows="4" focus:border-0
               className="form-control border-2 border-[#CDCDCD] w-full p-3 rounded  placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-0 focus:ring-mainColor"
               placeholder="Message"
