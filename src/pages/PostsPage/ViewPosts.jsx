@@ -184,7 +184,7 @@ const ViewPosts = () => {
 {/* Post Author */}
      {/* Post Author */}
 <div 
-  className="flex items-center justify-between mb-6 cursor-pointer" 
+  className="flex items-center justify-between mb-6 mt-6 cursor-pointer" 
   onClick={() => businessOwner.isCurrentUser ? navigate("/profile") : navigate(`/profile/${businessOwner?._id}`)}
 > 
   <div className="flex items-center">
@@ -193,13 +193,13 @@ const ViewPosts = () => {
       alt={businessOwner?.username || "Unknown User"} 
       className="w-12 h-12 rounded-full object-cover"
     />
-    <p className="ml-4 text-lg font-semibold">{businessOwner?.username || "Unknown User"}</p>
+    <p className=" text-lg font-semibold">{businessOwner?.username || "Unknown User"}</p>
   </div>
 
   {!businessOwner?.isCurrentUser && (
     <button 
       onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)} 
-      className="bg-blue-500 text-white px-4 py-2 rounded"
+      className="bg-mainColor text-white pl-4 px-4 ml-4 py-2 rounded"
     >
       Follow
     </button>

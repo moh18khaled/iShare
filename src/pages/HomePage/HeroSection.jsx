@@ -1,12 +1,14 @@
 import React from 'react';
-
+import backgroundImage from "../../assets/images/re.jpg"
 const HeroSection = () => {
   
   return (
     <div>
-      <div id='hero' className="font-poppins min-h-screen text-white grid bg-cover bg-[url('https://i.postimg.cc/GtnRPG5k/hero-bg.jpg')]">
-        {/* Background Overlay */}
-        <div className="col-start-1 row-start-1 bg-gray-900 bg-opacity-70 w-full h-full"></div>
+<div 
+  id='hero' 
+  className="font-poppins min-h-screen text-white mt-16 grid bg-cover bg-no-repeat bg-center"
+  style={{ backgroundImage: `url(${backgroundImage})` }}
+>        {/* Background Overlay */}
         
         {/* Content */}
         <div className="col-start-1 row-start-1 mx-auto my-auto w-[80%]">

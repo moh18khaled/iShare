@@ -10,7 +10,7 @@ const Header = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-          <span className="self-center text-4xl text-mainColor font-bold whitespace-nowrap">weinfluence</span>
+          <span className="self-center text-3xl md:text-4xl text-mainColor font-bold whitespace-nowrap">weinfluence</span>
           </div>
 
           {/* Search Bar */}

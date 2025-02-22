@@ -35,7 +35,7 @@ const App = () => {
           <Route path="/profile/:id" element={<OtherUserProfilePage />} />
           <Route path="/profile/update" element={<UpdateProfilePage />} />
           <Route path="/otherUser/account/:id" element={<UserProfile />} /> {/* Fixed the issue */}
-          <Route path="/all/posts" element={<PostsPage />} />
+          <Route path="/posts" element={<PostsPage />} />
           <Route path="/post/:id" element={<ViewPosts />} />
           <Route path="/create-post" element={<CreatePostPage />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />

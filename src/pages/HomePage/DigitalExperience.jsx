@@ -65,11 +65,11 @@ const DigitalExperience = () => {
           </div>
 
           {/* Right Image */}
-          <div className="order-1 lg:order-2 text-center">
+          <div className="order-1 w-[100%] md:w-[80%] lg:order-2 text-center">
             <img
               src="https://i.postimg.cc/rw1r5NZ9/working-1.jpg"
               alt="iShare Platform Insights"
-              className="w-[80%] mx-auto h-[500px] rounded-xl shadow-2xl"
+              className="w-full mx-auto h-[500px] rounded-xl shadow-2xl"
             />
           </div>
         </div>
