@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import ExpandableBox from "../components/ExpandableBox";
 import ExpandableBoxForUsers from "../components/ExpandableBoxForUsers";
+import Swal from 'sweetalert2';
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -21,59 +22,100 @@ const ProfilePage = () => {
   // Check if the current route is `/profile/update`
   
   const isUpdatePage = location.pathname.includes("/profile/update");
+  const [handleError,setHandleError] = useState("");
 
   const [userAccount, setUserAccount] = useState({
     id: 0,
     username: "",
     email: "",
     profilePicture: "",
+    postsCount: 0,
+    likedPostsCount: 0,
+    followersCount: 0,
+    followingCount: 0,
+    role:"user",
+    mentionedPosts:[],
   });
+
   const [runUseEffect, setRunUseEffect] = useState(0);
 
   useEffect(() => {
-    axios.get(`${apiBaseUrl}/user/account`)
-      .then(res => {
-        console.log(res.data);
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${apiBaseUrl}/user/account`, {
+          withCredentials: true,
+        });
+        console.log(response);
         setUserAccount({
-          id: res.data.id,
-          username: res.data.username,
-          email: res.data.email,
-          profilePicture: res.data.profilePicture,
-        })
-      });
-
-  }, [runUseEffect])
-      console.log(userAccount);
-
-  // function to delete the account
-  const deleteAccount = async(id) => {
-    try {
-      const res = await axios.delete(`${apiBaseUrl}/users/${id}`);
-      if(res.status === 200) {
-        setRunUseEffect((prev) => prev + 1);
+          id: response.data.id,
+          username: response.data.data.username,
+          email: response.data.data.email,
+          profilePicture: response.data.data.profilePicture,
+          postsCount: response.data.data.postsCount,
+          likedPostsCount: response.data.data.likedPostsCount,
+          followersCount: response.data.data.followersCount,
+          followingCount: response.data.data.followingCount,
+          role:response.data.data.role,
+          mentionedPosts:response.data.data.mentionedPosts,
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
-    } catch {
-      console.log("none");
-    }
-  }
+    };
 
-  const [profileImage, setProfileImage] = useState(image);
+    fetchUserData();
+  }, [runUseEffect, apiBaseUrl]);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setProfileImage(reader.result);
-      reader.readAsDataURL(file);
+  const deleteAccount = async () => {
+    try {
+      const response = await axios.delete(`${apiBaseUrl}/user/account`, {
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Are you sure to delete your account?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your account has been deleted.",
+              icon: "success"
+            }).then(
+              navigate("/")
+            );
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      setHandleError(error.response.data.error);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to Delete Account",
+        text: `${handleError}`,
+      });
     }
   };
+  const handleCardClick = (postId) => {
+    navigate(`/post/${postId}`);
+  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-[100%] md:max-w-[50%] h-screen md:h-[90vh] bg-white rounded-lg shadow-lg p-6 relative">
+<div
+  className={`w-full max-w-[100%] md:max-w-[80%] min-h-[calc(100vh+${userAccount.mentionedPosts.length * 50}px)] bg-white rounded-lg shadow-lg p-6 relative`}
+>
         {!isUpdatePage && (
           <>
-            {/* Dashboard Button */}
+          {/* Dashboard Button (Visible only if role is "businessOwner") */}
+          {userAccount.role === "businessOwner" && (
             <div className="absolute top-4 right-4">
               <button
                 onClick={() => navigate('/user/dashboard')}
@@ -83,55 +125,46 @@ const ProfilePage = () => {
                 Dashboard
               </button>
             </div>
+          )}
 
             {/* Profile Image and User Info */}
             <div className="flex flex-col items-center text-center mt-8">
               <div className="relative">
                 <img
-                  className="w-24 h-24 rounded-full object-cover border-4 border-gray-300 cursor-pointer"
-                  src={profileImage}
+                  className="w-24 h-24 rounded-full object-cover border-4 border-gray-300"
+                  src={userAccount.profilePicture}
                   alt="Profile"
-                  onClick={() => document.getElementById("imageInput").click()}
-                />
-                <input
-                  id="imageInput"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageChange}
                 />
               </div>
               <h2 className="mt-3 font-semibold text-xl">{userAccount.username}</h2>
-              <p className="text-sm text-gray-600">{userAccount.email}</p>
             </div>
 
-            {/* User Stats */}
             <div className="mt-6 flex justify-between text-center">
   <ExpandableBox 
     icon={<FaNewspaper className="text-2xl text-gray-700 mx-auto" />} 
     title="My Posts" 
-    value="25" 
+    value={userAccount.postsCount}
     endpoint={`${apiBaseUrl}/user/account/posts`}
   />
 
   <ExpandableBox 
     icon={<FaThumbsUp className="text-2xl text-gray-700 mx-auto" />} 
     title="Posts I loved" 
-    value="120" 
+    value={userAccount.likedPostsCount}
     endpoint={`${apiBaseUrl}/user/account/posts/liked-posts`}
   />
 
   <ExpandableBoxForUsers 
     icon={<FaUserFriends className="text-2xl text-gray-700 mx-auto" />} 
     title="Followers" 
-    value="300" 
+    value={userAccount.followersCount}
     endpoint={`${apiBaseUrl}/user/account/followers`}
   />
 
   <ExpandableBoxForUsers 
     icon={<FaHeart className="text-2xl text-gray-700 mx-auto" />} 
     title="Following" 
-    value="150" 
+    value={userAccount.followingCount}
     endpoint={`${apiBaseUrl}/user/account/following`}
   />
 </div>
@@ -162,15 +195,12 @@ const ProfilePage = () => {
                 />
               </div>
               <div className="flex items-center gap-4">
-                <Link to={`${userAccount.id}`} className="flex-grow-[8]">
-                  <button
-                    type="button"
-                    className="w-full bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition"
-                  >
-                    Update
-                  </button>
+              <Link
+                to="/profile/update"
+                className="flex-grow-[8] bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition text-center"
+              >
+                Update Profile
                 </Link>
-                
                 <button
                   type="button"
                   className="flex-grow-[2] bg-mainColor text-white py-2 px-4 rounded-lg hover:bg-hoverColor transition"
@@ -180,13 +210,50 @@ const ProfilePage = () => {
                 </button>
               </div>
             </form>
+
           </>
         )}
 
-        {/* Nested Routes */}
-        <Outlet />
+
+
+
+     {userAccount.role === "businessOwner" && (
+     <div className="flex flex-col min-h-screen p-4">
+
+<h3 className="text-lg font-semibold text-center p-4 mb-4">Mentioned Posts</h3>
+
+      <div className="flex-grow flex justify-center flex-wrap gap-10">
+        {userAccount.mentionedPosts.map((post) => (
+          <div
+            key={post._id}
+            className="max-w-48 h-auto rounded-lg overflow-hidden shadow-lg bg-white relative group"
+            style={{ width: 'fit-content' }}
+            onClick={() => handleCardClick(post._id)}
+          >
+            {post.mediaType === 'video' ? (
+              <video className="w-fit h-full object-cover" controls>
+                <source src={post.video.url} type={`video/${post.video.url.split('.').pop()}`} />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <img className="w-fit h-full object-cover" src={post.image.url} alt={post.title} />
+            )}
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300">
+              <h2 className="text-white text-xl font-bold opacity-0 group-hover:opacity-100 transition-all duration-300">
+                {post.title}
+              </h2>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
+      )}
+      
+        <Outlet />
+      </div>
+      
+    </div>
+    
   );
 };
 

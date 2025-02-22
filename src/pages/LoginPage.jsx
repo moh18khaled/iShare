@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
 import Cookies from 'js-cookie'; // Import js-cookie
+import Swal from 'sweetalert2'
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -37,20 +38,32 @@ const LoginPage = () => {
                     withCredentials: true, // Include cookies in the request
                 });
                 console.log(response);
-
-                setStatus(200);
+                
 
                 // Store the user's email in a cookie
                 Cookies.set("userEmail", email, { expires: 7 }); // Expires in 7 days
 
                 // Redirect to the home page
-                navigate("/");
+                Swal.fire({
+                    title: "Logged In Successfully",
+                    icon: "success",
+                    draggable: true,
+                  }).then((result)=>{
+                    if(result.isConfirmed){
+                        navigate("/");
+                    }
+                  });
             }
         } catch (error) {
             console.log(error);
-            if(error.response.status===400){
+            Swal.fire({
+                icon: "error",
+                title: "Logged in failed",
+                text: "Something went wrong!",
+              });
+            if(error.response.status===404){
                 setEmailError(true);
-            setErrorHandler(error.response.data.error.message);
+            setErrorHandler(error.response.data.error);
             }
             
         }
@@ -135,7 +148,7 @@ const LoginPage = () => {
                                     Login
                                 </button>
                                 {accept && emailError ? (
-                                <p className="text-red-500">*{errorHandler}</p>
+                                <p className="text-red-500 text-lg">*{errorHandler}</p>
                             ) : (
                                 ""
                             )}

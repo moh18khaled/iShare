@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import Swal from 'sweetalert2'
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Navbar = () => {
@@ -9,14 +11,41 @@ const Navbar = () => {
   console.log(userEmail);
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [handleError,setHandleError] = useState("");
 
   const handleLogout = async() => {
    try {
     await axios.post(`${apiBaseUrl}/user/logout`,{},{withCredentials : true});
-   Cookies.remove("userEmail");
-   navigate("/login");
+    if (response.status === 200) {
+      Swal.fire({
+        title: "Are you sure to delete your account?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            icon: "success"
+          }).then(
+            Cookies.remove("userEmail"),
+            navigate("/login")
+          );
+        }
+      });
+    }
    } catch (error) {
     console.log(error);
+    setHandleError(error.response.data.error);
+    Swal.fire({
+      icon: "error",
+      title: "Failed to Logout",
+      text: `${handleError}`,
+    });
    }
   };
 
@@ -169,8 +198,7 @@ const Navbar = () => {
 
           {/* Auth Buttons for Larger Screens */}
           <div className="hidden md:flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            
-            {!window.localStorage.getItem("email") ? (
+            {!userEmail ? (
               <div className="flex space-x-4">
                   <Link
               to="/all/posts"

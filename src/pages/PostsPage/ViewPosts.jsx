@@ -137,8 +137,10 @@ const ViewPosts = () => {
   return (
     <div className="w-[95%] mx-auto text-center max-w-4xl shadow-2xl p-10 rounded-lg">
       {/* Post Author */}
-      <div className="flex items-center mb-6">
-        
+
+      <div
+  className="flex items-center mb-6 cursor-pointer"
+  onClick={() => post?.author.isCurrentUser?navigate("/profile"):navigate(`/profile/${post?.author?._id}`)}>        {console.log(post?.author.isCurrentUser,"<>< ",post?.author?._id)}
         <img
           src={post?.author?.profilePicture?.url || "/default-profile.png"}
           alt={post?.author?.username || "Unknown User"}
@@ -175,7 +177,9 @@ const ViewPosts = () => {
       <p className="text-gray-700 mt-6">{post?.content || "No content available."}</p>
 
 {/* Post Author */}
-      <div className="flex items-center mb-6">
+      <div
+  className="flex items-center mb-6 cursor-pointer"
+  onClick={() => businessOwner.isCurrentUser?navigate("/profile"):navigate(`/profile/${businessOwner?._id}`)}> 
         <img
           src={businessOwner?.profilePicture?.url || "/default-profile.png"}
           alt={businessOwner?.username || "Unknown User"}
@@ -230,7 +234,9 @@ const ViewPosts = () => {
         ) : (
           comments.map((cmt, index) => (
             <div key={index} className="p-2 border-b border-gray-300">
-              <div className="flex items-center mb-2">
+              <div
+  className="flex items-center mb-2 cursor-pointer"
+  onClick={() => cmt.isCurrentUser?navigate("/profile"):navigate(`/profile/${cmt?.user?._id}`)}> 
                 <img
                   src={cmt?.user?.profilePicture?.url || "/default-profile.png"}
                   alt={cmt?.user?.username || "Anonymous"}

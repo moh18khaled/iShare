@@ -15,7 +15,10 @@ import PaymentCancel from "./pages/PaymentCancel";
 import NotFound from "./pages/NotFound";
 import DashboardPage from "./pages/dashboard";
 import UserProfile from "./components/UserProfile";
+import OtherUserProfilePage from "./pages/OtherUserProfilePage";
 import { UserProvider } from "./context/context";
+import UpdateProfilePage from "./pages/UpdateProfilePage";
+// import UpdateUser from "./pages/UpdateUser";
 
 const App = () => {
   return (
@@ -29,6 +32,8 @@ const App = () => {
           <Route path="/business-owner-register" element={<BusinessOwnerRegisterPage />} />
           <Route path="/verify-account" element={<VerifyAccount />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/:id" element={<OtherUserProfilePage />} />
+          <Route path="/profile/update" element={<UpdateProfilePage />} />
           <Route path="/otherUser/account/:id" element={<UserProfile />} /> {/* Fixed the issue */}
           <Route path="/all/posts" element={<PostsPage />} />
           <Route path="/post/:id" element={<ViewPosts />} />

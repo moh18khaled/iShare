@@ -1,11 +1,14 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import { FaEye, FaEyeSlash, FaPlus } from "react-icons/fa"; // Import icons
+import Cookies from 'js-cookie';
+import Swal from 'sweetalert2';
 
 const BusinesssOwnerRegisterPage = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [age, setAge] = useState(0);
@@ -20,10 +23,23 @@ const BusinesssOwnerRegisterPage = () => {
   const [description, setDescription] = useState("");
   const [accept, setAccept] = useState(false);
   const [errorHandler, setErrorHandler] = useState("");
-  const [status, setStatus] = useState(0);
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to toggle confirm password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [categories, setCategories] = useState([]); // Selected categories
+  const [otherCategory, setOtherCategory] = useState(""); // Input for "Other" category
+  const [customCategories, setCustomCategories] = useState([]); // List of custom categories
+  const [showOtherInput, setShowOtherInput] = useState(false); // Toggle "Other" input field
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+  // Predefined categories
+  const predefinedCategories = [
+    "Restaurant",
+    "Retail",
+    "Technology",
+    "Healthcare",
+    "Education",
+    "Other",
+  ];
 
   // Password validation regex
   
@@ -53,14 +69,14 @@ const BusinesssOwnerRegisterPage = () => {
     if (
       userName.length === 0 ||
       !emailPattern.test(email) ||
-      !passwordRegex.test(password) || // Validate password using regex
+      !passwordRegex.test(password) ||
       confirmPassword !== password ||
       age === 0 ||
       businessName.length === 0 ||
       selectedCategories.length === 0 ||
       addresscountry.length === 0 ||
       addressCity.length === 0 ||
-      phoneNumber.length === 0
+      phoneNumber.length === 0 // Ensure at least one category is selected
     ) {
       flag = false;
     }
@@ -85,14 +101,12 @@ const BusinesssOwnerRegisterPage = () => {
           })
           .then((res) => console.log(res));
 
-        setStatus(200);
 
         window.localStorage.setItem("email", email);
         window.location.pathname = "/";
       }
     } catch (error) {
       console.log(error);
-      setStatus(error.response.status);
       setErrorHandler(error.response.data.error.message);
     }
   };
@@ -124,7 +138,7 @@ const BusinesssOwnerRegisterPage = () => {
           </Link>
           <div className="w-full bg-[#E8D8C5] rounded-lg shadow-md sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6">
-              {accept && status === 400 ? (
+              {accept && emailError ? (
                 <p className="text-red-500">*{errorHandler}</p>
               ) : (
                 ""
@@ -194,21 +208,21 @@ const BusinesssOwnerRegisterPage = () => {
                   </label>
                   <div className="relative">
                     <input
-                      type={showPassword ? "text" : "password"} // Toggle input type
+                      type={showPassword ? "text" : "password"}
                       value={password}
                       name="password"
                       id="password"
                       onChange={(e) => setPassword(e.target.value)}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5 pr-10" // Add padding for icon
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5 pr-10"
                       required=""
                     />
                     <button
                       type="button"
                       className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 focus:outline-none"
-                      onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
-                      style={{ top: "50%", transform: "translateY(-50%)" }} // Ensure icon stays centered vertically
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{ top: "50%", transform: "translateY(-50%)" }}
                     >
-                      {showPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle eye icon */}
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
                   {password.length === 0 && accept ? (
@@ -217,8 +231,7 @@ const BusinesssOwnerRegisterPage = () => {
                     <p className="text-red-500 mt-1">
                       Password must be at least 8 characters contain at least one uppercase letter, one lowercase letter, one number, and one special character.
                     </p>
-                  ) 
-                : null}
+                  ) : null}
                 </div>
 
                 {/* Confirm Password Field */}
@@ -231,21 +244,21 @@ const BusinesssOwnerRegisterPage = () => {
                   </label>
                   <div className="relative">
                     <input
-                      type={showConfirmPassword ? "text" : "password"} // Toggle input type
+                      type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       name="confirm-password"
                       id="confirm-password"
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5 pr-10" // Add padding for icon
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5 pr-10"
                       required=""
                     />
                     <button
                       type="button"
                       className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 focus:outline-none"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle confirm password visibility
-                      style={{ top: "50%", transform: "translateY(-50%)" }} // Ensure icon stays centered vertically
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      style={{ top: "50%", transform: "translateY(-50%)" }}
                     >
-                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle eye icon */}
+                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
                   {confirmPassword.length === 0 && accept ? (
@@ -271,9 +284,8 @@ const BusinesssOwnerRegisterPage = () => {
                     name="age"
                     id="age"
                     onChange={(e) => {
-                      const value = parseInt(e.target.value, 10); // Convert input to number
+                      const value = parseInt(e.target.value, 10);
                       if (value >= 0 || e.target.value === "") {
-                        // Allow only non-negative values
                         setAge(e.target.value);
                       }
                     }}
@@ -453,6 +465,7 @@ const BusinesssOwnerRegisterPage = () => {
                     required=""
                   />
                 </div>
+
 
                 {/* Submit Button */}
                 <button
