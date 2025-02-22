@@ -150,9 +150,15 @@ const ViewPosts = () => {
           <p className="text-lg font-semibold">{post?.author?.username || "Unknown User"}</p>
         </div>
       </div>
+      {/* {!post?.author.isCurrentUser && (
+    <button onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)} className="bg-blue-500 text-white px-4 py-2 rounded">
+      {"Follow"}
+    </button>
+  )} */}
 
       {/* Post Content */}
       <h1 className="text-3xl font-bold mb-4">{post?.title || "No Title"}</h1>
+      <p className="text-gray-700 mt-6">{post?.content || "No content available."}</p>
 
       {/* Media Section */}
       <div className="flex justify-center gap-4 mt-4">
@@ -174,21 +180,33 @@ const ViewPosts = () => {
         )}
       </div>
 
-      <p className="text-gray-700 mt-6">{post?.content || "No content available."}</p>
 
 {/* Post Author */}
-      <div
-  className="flex items-center mb-6 cursor-pointer"
-  onClick={() => businessOwner.isCurrentUser?navigate("/profile"):navigate(`/profile/${businessOwner?._id}`)}> 
-        <img
-          src={businessOwner?.profilePicture?.url || "/default-profile.png"}
-          alt={businessOwner?.username || "Unknown User"}
-          className="w-12 h-12 rounded-full object-cover"
-        />
-        <div className="ml-4">
-          <p className="text-lg font-semibold">{businessOwner?.username || "Unknown User"}</p>
-        </div>
-      </div>
+     {/* Post Author */}
+<div 
+  className="flex items-center justify-between mb-6 cursor-pointer" 
+  onClick={() => businessOwner.isCurrentUser ? navigate("/profile") : navigate(`/profile/${businessOwner?._id}`)}
+> 
+  <div className="flex items-center">
+    <img 
+      src={businessOwner?.profilePicture?.url || "/default-profile.png"} 
+      alt={businessOwner?.username || "Unknown User"} 
+      className="w-12 h-12 rounded-full object-cover"
+    />
+    <p className="ml-4 text-lg font-semibold">{businessOwner?.username || "Unknown User"}</p>
+  </div>
+
+  {!businessOwner?.isCurrentUser && (
+    <button 
+      onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)} 
+      className="bg-blue-500 text-white px-4 py-2 rounded"
+    >
+      Follow
+    </button>
+  )}
+</div>
+
+
 
       {/* Actions */}
       <div className="flex justify-between items-center mt-6 p-4 border-t border-gray-200">
@@ -231,12 +249,10 @@ const ViewPosts = () => {
       <div className="mt-6 text-left">
         {comments.length === 0 ? (
           <p className="text-gray-500 text-center">No comments yet.</p>
-        ) : (
-          comments.map((cmt, index) => (
-            <div key={index} className="p-2 border-b border-gray-300">
-              <div
-  className="flex items-center mb-2 cursor-pointer"
-  onClick={() => cmt.isCurrentUser?navigate("/profile"):navigate(`/profile/${cmt?.user?._id}`)}> 
+        ) : comments.map((cmt, index) => (
+          <div key={index} className="p-2 border-b border-gray-300">
+            <div className="flex items-center justify-between mb-2 cursor-pointer" onClick={() => cmt.isCurrentUser ? navigate("/profile") : navigate(`/profile/${cmt?.user?._id}`)}>
+              <div className="flex items-center">
                 <img
                   src={cmt?.user?.profilePicture?.url || "/default-profile.png"}
                   alt={cmt?.user?.username || "Anonymous"}
@@ -244,10 +260,18 @@ const ViewPosts = () => {
                 />
                 <p className="ml-2 text-sm font-semibold">{cmt?.user?.username || "Anonymous"}</p>
               </div>
-              <p className="text-gray-700">{cmt?.text || "No comment text."}</p>
+              {!cmt.isCurrentUser && (
+                <button 
+                  onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)} 
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Follow
+                </button>
+              )}
             </div>
-          ))
-        )}
+            <p className="text-gray-700">{cmt?.text || "No comment text."}</p>
+          </div>
+        ))}
       </div>
 
       {/* Full-Screen Image Modal */}
