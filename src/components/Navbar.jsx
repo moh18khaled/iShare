@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import Swal from 'sweetalert2'
-
+import logo from "../assets/images/weinfluence.png"
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Navbar = () => {
@@ -47,20 +47,20 @@ const Navbar = () => {
   const closeMenu = () => setIsMenuOpen(false);
 
   const navLinks = [
-    { to: "#hero", text: "Home" },
-    { to: "#about", text: "About" },
-    { to: "#services", text: "Services" },
-    { to: "#users-experience", text: "Users Experience" },
-    { to: "#team", text: "Team" },
-    { to: "#contact", text: "Contact" },
-    { to: "/posts", text: "Posts" },
+    { href: "#hero", text: "Home" },
+    { href: "#about", text: "About" },
+    { href: "#services", text: "Services" },
+    { href: "#users-experience", text: "Users Experience" },
+    { href: "#team", text: "Team" },
+    { href: "#contact", text: "Contact" },
+    { href: "/posts", text: "Posts" },
   ];
 
   return (
-    <nav className="bg-[#F9F9F9] font-roboto z-50 shadow-md fixed w-full top-0 border-b border-gray-200">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 md:p-6">
+    <nav className="bg-[#F9F9F9] font-roboto z-50 shadow-md fixed w-full top-0 border-b border-gray-200 lg:h-32 h-24">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-3 h-full">
         <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <span className="text-4xl text-mainColor font-bold">weinfluence</span>
+          <img className="w-32 lg:w-36 lg:h-32 h-28 rounded-full text-lg font-bold" src={logo} alt="weinfluence logo"/>
         </Link>
 
         {/* Mobile Menu Toggle */}
@@ -79,13 +79,13 @@ const Navbar = () => {
           <ul className="flex flex-col p-4 mt-4 font-medium bg-gray-50 rounded-lg border border-gray-100 lg:space-x-8 lg:flex-row lg:mt-0 lg:border-0 lg:bg-transparent">
             {navLinks.map((link) => (
               <li key={link.text}>
-                <Link
-                  to={link.to}
+                <a
+                  href={link.href}
                   onClick={closeMenu}
                   className="block py-2 px-3 text-gray-900 hover:text-mainColor rounded md:p-0"
                 >
                   {link.text}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
@@ -111,7 +111,7 @@ const Navbar = () => {
             ) : (
               <>
                 <Link
-                  to="/register-select"
+                  to="/register"
                   onClick={closeMenu}
                   className="w-full block text-center text-white bg-mainColor hover:bg-hoverColor py-2 px-4 rounded-lg"
                 >
@@ -149,7 +149,7 @@ const Navbar = () => {
           ) : (
             <>
               <Link
-                to="/register-select"
+                to="/register"
                 className="text-white bg-mainColor hover:bg-hoverColor px-4 py-2 rounded-lg transition-colors"
               >
                 Register

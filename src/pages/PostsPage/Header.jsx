@@ -1,16 +1,16 @@
 import { FiSearch, FiBell, FiCreditCard, FiUser } from 'react-icons/fi';
 import { FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-
+import logo from "../../assets/images/weinfluence.png"
 const Header = () => {
   return (
     <>
       {/* Main Header */}
-      <nav className="bg-white shadow-sm p-4 fixed w-full top-0 z-10 ">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <nav className="bg-white shadow-sm p-4 fixed w-full top-0 z-10 lg:h-24 h-20">
+        <div className="max-w-7xl mx-auto flex items-center justify-between h-full">
           {/* Logo */}
           <div className="flex items-center">
-          <span className="self-center text-3xl md:text-4xl text-mainColor font-bold whitespace-nowrap">weinfluence</span>
+          <img className="w-32 lg:w-36 lg:h-32 h-28 rounded-full text-lg font-bold" src={logo} alt="weinfluence logo"/>
           </div>
 
           {/* Search Bar */}

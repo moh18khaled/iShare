@@ -26,8 +26,8 @@ const App = () => {
       <div className="scroll-smooth">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/register-select" element={<SelesctRPage />} />
-          <Route path="/register" element={<SignUpPage />} />
+          <Route path="/register" element={<SelesctRPage />} />
+          <Route path="/user-register" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/business-owner-register" element={<BusinessOwnerRegisterPage />} />
           <Route path="/verify-account" element={<VerifyAccount />} />
