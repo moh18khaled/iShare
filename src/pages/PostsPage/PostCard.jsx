@@ -12,7 +12,7 @@ const PostCard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${apiBaseUrl}/posts`);
+                const response = await axios.get(`${apiBaseUrl}/postss`);
                 console.log(response)
                 setPostedData(response.data.posts);
             } catch (error) {

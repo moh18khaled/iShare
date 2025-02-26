@@ -51,7 +51,7 @@ const Header = () => {
             </Link>
 
             {/* User Account Icon */}
-            <Link to="/account">
+            <Link to="/profile">
               <button className="p-2 rounded-full hover:bg-gray-100">
                 <FiUser className="text-gray-600 text-xl" />
               </button>

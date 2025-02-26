@@ -43,7 +43,7 @@ const CreatePostPage = () => {
         rating,
       };
 
-      const response = await axios.post(`${apiBaseUrl}/posts`, postData);
+      const response = await axios.post(`${apiBaseUrl}/postss`, postData);
       if (response.status === 200 || response.status === 201) {
         alert("Post created successfully!");
         // Reset the form

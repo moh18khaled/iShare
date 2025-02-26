@@ -26,9 +26,12 @@ const ViewPosts = () => {
 
   const fetchPost = async () => {
     try {
-      const response = await axios.get(`${apiBaseUrl}/posts/${id}`);
+      const response = await axios.get(`${apiBaseUrl}/postss/${id}`);
       const data = response.data;
-      console.log(data);
+    //  console.log(data,"<.>>");
+    //  console.log(response.data.post.comments,"<>>>ssssss<><");
+    //  setComments(response.data.post.comments || []);
+
       setBusinessOwner(data.post.businessOwner.user_id);
 
       setPost(data.post);
@@ -41,12 +44,12 @@ const ViewPosts = () => {
       setLoading(false);
     }
   };
-      console.log(businessOwner);
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`${apiBaseUrl}/posts/${id}/comments`);
+      const response = await axios.get(`${apiBaseUrl}/postss/${id}/comments`);
       setComments(response.data.comments || []);
+      console.log(response.data.comments,"<>>><><");
     } catch (error) {
       console.error("Error fetching comments:", error);
       setComments([]);
@@ -56,7 +59,7 @@ const ViewPosts = () => {
   const handleCommentSubmit = async () => {
     if (comment.trim()) {
       try {
-        await axios.post(`${apiBaseUrl}/posts/${id}/addComment`, { text: comment });
+        await axios.post(`${apiBaseUrl}/postss/${id}/addComment`, { text: comment });
         setComment("");
         fetchComments();
       } catch (error) {
@@ -67,7 +70,7 @@ const ViewPosts = () => {
 
   const handleDeletePost = async () => {
     try {
-      await axios.delete(`${apiBaseUrl}/posts/${id}`);
+      await axios.delete(`${apiBaseUrl}/postss/${id}`);
       navigate("/all/posts");
     } catch (error) {
       console.error("Failed to delete post:", error);
@@ -77,7 +80,7 @@ const ViewPosts = () => {
   const toggleLike = async () => {
     try {
       setIsLiked(!isLiked); // Optimistic UI update
-      const response = await axios.patch(`${apiBaseUrl}/posts/${id}/toggleLike`);
+      const response = await axios.patch(`${apiBaseUrl}/postss/${id}/toggleLike`);
       setLikesCount(response.data.likesCount);
     } catch (error) {
       console.error("Failed to toggle like:", error);
@@ -139,22 +142,28 @@ const ViewPosts = () => {
       {/* Post Author */}
 
       <div
-  className="flex items-center mb-6 cursor-pointer"
+  className="flex items-center justify-between mb-6  mt-6 cursor-pointer"
   onClick={() => post?.author.isCurrentUser?navigate("/profile"):navigate(`/profile/${post?.author?._id}`)}>        {console.log(post?.author.isCurrentUser,"<>< ",post?.author?._id)}
-        <img
-          src={post?.author?.profilePicture?.url || "/default-profile.png"}
-          alt={post?.author?.username || "Unknown User"}
-          className="w-12 h-12 rounded-full object-cover"
-        />
-        <div className="ml-4">
-          <p className="text-lg font-semibold">{post?.author?.username || "Unknown User"}</p>
-        </div>
-      </div>
-      {/* {!post?.author.isCurrentUser && (
+       
+       <div className="flex items-center gap-3">
+  <img
+    src={post?.author?.profilePicture?.url || "/default-profile.png"}
+    alt={post?.author?.username || "Unknown User"}
+    className="w-12 h-12 rounded-full object-cover border border-gray-300 shadow-sm"
+    loading="lazy"
+  />
+    <p className="flex flex-col text-lg font-semibold text-gray-900 truncate max-w-[150px]">
+      {post?.author?.username || "Unknown User"}
+    </p>
+</div>
+
+        { !post?.author.isCurrentUser && (
     <button onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)} className="bg-blue-500 text-white px-4 py-2 rounded">
       {"Follow"}
     </button>
-  )} */}
+  ) }
+      </div>
+     
 
       {/* Post Content */}
       <h1 className="text-3xl font-bold mb-4">{post?.title || "No Title"}</h1>
@@ -249,7 +258,7 @@ const ViewPosts = () => {
       <div className="mt-6 text-left">
         {comments.length === 0 ? (
           <p className="text-gray-500 text-center">No comments yet.</p>
-        ) : comments.map((cmt, index) => (
+        ) : comments.map((cmt, index) => (console.log(cmt),
           <div key={index} className="p-2 border-b border-gray-300">
             <div className="flex items-center justify-between mb-2 cursor-pointer" onClick={() => cmt.isCurrentUser ? navigate("/profile") : navigate(`/profile/${cmt?.user?._id}`)}>
               <div className="flex items-center">
