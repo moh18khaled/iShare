@@ -10,8 +10,11 @@ const Header = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between h-full">
           {/* Logo */}
           <div className="flex items-center">
-          <img className="w-32 lg:w-36 lg:h-32 h-28 rounded-full text-lg font-bold" src={logo} alt="weinfluence logo"/>
-          </div>
+          <img
+  className="w-36 lg:w-48 lg:h-36 h-28 pl-10 rounded-full object-cover object-center lg:scale-150"
+  src={logo}
+  alt="weinfluence logo"
+/>         </div>
 
           {/* Search Bar */}
           <div className="flex-1 max-w-xl mx-4 relative">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaChartBar, FaCube, FaSun, FaShieldAlt } from "react-icons/fa";
+import { motion } from "framer-motion"; // Import Framer Motion
 
 const TabsComponent = () => {
   const [active, setActive] = useState(1); // State to track active tab
@@ -11,15 +12,43 @@ const TabsComponent = () => {
     { id: 4, icon: <FaShieldAlt size={40} />, label: "Enhance the Brand Image" },
   ];
 
+  // Animation variants for the container
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3, // Delay between each child animation
+      },
+    },
+  };
+
+  // Animation variants for individual tabs
+  const tabVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+    hover: { scale: 1.05, transition: { duration: 0.1 } }, // Scale up on hover
+    active: { scale: 1.1, backgroundColor: "#EF4444", color: "#FFFFFF" }, // Scale up and change color when active
+  };
+
   return (
     <div className="font-roboto w-[90%] mx-auto mt-16 mb-16">
-      <ul className="flex flex-wrap justify-between gap-6">
+      <motion.ul
+        className="flex flex-wrap justify-between gap-6"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }} // Ensures the animation only happens once
+      >
         {tabs.map((tab) => (
-          <li
+          <motion.li
             key={tab.id}
-            className={`flex-1 text-center border border-gray-300 hover:border-mainColor rounded-lg shadow-lg transition-all ${
+            className={`flex-1 text-center border border-gray-300 rounded-lg shadow-lg transition-all ${
               active === tab.id ? "border-red-500 shadow-xl" : "hover:shadow-md"
             }`}
+            variants={tabVariants}
+            whileHover="hover"
+            animate={active === tab.id ? "active" : "visible"}
           >
             <a
               href={`#tabs-tab-${tab.id}`}
@@ -34,9 +63,9 @@ const TabsComponent = () => {
               {tab.icon}
               <span>{tab.label}</span>
             </a>
-          </li>
+          </motion.li>
         ))}
-      </ul>
+      </motion.ul>
     </div>
   );
 };

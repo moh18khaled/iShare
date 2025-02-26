@@ -4,6 +4,7 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { FaStar, FaQuoteLeft, FaQuoteRight } from "react-icons/fa";
+import { motion } from "framer-motion"; // Import Framer Motion
 
 const Testimonials = () => {
   const testimonials = [
@@ -49,18 +50,69 @@ const Testimonials = () => {
     },
   ];
 
+  // Animation variants for the title and subtitle
+  const titleVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+  };
+
+  // Animation variants for the Swiper slides
+  const slideVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+  };
+
   return (
     <section className="font-roboto py-16 bg-gray-50">
       <div className="container mx-auto px-6">
         {/* Section Title */}
-        <div className="text-center mb-12" >
-          <h2 className="text-3xl font-bold mb-4">Testimonials</h2>
-          <p className="text-gray-600">
+        <motion.div
+          className="text-center mb-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.2, // Delay between title and subtitle animations
+              },
+            },
+          }}
+        >
+          {/* Title */}
+          <motion.h2
+            className="text-3xl font-bold mb-4"
+            variants={titleVariants}
+          >
+            Testimonials
+          </motion.h2>
+
+          {/* Subtitle */}
+          <motion.p
+            className="text-gray-600"
+            variants={titleVariants}
+          >
             Real Voices, Real Experiences: Transforming Insights Across Industries
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
+
         {/* Swiper Component */}
-        <div >
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.3, // Delay between each Swiper slide animation
+              },
+            },
+          }}
+        >
           <Swiper
             modules={[Pagination, Autoplay]}
             loop={true}
@@ -78,7 +130,10 @@ const Testimonials = () => {
           >
             {testimonials.map((testimonial) => (
               <SwiperSlide key={testimonial.id} className="p-4">
-                <div className="bg-white shadow-xl rounded-lg p-6 mb-12 text-center">
+                <motion.div
+                  className="bg-white shadow-xl rounded-lg p-6 mb-12 text-center"
+                  variants={slideVariants}
+                >
                   <img
                     src={testimonial.image}
                     alt={testimonial.name}
@@ -98,11 +153,11 @@ const Testimonials = () => {
                     {testimonial.feedback}
                     <FaQuoteRight className="inline-block ml-2 text-mainColor" />
                   </p>
-                </div>
+                </motion.div>
               </SwiperSlide>
             ))}
           </Swiper>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

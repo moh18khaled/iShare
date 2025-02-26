@@ -2,8 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import Swal from 'sweetalert2'
-import logo from "../assets/images/weinfluence.png"
+import Swal from 'sweetalert2';
+import logo from "../assets/images/weinfluence.png";
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Navbar = () => {
@@ -53,15 +53,33 @@ const Navbar = () => {
     { href: "#users-experience", text: "Users Experience" },
     { href: "#team", text: "Team" },
     { href: "#contact", text: "Contact" },
-    { href: "/posts", text: "Posts" },
+    { href: "/posts", text: "Posts" }, // This will route to a new page
   ];
+
+  // Function to handle smooth scrolling or routing
+  const handleNavigation = (href) => {
+    if (href.startsWith("#")) {
+      // Smooth scroll for section links
+      const section = document.querySelector(href);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      // Navigate to a new page for non-section links
+      navigate(href);
+    }
+    closeMenu(); // Close the mobile menu after clicking a link
+  };
 
   return (
     <nav className="bg-[#F9F9F9] font-roboto z-50 shadow-md fixed w-full top-0 border-b border-gray-200 lg:h-32 h-24">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-3 h-full">
-        <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img className="w-32 lg:w-36 lg:h-32 h-28 rounded-full text-lg font-bold" src={logo} alt="weinfluence logo"/>
-        </Link>
+        <a href="" className="flex items-center space-x-3 rtl:space-x-reverse">
+        <img
+  className="w-36 lg:w-48 lg:h-36 h-28 pl-10 rounded-full object-cover object-center lg:scale-150"
+  src={logo}
+  alt="weinfluence logo"
+/>        </a>
 
         {/* Mobile Menu Toggle */}
         <button
@@ -81,7 +99,10 @@ const Navbar = () => {
               <li key={link.text}>
                 <a
                   href={link.href}
-                  onClick={closeMenu}
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default anchor behavior
+                    handleNavigation(link.href); // Handle smooth scrolling or routing
+                  }}
                   className="block py-2 px-3 text-gray-900 hover:text-mainColor rounded md:p-0"
                 >
                   {link.text}

@@ -1,19 +1,19 @@
 import axios from "axios";
 import React from "react";
 import { FaCheck, FaTimes } from "react-icons/fa";
+import { motion } from "framer-motion"; // Import Framer Motion
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Pricing = () => {
-
   const handlePayment = async () => {
     try {
       const response = await axios.post(`${apiBaseUrl}/payments/create-order`, {
         amount: "25",
         currency: "USD",
       });
-  
+
       console.log("Response:", response.data); // Debugging
-  
+
       if (response.data && response.data.checkoutUrl) {
         window.location.href = response.data.checkoutUrl;
       } else {
@@ -22,24 +22,75 @@ const Pricing = () => {
     } catch (error) {
       console.error("Payment request failed:", error);
     }
-  }
+  };
+
+  // Animation variants for the title and subtitle
+  const titleVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+  };
+
+  // Animation variants for the pricing cards
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  };
+
   return (
     <section id="pricing" className="font-raleway bg-[#F5E6D3] py-16">
       {/* Section Title */}
-      <div className="container mx-auto text-center mb-12">
-        <h2 className="text-3xl text-black font-bold mb-4">
+      <motion.div
+        className="container mx-auto text-center mb-12"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.2, // Delay between title and subtitle animations
+            },
+          },
+        }}
+      >
+        {/* Title */}
+        <motion.h2
+          className="text-3xl text-black font-bold mb-4"
+          variants={titleVariants}
+        >
           Membership Tiers
-        </h2>
-        <p className="text-gray-500">
-          Unlock More Value, Insights, and Opportunities with iShare Community Memberships
-        </p>
-      </div>
+        </motion.h2>
 
-      <div className="w-[90%] mx-auto grid gap-6 md:grid-cols-3">
+        {/* Subtitle */}
+        <motion.p
+          className="text-gray-500"
+          variants={titleVariants}
+        >
+          Unlock More Value, Insights, and Opportunities with iShare Community Memberships
+        </motion.p>
+      </motion.div>
+
+      {/* Pricing Cards */}
+      <motion.div
+        className="w-[90%] mx-auto grid gap-6 md:grid-cols-3"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.3, // Delay between each pricing card animation
+            },
+          },
+        }}
+      >
         {/* Free Tier */}
-        <div
+        <motion.div
           className="bg-[#E6D5C1] rounded-lg shadow-lg p-10"
-          
+          variants={cardVariants}
         >
           <h3 className="text-2xl font-semibold text-center mb-4">
             Community Explorer
@@ -77,11 +128,12 @@ const Pricing = () => {
               Start Free
             </button>
           </div>
-        </div>
+        </motion.div>
+
         {/* Pro Tier */}
-        <div
+        <motion.div
           className="bg-[#E6D5C1] rounded-lg shadow-lg p-10"
-          
+          variants={cardVariants}
         >
           <h3 className="text-2xl font-semibold text-center mb-4">
             Experience Pro
@@ -120,11 +172,12 @@ const Pricing = () => {
               Go Pro
             </button>
           </div>
-        </div>
+        </motion.div>
+
         {/* Enterprise Tier */}
-        <div
+        <motion.div
           className="bg-[#E6D5C1] rounded-lg shadow-lg p-10"
-          
+          variants={cardVariants}
         >
           <h3 className="text-2xl font-semibold text-center mb-4">
             Business Insights
@@ -163,8 +216,8 @@ const Pricing = () => {
               Contact Sales
             </a>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };

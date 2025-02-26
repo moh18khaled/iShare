@@ -1,5 +1,9 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { FaTwitter, FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
+import kareemImage from "../../assets/images/kareem.jpg";
+import mohamedImage from "../../assets/images/mohamed.jpg";
+import asmaaImage from "../../assets/images/asmaa.jpg";
 
 const TeamSection = () => {
   const teamMembers = [
@@ -36,6 +40,39 @@ const TeamSection = () => {
         linkedin: "#",
       },
     },
+    // {
+    //   name: "Kareem Ragab",
+    //   position: "Frontend Developer",
+    //   image: `${kareemImage}`,
+    //   social: {
+    //     twitter: "#",
+    //     facebook: "#",
+    //     instagram: "#",
+    //     linkedin: "#",
+    //   },
+    // },
+    // {
+    //   name: "Mohamed Khaled",
+    //   position: "Backend Developer",
+    //   image: `${mohamedImage}`,
+    //   social: {
+    //     twitter: "#",
+    //     facebook: "#",
+    //     instagram: "#",
+    //     linkedin: "#",
+    //   },
+    // },
+    // {
+    //   name: "Asmaa Abdelbari",
+    //   position: "Chief Financial Officer",
+    //   image: `${asmaaImage}`,
+    //   social: {
+    //     twitter: "#",
+    //     facebook: "#",
+    //     instagram: "#",
+    //     linkedin: "#",
+    //   },
+    // },
   ];
 
   // Map social media platforms to React Icons components
@@ -46,22 +83,60 @@ const TeamSection = () => {
     linkedin: <FaLinkedin />,
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
     <section id="team" className="font-poppins bg-[#F5E6D3] py-16 pt-64 pb-52">
       {/* Section Title */}
-      <div className="w-[95%] mx-auto text-center mb-12">
-        <h2 className="text-3xl font-bold mb-6">Team</h2>
-        <p className="text-gray-500">
+      <motion.div
+        className="w-[95%] mx-auto text-center mb-12"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={containerVariants}
+      >
+        <motion.h2
+          className="text-3xl font-bold mb-6"
+          variants={itemVariants}
+        >
+          Team
+        </motion.h2>
+        <motion.p
+          className="text-gray-500"
+          variants={itemVariants}
+        >
           Empowering Diverse Talents, Uniting Innovative Minds Behind iShare's Vision
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
+
       {/* Team Members */}
-      <div className="w-[95%] mx-auto flex flex-wrap justify-center gap-8">
+      <motion.div
+        className="w-[95%] mx-auto flex flex-wrap justify-center gap-8"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={containerVariants}
+      >
         {teamMembers.map((member, index) => (
-          <div
+          <motion.div
             key={index}
             className="group max-w-sm bg-[#E6D5C1] rounded-lg shadow-lg overflow-hidden"
-            
+            variants={itemVariants}
+            transition={{ type: "spring", stiffness: 300 }}
           >
             <div className="relative">
               <img
@@ -88,9 +163,9 @@ const TeamSection = () => {
               <h4 className="text-lg font-bold">{member.name}</h4>
               <p className="text-sm">{member.position}</p>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 };
