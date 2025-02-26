@@ -11,11 +11,10 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
           <img
-  className="w-32 lg:w-48 lg:h-36 h-28 pl-10 rounded-full object-cover object-center"
+  className="w-36 lg:w-48 lg:h-36 h-28 pl-10 rounded-full object-cover object-center lg:scale-150"
   src={logo}
   alt="weinfluence logo"
-  style={{ transform: 'scale(1.5)' }}
-/>          </div>
+/>         </div>
 
           {/* Search Bar */}
           <div className="flex-1 max-w-xl mx-4 relative">

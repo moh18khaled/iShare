@@ -11,8 +11,11 @@ const SelectRPage = () => {
         to="/"
         className="flex items-center justify-center pt-4 text-3xl font-bold sm:text-4xl text-mainColor"
       >
-        <img className='w-56 h-48' src={logo} alt="weinfluence logo" />
-      </Link>
+<img
+  className="w-36 lg:w-48 lg:h-36 h-28 pl-10 rounded-full object-cover object-center lg:scale-150"
+  src={logo}
+  alt="weinfluence logo"
+/>      </Link>
 
       {/* Heading */}
       <h1 className='text-center text-2xl sm:text-4xl font-semibold text-gray-700'>

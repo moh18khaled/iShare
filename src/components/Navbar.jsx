@@ -76,10 +76,9 @@ const Navbar = () => {
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-3 h-full">
         <a href="" className="flex items-center space-x-3 rtl:space-x-reverse">
         <img
-  className="w-32 lg:w-48 lg:h-36 h-28 pl-10 rounded-full object-cover object-center"
+  className="w-36 lg:w-48 lg:h-36 h-28 pl-10 rounded-full object-cover object-center lg:scale-150"
   src={logo}
   alt="weinfluence logo"
-  style={{ transform: 'scale(1.5)' }}
 />        </a>
 
         {/* Mobile Menu Toggle */}
