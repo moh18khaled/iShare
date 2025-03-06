@@ -1,10 +1,13 @@
 import axios from "axios";
-import React from "react";
+import React, { useContext } from "react";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { motion } from "framer-motion"; // Import Framer Motion
+import { User } from "../../context/context";
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Pricing = () => {
+  const businessOwnerNow = useContext(User);
+  console.log(businessOwnerNow.businessOwnerAuth.businessOwnerDetails);
   const handlePayment = async () => {
     try {
       const response = await axios.post(`${apiBaseUrl}/payments/create-order`, {
@@ -14,11 +17,14 @@ const Pricing = () => {
 
       console.log("Response:", response.data); // Debugging
 
-      if (response.data && response.data.checkoutUrl) {
-        window.location.href = response.data.checkoutUrl;
-      } else {
-        console.error("Error: No checkout URL found.");
-      }
+      // if(businessOwner.businessOwnerAuth.businessOwnerDetails){
+        if (response.data && response.data.checkoutUrl) {
+          window.location.href = response.data.checkoutUrl;
+        } else {
+          console.error("Error: No checkout URL found.");
+        }
+      
+      
     } catch (error) {
       console.error("Payment request failed:", error);
     }

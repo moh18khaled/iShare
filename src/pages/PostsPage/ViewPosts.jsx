@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaHeart, FaComment, FaTrash } from "react-icons/fa";
 import axios from "axios";
+import { User } from "../../context/context";
 
 const ViewPosts = () => {
   const { id } = useParams();
@@ -23,6 +24,8 @@ const ViewPosts = () => {
   const [fullScreenImage, setFullScreenImage] = useState(null);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
+  const { auth } = useContext(User); // Access the auth state from the User context
+
   useEffect(() => {
     fetchPost();
     fetchComments();
@@ -37,7 +40,6 @@ const ViewPosts = () => {
     //  setComments(response.data.post.comments || []);
 
       setBusinessOwner(data.post.businessOwner.user_id);
-
       setPost(data.post);
       setIsLiked(data.isLiked);
       setLikesCount(data.likesCount);
@@ -63,7 +65,7 @@ const ViewPosts = () => {
       fetchedComments.forEach(cmt => {
         followStatusMap[cmt._doc.user._id] = cmt.user.isFollowed;
       });
-
+      
       setComments(fetchedComments);
       setIsFollowingCommenters(followStatusMap);
 
@@ -181,7 +183,6 @@ const ViewPosts = () => {
   return (
     <div className="w-[95%] mx-auto text-center max-w-4xl shadow-2xl p-10 rounded-lg">
       {/* Post Author */}
-
       <div
   className="flex items-center justify-between mb-6  mt-6 cursor-pointer"
   onClick={() => post?.author.isCurrentUser?navigate("/profile"):navigate(`/profile/${post?.author?._id}`)}>        {console.log(post?.author.isCurrentUser,"<>< ",post?.author?._id)}
@@ -237,24 +238,22 @@ const ViewPosts = () => {
         )}
       </div>
 
-
-{/* Post Author */}
-     {/* Post Author */}
-<div 
-  className="flex items-center justify-between mb-6 mt-6 cursor-pointer" 
-  onClick={() => businessOwner.isCurrentUser ? navigate("/profile") : navigate(`/profile/${businessOwner?._id}`)}
-> 
-  <div className="flex items-center">
-    <img 
-      src={businessOwner?.profilePicture?.url || "/default-profile.png"} 
-      alt={businessOwner?.username || "Unknown User"} 
-      className="w-12 h-12 rounded-full object-cover"
-    />
-    <p className=" text-lg font-semibold">{businessOwner?.username || "Unknown User"}</p>
-  </div>
+      {/* Business Owner Section */}
+      <div
+        className="flex items-center justify-between mb-6 mt-6 cursor-pointer"
+        onClick={() => businessOwner.isCurrentUser ? navigate("/profile") : navigate(`/profile/${businessOwner?._id}`)}
+      >
+        <div className="flex items-center">
+          <img
+            src={businessOwner?.profilePicture?.url || "/default-profile.png"}
+            alt={businessOwner?.username || "Unknown User"}
+            className="w-12 h-12 rounded-full object-cover"
+          />
+          <p className="text-lg font-semibold">{businessOwner?.username || "Unknown User"}</p>
+        </div>
 
 
-{!businessOwner?.isCurrentUser && (
+{!businessOwner?.isCurrentUser  && (
           <button
             onClick={(e) =>{
               e.stopPropagation();
