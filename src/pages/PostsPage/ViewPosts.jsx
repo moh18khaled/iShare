@@ -9,11 +9,15 @@ const ViewPosts = () => {
   const [post, setPost] = useState(null);
   const [businessOwner, setBusinessOwner] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [comments, setComments] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isFollowingAuthor, setIsFollowingAuthor] = useState(false);
+  const [isFollowingBusinessOwner, setIsFollowingBusinessOwner] = useState(false);
+  const [isFollowingCommenters, setIsFollowingCommenters] = useState({});
   const [comment, setComment] = useState("");
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState(null);
@@ -29,7 +33,7 @@ const ViewPosts = () => {
       const response = await axios.get(`${apiBaseUrl}/postss/${id}`);
       const data = response.data;
     //  console.log(data,"<.>>");
-    //  console.log(response.data.post.comments,"<>>>ssssss<><");
+      console.log(response.data.post,"<>>>ssssss<><");
     //  setComments(response.data.post.comments || []);
 
       setBusinessOwner(data.post.businessOwner.user_id);
@@ -38,6 +42,8 @@ const ViewPosts = () => {
       setIsLiked(data.isLiked);
       setLikesCount(data.likesCount);
       setIsOwner(data.isOwner);
+      setIsFollowingAuthor(data.post.author.isFollowed || false); 
+      setIsFollowingBusinessOwner(data.post.businessOwner.user_id.isFollowed || false); 
     } catch (error) {
       setError(error.message);
     } finally {
@@ -48,8 +54,19 @@ const ViewPosts = () => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(`${apiBaseUrl}/postss/${id}/comments`);
-      setComments(response.data.comments || []);
-      console.log(response.data.comments,"<>>><><");
+      
+      const fetchedComments = response.data.comments || [];
+      console.log(fetchedComments,"<>>><><");
+
+      // Extract initial follow states
+      const followStatusMap = {};
+      fetchedComments.forEach(cmt => {
+        followStatusMap[cmt._doc.user._id] = cmt.user.isFollowed;
+      });
+
+      setComments(fetchedComments);
+      setIsFollowingCommenters(followStatusMap);
+
     } catch (error) {
       console.error("Error fetching comments:", error);
       setComments([]);
@@ -86,6 +103,14 @@ const ViewPosts = () => {
       console.error("Failed to toggle like:", error);
     }
   };
+  const toggleFollow = async (userId, isFollowing, setIsFollowing) => {
+    try {
+      await axios.patch(`${apiBaseUrl}/user/${userId}/toggleFollow`);
+      setIsFollowing(!isFollowing);
+    } catch (error) {
+      console.error("Failed to toggle follow:", error);
+    }
+  };
 
   const handleImageClick = (imageUrl) => {
     setFullScreenImage(imageUrl);
@@ -95,6 +120,22 @@ const ViewPosts = () => {
     setFullScreenImage(null);
   };
 
+  const handleToggleFollowCommenter = async (userId) => {
+    try {
+      const newFollowState = !isFollowingCommenters[userId]; // Toggle follow state
+  console.log(userId,"<><>><",newFollowState );
+      await toggleFollow(userId, newFollowState, () => {
+        setIsFollowingCommenters((prev) => ({
+          ...prev,
+          [userId]: newFollowState, // ✅ Update the follow state for this user
+        }));
+      });
+    } catch (error) {
+      console.error("Error toggling follow:", error);
+    }
+  };
+
+  
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") closeFullScreen();
@@ -157,11 +198,18 @@ const ViewPosts = () => {
     </p>
 </div>
 
-        { !post?.author.isCurrentUser && (
-    <button onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)} className="bg-blue-500 text-white px-4 py-2 rounded">
-      {"Follow"}
-    </button>
-  ) }
+         {!post?.author.isCurrentUser && (
+          <button
+            onClick={(e) =>{
+              e.stopPropagation();
+              toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)
+            }
+          }
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            {isFollowingAuthor ? "Unfollow" : "Follow"}
+          </button>
+        )}
       </div>
      
 
@@ -205,14 +253,20 @@ const ViewPosts = () => {
     <p className=" text-lg font-semibold">{businessOwner?.username || "Unknown User"}</p>
   </div>
 
-  {!businessOwner?.isCurrentUser && (
-    <button 
-      onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)} 
-      className="bg-mainColor text-white pl-4 px-4 ml-4 py-2 rounded"
-    >
-      Follow
-    </button>
-  )}
+
+{!businessOwner?.isCurrentUser && (
+          <button
+            onClick={(e) =>{
+              e.stopPropagation();
+              toggleFollow(businessOwner?._id, isFollowingBusinessOwner, setIsFollowingBusinessOwner)
+            }
+            }
+            className="bg-mainColor text-white pl-4 px-4 ml-4 py-2 rounded"
+            >
+            {isFollowingBusinessOwner ? "Unfollow" : "Follow"}
+          </button>
+        )}
+
 </div>
 
 
@@ -258,27 +312,29 @@ const ViewPosts = () => {
       <div className="mt-6 text-left">
         {comments.length === 0 ? (
           <p className="text-gray-500 text-center">No comments yet.</p>
-        ) : comments.map((cmt, index) => (console.log(cmt),
+        ) : comments.map((cmt, index) => (
           <div key={index} className="p-2 border-b border-gray-300">
-            <div className="flex items-center justify-between mb-2 cursor-pointer" onClick={() => cmt.isCurrentUser ? navigate("/profile") : navigate(`/profile/${cmt?.user?._id}`)}>
+            <div className="flex items-center justify-between mb-2 cursor-pointer" onClick={() => cmt.user.isCurrentUser ? navigate("/profile") : navigate(`/profile/${cmt?._doc?.user?._id}`)}>
               <div className="flex items-center">
                 <img
-                  src={cmt?.user?.profilePicture?.url || "/default-profile.png"}
-                  alt={cmt?.user?.username || "Anonymous"}
+                  src={cmt._doc?.user?.profilePicture?.url || "/default-profile.png"}
+                  alt={cmt._doc?.user?.username || "Anonymous"}
                   className="w-8 h-8 rounded-full object-cover"
                 />
-                <p className="ml-2 text-sm font-semibold">{cmt?.user?.username || "Anonymous"}</p>
+                <p className="ml-2 text-sm font-semibold">{cmt._doc?.user?.username || "Anonymous"}</p>
               </div>
-              {!cmt.isCurrentUser && (
+              {!cmt.user.isCurrentUser && (
                 <button 
-                  onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)} 
+                  onClick={(e) =>{ e.stopPropagation(),handleToggleFollowCommenter(cmt._doc?.user._id);
+                  }}
                   className="bg-blue-500 text-white px-4 py-2 rounded"
                 >
-                  Follow
+    {isFollowingCommenters[cmt._doc.user._id] ? "Unfollow" : "Follow"}
+
                 </button>
               )}
             </div>
-            <p className="text-gray-700">{cmt?.text || "No comment text."}</p>
+            <p className="text-gray-700">{cmt._doc?.text || "No comment text."}</p>
           </div>
         ))}
       </div>

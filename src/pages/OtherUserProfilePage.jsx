@@ -83,30 +83,30 @@ const OtherUserProfilePage = () => {
             <div className="mt-6 flex justify-between text-center">
               <ExpandableBox
                 icon={<FaNewspaper className="text-2xl text-gray-700 mx-auto" />}
-                title="My Posts"
+                title="User's Posts"
                 value={userAccount.postsCount}
-                endpoint={`${apiBaseUrl}/user/account/posts`}
+                endpoint={`${apiBaseUrl}/user/account/${id}/posts`}
               />
 
               <ExpandableBox
                 icon={<FaThumbsUp className="text-2xl text-gray-700 mx-auto" />}
-                title="Posts I loved"
+                title="Posts User loved"
                 value={userAccount.likedPostsCount}
-                endpoint={`${apiBaseUrl}/user/account/posts/liked-posts`}
+                endpoint={`${apiBaseUrl}/user/account/${id}/liked-posts`}
               />
 
               <ExpandableBoxForUsers
                 icon={<FaUserFriends className="text-2xl text-gray-700 mx-auto" />}
-                title="Followers"
+                title="User's Followers"
                 value={userAccount.followersCount}
-                endpoint={`${apiBaseUrl}/user/account/followers`}
+                endpoint={`${apiBaseUrl}/user/account/${id}/followers`}
               />
 
               <ExpandableBoxForUsers
                 icon={<FaHeart className="text-2xl text-gray-700 mx-auto" />}
-                title="Following"
+                title="User's Following"
                 value={userAccount.followingCount}
-                endpoint={`${apiBaseUrl}/user/account/following`}
+                endpoint={`${apiBaseUrl}/user/account/${id}/following`}
               />
             </div>
           </>

@@ -56,8 +56,11 @@ const ExpandableBoxForUsers = ({ icon, title, value, endpoint }) => {
               <div className="space-y-4">
                 {data.map((user) => (
                   <Link
-                    to={`/otherUser/account/${user._id}`}
-                    key={user._id}
+                  
+                      /*                   onClick={() => post?.author.isCurrentUser?navigate("/profile"):navigate(`/profile/${post?.author?._id}`)}>    {console.log(post?.author.isCurrentUser,"<>< ",post?.author?._id)*/
+                      to={user.isCurrentUser ? "/profile" : `/profile/${user._id}`}
+                      key={user._id}
+                      onClick={toggleExpand} // Close the modal when clicking
                     className="flex items-center gap-4 p-4 border rounded-lg shadow-md hover:bg-gray-100 transition"
                   >
                     {/* Profile Picture with Updated Size */}

@@ -50,7 +50,7 @@ const DashboardPage = () => {
     },
     post_likes: 0,
     total_posts: 0,
-    total_mentions: 0,
+    averageRating: 0,
     user_age_demographics: [],
     categories: [],
     businessProfileEngagement: {
@@ -304,9 +304,9 @@ const DashboardPage = () => {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Mentions</p>
+                <p className="text-sm text-gray-600">Average Rating</p>
                 <p className="text-2xl font-bold text-[#DC2626]">
-                  {dashboardData?.total_mentions?.toLocaleString() || '0'}
+                  {dashboardData?.averageRating?.toLocaleString() || '0'}
                 </p>
               </div>
             </div>

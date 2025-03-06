@@ -80,7 +80,7 @@ const UserProfile = () => {
                 } 
                 title="Posts" 
                 value="25" 
-                endpoint={`${apiBaseUrl}/users/${id}/posts`}
+                endpoint={`${apiBaseUrl}/user/account/${id}/posts`}
               />
 
               <ExpandableBox 
@@ -91,7 +91,7 @@ const UserProfile = () => {
                 } 
                 title="Liked Posts" 
                 value="120" 
-                endpoint={`${apiBaseUrl}/users/${id}/liked-posts`}
+                endpoint={`${apiBaseUrl}/users/account/${id}/liked-posts`}
               />
 
               <ExpandableBoxForUsers 
@@ -102,7 +102,7 @@ const UserProfile = () => {
                 } 
                 title="Followers" 
                 value="300" 
-                endpoint={`${apiBaseUrl}/users/${id}/followers`}
+                endpoint={`${apiBaseUrl}/users/account/${id}/followers`}
               />
 
               <ExpandableBoxForUsers 
@@ -113,7 +113,7 @@ const UserProfile = () => {
                 } 
                 title="Following" 
                 value="150" 
-                endpoint={`${apiBaseUrl}/users/${id}/following`}
+                endpoint={`${apiBaseUrl}/users/account/${id}/following`}
               />
             </div>
           </>
