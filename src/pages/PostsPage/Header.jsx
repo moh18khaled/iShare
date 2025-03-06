@@ -1,8 +1,14 @@
 import { FiSearch, FiBell, FiCreditCard, FiUser } from 'react-icons/fi';
 import { FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import logo from "../../assets/images/weinfluence.png"
-const Header = () => {
+import logo from "../../assets/images/weinfluence.png";
+
+const Header = ({ searchQuery, onSearch }) => {
+  const handleSearchInputChange = (e) => {
+    const query = e.target.value;
+    onSearch(query); // Call the onSearch function passed from the parent
+  };
+
   return (
     <>
       {/* Main Header */}
@@ -10,11 +16,12 @@ const Header = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between h-full">
           {/* Logo */}
           <div className="flex items-center">
-          <img
-  className="w-36 lg:w-48 lg:h-36 h-28 pl-10 rounded-full object-cover object-center lg:scale-150"
-  src={logo}
-  alt="weinfluence logo"
-/>         </div>
+            <img
+              className="w-36 lg:w-48 lg:h-36 h-28 pl-10 rounded-full object-cover object-center lg:scale-150"
+              src={logo}
+              alt="weinfluence logo"
+            />
+          </div>
 
           {/* Search Bar */}
           <div className="flex-1 max-w-xl mx-4 relative">
@@ -24,42 +31,44 @@ const Header = () => {
             <input
               type="text"
               placeholder="Search..."
+              value={searchQuery}
+              onChange={handleSearchInputChange}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-mainColor focus:ring-1 focus:ring-mainColor"
             />
           </div>
 
           {/* Icons Section */}
           <div className='hidden md:block'>
-          <div className="flex items-center space-x-4 md:space-x-10">
-            {/* Transactions Icon */}
-            <Link to="/transactions">
+            <div className="flex items-center space-x-4 md:space-x-10">
+              {/* Transactions Icon */}
+              <Link to="/transactions">
+                <button className="p-2 rounded-full hover:bg-gray-100 relative">
+                  <FiCreditCard className="text-gray-600 text-xl" />
+                </button>
+              </Link>
+
+              {/* Notification Icon */}
               <button className="p-2 rounded-full hover:bg-gray-100 relative">
-                <FiCreditCard className="text-gray-600 text-xl" />
+                <FiBell className="text-gray-600 text-xl" />
+                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                  3
+                </span>
               </button>
-            </Link>
 
-            {/* Notification Icon */}
-            <button className="p-2 rounded-full hover:bg-gray-100 relative">
-              <FiBell className="text-gray-600 text-xl" />
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                3
-              </span>
-            </button>
+              {/* Create Post Icon */}
+              <Link to="/create-post">
+                <button className="p-2 rounded-full hover:bg-gray-100">
+                  <FaPlus className="text-gray-600 text-xl" />
+                </button>
+              </Link>
 
-            {/* Create Post Icon */}
-            <Link to="/create-post">
-              <button className="p-2 rounded-full hover:bg-gray-100">
-                <FaPlus className="text-gray-600 text-xl" />
-              </button>
-            </Link>
-
-            {/* User Account Icon */}
-            <Link to="/account">
-              <button className="p-2 rounded-full hover:bg-gray-100">
-                <FiUser className="text-gray-600 text-xl" />
-              </button>
-            </Link>
-          </div>
+              {/* User Account Icon */}
+              <Link to="/account">
+                <button className="p-2 rounded-full hover:bg-gray-100">
+                  <FiUser className="text-gray-600 text-xl" />
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </nav>

@@ -1,9 +1,10 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaPlus } from "react-icons/fa"; // Import icons
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
+import { User } from "../context/context";
 
 const BusinesssOwnerRegisterPage = () => {
   const [userName, setUserName] = useState("");
@@ -25,25 +26,13 @@ const BusinesssOwnerRegisterPage = () => {
   const [errorHandler, setErrorHandler] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [categories, setCategories] = useState([]); // Selected categories
-  const [otherCategory, setOtherCategory] = useState(""); // Input for "Other" category
-  const [customCategories, setCustomCategories] = useState([]); // List of custom categories
-  const [showOtherInput, setShowOtherInput] = useState(false); // Toggle "Other" input field
+  const [isLoading, setIsLoading] = useState(false); // State to manage loading spinner
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-  // Predefined categories
-  const predefinedCategories = [
-    "Restaurant",
-    "Retail",
-    "Technology",
-    "Healthcare",
-    "Education",
-    "Other",
-  ];
+  const businessOwnerNow = useContext(User);
+  console.log(businessOwnerNow);
 
   // Password validation regex
-  
-
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   useEffect(() => {
@@ -59,7 +48,6 @@ const BusinesssOwnerRegisterPage = () => {
     fetchData();
   }, [apiBaseUrl]);
 
-  
   const submitRules = async (event) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     let flag = true;
@@ -76,40 +64,69 @@ const BusinesssOwnerRegisterPage = () => {
       selectedCategories.length === 0 ||
       addresscountry.length === 0 ||
       addressCity.length === 0 ||
-      phoneNumber.length === 0 // Ensure at least one category is selected
+      phoneNumber.length === 0
     ) {
       flag = false;
     }
 
     try {
       if (flag) {
-        const response = await axios
-          .post(`${apiBaseUrl}/businessOwner/signup`, {
-            username: userName,
-            email: email,
-            password: password,
-            password_confirmation: confirmPassword,
-            age: age,
-            businessName: businessName,
-            categories: selectedCategories,
-            address: {
-              country: addresscountry,
-              city: addressCity,
-            },
-            phoneNumber: phoneNumber,
-            description: description,
-          })
-          .then((res) => console.log(res));
+        setIsLoading(true); // Set loading to true when the form is being submitted
+        const response = await axios.post(`${apiBaseUrl}/businessOwner/signup`, {
+          username: userName,
+          email: email,
+          password: password,
+          password_confirmation: confirmPassword,
+          age: age,
+          businessName: businessName,
+          categories: selectedCategories,
+          address: {
+            country: addresscountry,
+            city: addressCity,
+          },
+          phoneNumber: phoneNumber,
+          description: description,
+        });
 
+        console.log(response);
+        const businessOwnerDetails = response.data;
+        console.log(businessOwnerDetails);
+        businessOwnerNow.setBusinessOwnerAuth({ businessOwnerDetails });
 
-        window.localStorage.setItem("email", email);
-        window.location.pathname = "/";
+        // Show toast for verification of email
+        if (response.status === 201) {
+          Swal.fire({
+            title: "Success!",
+            text: response.data.message, // Display the message from the backend
+            icon: "info",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Redirect to the home page after email verification
+              window.location.href = "/login";
+            }
+          });
+
+          // Store user email in a cookie
+          Cookies.set("userEmail", email, { expires: 7 });
+        }
       }
     } catch (error) {
-      console.log(error);
-      setErrorHandler(error.response.data.error.message);
+      console.log(error.response);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to Create Account",
+        text: error.response.data.error,
+      });
+      if (error.response.status === 409) {
+        setEmailError(true);
+        setErrorHandler(error.response.data.error);
+      }
+    } finally {
+      setIsLoading(false); // Set loading to false after the request is completed
     }
   };
+
   const handleCategoryChange = (value) => {
     if (selectedCategories.includes(value)) {
       setSelectedCategories(selectedCategories.filter((item) => item !== value));
@@ -161,7 +178,7 @@ const BusinesssOwnerRegisterPage = () => {
                     name="username"
                     id="username"
                     onChange={(e) => setUserName(e.target.value)}
-                    className="bg-gray-50 border border-gray-300 blur-0 focus:outline-none focus:border-[#8B4513] text-gray-900 text-sm rounded-lg  block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 blur-0 focus:outline-none focus:border-[#8B4513] text-gray-900 text-sm rounded-lg block w-full p-2.5"
                     required=""
                   />
                   {userName.length === 0 && accept && (
@@ -191,9 +208,7 @@ const BusinesssOwnerRegisterPage = () => {
                   )}
                   {accept &&
                     email.length > 0 &&
-                    !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-                      email
-                    ) && (
+                    !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email) && (
                       <p className="text-red-500 mt-1">Email is not valid</p>
                     )}
                 </div>
@@ -229,7 +244,7 @@ const BusinesssOwnerRegisterPage = () => {
                     <p className="text-red-500 mt-1">Password is required</p>
                   ) : !passwordRegex.test(password) && accept ? (
                     <p className="text-red-500 mt-1">
-                      Password must be at least 8 characters contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+                      Password must be at least 8 characters, contain at least one uppercase letter, one lowercase letter, one number, and one special character.
                     </p>
                   ) : null}
                 </div>
@@ -312,9 +327,7 @@ const BusinesssOwnerRegisterPage = () => {
                     value={businessName}
                     name="business-name"
                     id="business-name"
-                    onChange={(e) => {
-                      setBusinessName(e.target.value);
-                    }}
+                    onChange={(e) => setBusinessName(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
@@ -325,47 +338,47 @@ const BusinesssOwnerRegisterPage = () => {
                   ) : null}
                 </div>
 
-                {/* Business Type Field */}
+                {/* Business Categories Field */}
                 <div>
-      <label className="block mb-2 text-sm font-medium text-[#8B4513]">
-        Select Business Categories
-      </label>
-      <div className="space-y-2">
-        {availableCategories.map((option) => (
-          <label key={option} className="flex items-center">
-            <input
-              type="checkbox"
-              value={option}
-              checked={selectedCategories.includes(option)}
-              onChange={(e) => handleCategoryChange(e.target.value)}
-              className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300 rounded"
-            />
-            <span className="ml-2 text-sm text-[#8B4513]">{option}</span>
-          </label>
-        ))}
-      </div>
+                  <label className="block mb-2 text-sm font-medium text-[#8B4513]">
+                    Select Business Categories
+                  </label>
+                  <div className="space-y-2">
+                    {availableCategories.map((option) => (
+                      <label key={option} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          value={option}
+                          checked={selectedCategories.includes(option)}
+                          onChange={(e) => handleCategoryChange(e.target.value)}
+                          className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300 rounded"
+                        />
+                        <span className="ml-2 text-sm text-[#8B4513]">{option}</span>
+                      </label>
+                    ))}
+                  </div>
 
-      {/* Custom category input */}
-      <div className="mt-4">
-        <input
-          type="text"
-          value={customCategory}
-          onChange={(e) => setCustomCategory(e.target.value)}
-          placeholder="Enter custom category"
-          className="w-full p-2 border rounded-md text-sm focus:ring-[#8B4513] focus:border-[#8B4513]"
-        />
-        <button
-          onClick={handleCustomCategoryAdd}
-          className="mt-2 bg-[#8B4513] text-white px-4 py-1 rounded-md text-sm"
-        >
-          Add Category
-        </button>
-      </div>
+                  {/* Custom category input */}
+                  <div className="mt-4">
+                    <input
+                      type="text"
+                      value={customCategory}
+                      onChange={(e) => setCustomCategory(e.target.value)}
+                      placeholder="Enter custom category"
+                      className="w-full p-2 border rounded-md text-sm focus:ring-[#8B4513] focus:border-[#8B4513]"
+                    />
+                    <button
+                      onClick={handleCustomCategoryAdd}
+                      className="mt-2 bg-[#8B4513] text-white px-4 py-1 rounded-md text-sm"
+                    >
+                      Add Category
+                    </button>
+                  </div>
 
-      {accept && selectedCategories.length === 0 && (
-        <p className="text-red-500 mt-1">Please select at least one category</p>
-      )}
-    </div>
+                  {accept && selectedCategories.length === 0 && (
+                    <p className="text-red-500 mt-1">Please select at least one category</p>
+                  )}
+                </div>
 
                 {/* Address (Country) Field */}
                 <div>
@@ -380,9 +393,7 @@ const BusinesssOwnerRegisterPage = () => {
                     value={addresscountry}
                     name="address-country"
                     id="address-country"
-                    onChange={(e) => {
-                      setAddresscountry(e.target.value);
-                    }}
+                    onChange={(e) => setAddresscountry(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
@@ -406,9 +417,7 @@ const BusinesssOwnerRegisterPage = () => {
                     value={addressCity}
                     name="address-city"
                     id="address-city"
-                    onChange={(e) => {
-                      setAddressCity(e.target.value);
-                    }}
+                    onChange={(e) => setAddressCity(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
@@ -432,9 +441,7 @@ const BusinesssOwnerRegisterPage = () => {
                     value={phoneNumber}
                     name="phoneNumber"
                     id="phoneNumber"
-                    onChange={(e) => {
-                      setPhoneNumber(e.target.value);
-                    }}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
@@ -458,21 +465,29 @@ const BusinesssOwnerRegisterPage = () => {
                     value={description}
                     name="description"
                     id="description"
-                    onChange={(e) => {
-                      setDescription(e.target.value);
-                    }}
+                    onChange={(e) => setDescription(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
                     required=""
                   />
                 </div>
 
-
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full text-white bg-[#8B4513] hover:bg-[#030303] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  className="w-full text-white bg-[#8B4513] hover:bg-[#030303] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center justify-center"
+                  disabled={isLoading} // Disable the button when loading
                 >
-                  Create an account
+                  {isLoading ? (
+                    <div className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Creating account...
+                    </div>
+                  ) : (
+                    "Create an account"
+                  )}
                 </button>
 
                 {/* Login Link */}

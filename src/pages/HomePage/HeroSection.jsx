@@ -25,7 +25,7 @@ const HeroSection = () => {
     <div>
       <div 
         id='hero' 
-        className="font-poppins min-h-screen text-white mt-16 grid bg-cover bg-no-repeat bg-center"
+        className="font-poppins min-h-screen text-white grid bg-cover bg-no-repeat bg-center overflow-hidden"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         {/* Background Overlay */}
@@ -33,7 +33,7 @@ const HeroSection = () => {
 
         {/* Content */}
         <motion.div
-          className="col-start-1 row-start-1 mx-auto my-auto w-[80%]"
+          className="col-start-1 row-start-1 mx-auto my-auto w-full max-w-[1200px] px-4 lg:pt-32" // Adjusted padding for navbar height
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -41,7 +41,7 @@ const HeroSection = () => {
           {/* Heading */}
           <motion.h1
             variants={childVariants}
-            className="font-bold text-3xl md:text-5xl text-center md:text-left leading-snug md:leading-snug"
+            className="font-bold text-3xl md:text-5xl text-left leading-snug md:leading-snug" // Align text to the left
           >
             Share your <br />
             digital experience now <br />
@@ -51,7 +51,7 @@ const HeroSection = () => {
           {/* Paragraph */}
           <motion.p
             variants={childVariants}
-            className="mt-4 text-xl md:text-2xl text-gray-300 text-center md:text-left leading-snug"
+            className="mt-4 text-xl md:text-2xl text-gray-300 text-left leading-snug" // Align text to the left
           >
             Join iShare.com to connect with top experiences and insights across F&B, Fashion,
             <br /> healthcare, and education.
@@ -60,13 +60,8 @@ const HeroSection = () => {
           {/* Buttons */}
           <motion.div
             variants={childVariants}
-            className="mt-8 flex flex-col md:flex-row items-center gap-12"
+            className="mt-8 flex flex-col md:flex-row items-start gap-12" // Align items to the start
           >
-            {/* Create Account Button */}
-            <button className="bg-mainColor hover:bg-red-500 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
-              Create an Account
-            </button>
-
             {/* Watch Video Button */}
             <button className="flex items-center text-white hover:text-mainColor transition duration-300">
               <FaPlay className="w-6 h-6 mr-2 text-mainColor" /> {/* Play Icon */}

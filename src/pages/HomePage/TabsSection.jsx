@@ -28,13 +28,12 @@ const TabsComponent = () => {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
     hover: { scale: 1.05, transition: { duration: 0.1 } }, // Scale up on hover
-    active: { scale: 1.1, backgroundColor: "#EF4444", color: "#FFFFFF" }, // Scale up and change color when active
   };
 
   return (
     <div className="font-roboto w-[90%] mx-auto mt-16 mb-16">
       <motion.ul
-        className="flex flex-wrap justify-between gap-6"
+        className="flex flex-col lg:flex-row justify-between gap-6" // Flex column on small screens, row on large screens
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -43,7 +42,7 @@ const TabsComponent = () => {
         {tabs.map((tab) => (
           <motion.li
             key={tab.id}
-            className={`flex-1 text-center border border-gray-300 rounded-lg shadow-lg transition-all ${
+            className={`w-full lg:w-1/4 text-center border border-gray-300 rounded-lg shadow-lg transition-all ${
               active === tab.id ? "border-red-500 shadow-xl" : "hover:shadow-md"
             }`}
             variants={tabVariants}
@@ -53,7 +52,7 @@ const TabsComponent = () => {
             <a
               href={`#tabs-tab-${tab.id}`}
               onClick={() => setActive(tab.id)}
-              className={`flex items-center justify-center gap-6 py-10 px-4 text-xl font-semibold transition-all ${
+              className={`flex flex-col items-center justify-center gap-4 py-10 px-4 text-xl font-semibold transition-all ${
                 active === tab.id
                   ? "bg-red-500 text-white hover:bg-red-600"
                   : "text-gray-600 hover:text-red-500"

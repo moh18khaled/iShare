@@ -1,11 +1,17 @@
 import { createContext, useState } from "react";
 
-export const user = createContext({});
+export const User = createContext({});
 
-export const UserProvider = ({children}) =>{
+export const UserProvider = ({ children }) => {
+  const [auth, setAuth] = useState({});
+  const [businessOwnerAuth, setBusinessOwnerAuth] = useState({});
+  const [profilePicture, setProfilePicture] = useState("");
 
-    const [auth,setAuth] = useState([]);
-    
-    return  <user.Provider value={{auth,setAuth}}>{children}</user.Provider>
-                  
-}
+  return (
+    <User.Provider
+      value={{ auth, setAuth, businessOwnerAuth, setBusinessOwnerAuth, profilePicture, setProfilePicture }}
+    >
+      {children}
+    </User.Provider>
+  );
+};

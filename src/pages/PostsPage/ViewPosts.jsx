@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaHeart, FaComment, FaTrash } from "react-icons/fa";
 import axios from "axios";
+import { User } from "../../context/context";
 
 const ViewPosts = () => {
   const { id } = useParams();
@@ -19,6 +20,8 @@ const ViewPosts = () => {
   const [fullScreenImage, setFullScreenImage] = useState(null);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
+  const { auth } = useContext(User); // Access the auth state from the User context
+
   useEffect(() => {
     fetchPost();
     fetchComments();
@@ -30,7 +33,6 @@ const ViewPosts = () => {
       const data = response.data;
       console.log(data);
       setBusinessOwner(data.post.businessOwner.user_id);
-
       setPost(data.post);
       setIsLiked(data.isLiked);
       setLikesCount(data.likesCount);
@@ -41,7 +43,8 @@ const ViewPosts = () => {
       setLoading(false);
     }
   };
-      console.log(businessOwner);
+
+  console.log(businessOwner);
 
   const fetchComments = async () => {
     try {
@@ -137,10 +140,11 @@ const ViewPosts = () => {
   return (
     <div className="w-[95%] mx-auto text-center max-w-4xl shadow-2xl p-10 rounded-lg">
       {/* Post Author */}
-
       <div
-  className="flex items-center mb-6 cursor-pointer"
-  onClick={() => post?.author.isCurrentUser?navigate("/profile"):navigate(`/profile/${post?.author?._id}`)}>        {console.log(post?.author.isCurrentUser,"<>< ",post?.author?._id)}
+        className="flex items-center mb-6 cursor-pointer"
+        onClick={() => post?.author.isCurrentUser ? navigate("/profile") : navigate(`/profile/${post?.author?._id}`)}
+      >
+        {console.log(post?.author.isCurrentUser, "<>< ", post?.author?._id)}
         <img
           src={post?.author?.profilePicture?.url || "/default-profile.png"}
           alt={post?.author?.username || "Unknown User"}
@@ -150,11 +154,6 @@ const ViewPosts = () => {
           <p className="text-lg font-semibold">{post?.author?.username || "Unknown User"}</p>
         </div>
       </div>
-      {/* {!post?.author.isCurrentUser && (
-    <button onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)} className="bg-blue-500 text-white px-4 py-2 rounded">
-      {"Follow"}
-    </button>
-  )} */}
 
       {/* Post Content */}
       <h1 className="text-3xl font-bold mb-4">{post?.title || "No Title"}</h1>
@@ -180,33 +179,30 @@ const ViewPosts = () => {
         )}
       </div>
 
+      {/* Business Owner Section */}
+      <div
+        className="flex items-center justify-between mb-6 mt-6 cursor-pointer"
+        onClick={() => businessOwner.isCurrentUser ? navigate("/profile") : navigate(`/profile/${businessOwner?._id}`)}
+      >
+        <div className="flex items-center">
+          <img
+            src={businessOwner?.profilePicture?.url || "/default-profile.png"}
+            alt={businessOwner?.username || "Unknown User"}
+            className="w-12 h-12 rounded-full object-cover"
+          />
+          <p className="text-lg font-semibold">{businessOwner?.username || "Unknown User"}</p>
+        </div>
 
-{/* Post Author */}
-     {/* Post Author */}
-<div 
-  className="flex items-center justify-between mb-6 mt-6 cursor-pointer" 
-  onClick={() => businessOwner.isCurrentUser ? navigate("/profile") : navigate(`/profile/${businessOwner?._id}`)}
-> 
-  <div className="flex items-center">
-    <img 
-      src={businessOwner?.profilePicture?.url || "/default-profile.png"} 
-      alt={businessOwner?.username || "Unknown User"} 
-      className="w-12 h-12 rounded-full object-cover"
-    />
-    <p className=" text-lg font-semibold">{businessOwner?.username || "Unknown User"}</p>
-  </div>
-
-  {!businessOwner?.isCurrentUser && (
-    <button 
-      onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)} 
-      className="bg-mainColor text-white pl-4 px-4 ml-4 py-2 rounded"
-    >
-      Follow
-    </button>
-  )}
-</div>
-
-
+        {/* Conditionally render the Follow button */}
+        {!businessOwner?.isCurrentUser && auth.userDetails && (
+          <button
+            onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)}
+            className="bg-mainColor text-white pl-4 px-4 ml-4 py-2 rounded"
+          >
+            Follow
+          </button>
+        )}
+      </div>
 
       {/* Actions */}
       <div className="flex justify-between items-center mt-6 p-4 border-t border-gray-200">
@@ -260,9 +256,9 @@ const ViewPosts = () => {
                 />
                 <p className="ml-2 text-sm font-semibold">{cmt?.user?.username || "Anonymous"}</p>
               </div>
-              {!cmt.isCurrentUser && (
-                <button 
-                  onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)} 
+              {!cmt.isCurrentUser && auth.userDetails && (
+                <button
+                  onClick={() => toggleFollow(post?.author?._id, isFollowingAuthor, setIsFollowingAuthor)}
                   className="bg-blue-500 text-white px-4 py-2 rounded"
                 >
                   Follow
