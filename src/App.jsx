@@ -27,7 +27,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 const App = () => {
   return (
     <UserProvider>
-      <div className="scroll-smooth">
+      <div className="scroll-smooth font-sans">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<SelesctRPage />} />

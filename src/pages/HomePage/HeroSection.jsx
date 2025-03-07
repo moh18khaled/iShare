@@ -33,7 +33,7 @@ const HeroSection = () => {
 
         {/* Content */}
         <motion.div
-          className="col-start-1 row-start-1 mx-auto my-auto w-full max-w-[1200px] px-4 lg:pt-32" // Adjusted padding for navbar height
+          className="col-start-1 row-start-1 mx-auto my-auto w-full max-w-[1200px] px-4 pt-16 lg:pt-32" // Adjusted padding for navbar height
           variants={containerVariants}
           initial="hidden"
           animate="visible"

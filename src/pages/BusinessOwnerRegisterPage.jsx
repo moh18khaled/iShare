@@ -151,7 +151,7 @@ const BusinesssOwnerRegisterPage = () => {
             to="/"
             className="flex items-center mb-6 mt-6 text-3xl font-bold sm:text-4xl text-[#8B4513]"
           >
-            iShare
+            weinfluence
           </Link>
           <div className="w-full bg-[#E8D8C5] rounded-lg shadow-md sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6">

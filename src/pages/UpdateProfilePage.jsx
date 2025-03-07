@@ -94,7 +94,7 @@ const UpdateProfilePage = () => {
       Swal.fire({
         icon: "error",
         title: "Failed to Update Profile",
-        text: "Something went wrong!",
+        text: error.response.data.error,
       });
     }
   };

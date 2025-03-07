@@ -16,11 +16,11 @@ const Header = ({ searchQuery, onSearch }) => {
         <div className="max-w-7xl mx-auto flex items-center justify-between h-full">
           {/* Logo */}
           <div className="flex items-center">
-            <img
-              className="w-36 lg:w-48 lg:h-36 h-28 pl-10 rounded-full object-cover object-center lg:scale-150"
-              src={logo}
-              alt="weinfluence logo"
-            />
+          <img
+        className="w-52 h-40 lg:w-48 lg:h-36 lg:ml-24 ml-1 rounded-full object-cover"
+        src={logo}
+        alt="weinfluence logo"
+        />
           </div>
 
           {/* Search Bar */}

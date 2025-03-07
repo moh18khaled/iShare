@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
 import Cookies from 'js-cookie'; // Import js-cookie
 import Swal from 'sweetalert2';
+import { User } from '../context/context';
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -15,7 +16,8 @@ const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
     const [isLoading, setIsLoading] = useState(false); // State to manage loading spinner
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
+    const userNow = useContext(User);
+    console.log(userNow);
     const submitRules = async (event) => {
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         let flag = true;
@@ -39,6 +41,9 @@ const LoginPage = () => {
                     withCredentials: true, // Include cookies in the request
                 });
                 console.log(response);
+                const userDetails = response.data.data;
+                console.log(userDetails);
+                userNow.setAuth({ userDetails });
                 // Store the user's email in a cookie
                 Cookies.set("userEmail", email, { expires: 7 }); // Expires in 7 days
 
