@@ -126,7 +126,7 @@ const Navbar = () => {
 
           {/* Mobile Auth Buttons */}
           <div className="p-4 border-t border-gray-300">
-            {user.auth.userDetails ? (
+            {(user.auth.userDetails || user.businessOwnerAuth.businessOwnerDetails) ? (
               <div className="flex flex-col items-center space-y-3">
                 <Link to="/profile">
                 <img
@@ -183,7 +183,7 @@ const Navbar = () => {
           </ul>
 
           {/* Desktop Auth Buttons */}
-          {user.auth.userDetails ? (
+          {(user.auth.userDetails || user.businessOwnerAuth.businessOwnerDetails) ? (
             <div className="flex items-center space-x-4">
               <Link to="/profile">
               <img

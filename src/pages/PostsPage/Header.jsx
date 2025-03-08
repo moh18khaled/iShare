@@ -15,6 +15,7 @@ const Header = ({ searchQuery, onSearch }) => {
       <nav className="bg-white shadow-sm p-4 fixed w-full top-0 z-10 lg:h-24 h-20">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-full">
           {/* Logo */}
+          <Link to="/">
           <div className="flex items-center">
           <img
         className="w-52 h-40 lg:w-48 lg:h-36 lg:ml-24 ml-1 rounded-full object-cover"
@@ -22,6 +23,7 @@ const Header = ({ searchQuery, onSearch }) => {
         alt="weinfluence logo"
         />
           </div>
+          </Link>
 
           {/* Search Bar */}
           <div className="flex-1 max-w-xl mx-4 relative">

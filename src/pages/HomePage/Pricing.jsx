@@ -3,13 +3,26 @@ import React, { useContext } from "react";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { motion } from "framer-motion"; // Import Framer Motion
 import { User } from "../../context/context";
+import Swal from "sweetalert2"; // For displaying error messages
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Pricing = () => {
   const businessOwnerNow = useContext(User);
-  console.log(businessOwnerNow.businessOwnerAuth.businessOwnerDetails);
+
   const handlePayment = async () => {
     try {
+      // Check if businessOwnerNow contains data
+      if (!businessOwnerNow.businessOwnerAuth.businessOwnerDetails) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "You must be logged in as a business owner to proceed with payment.",
+        });
+        return;
+      }
+
+      // Proceed with payment if businessOwnerNow contains data
       const response = await axios.post(`${apiBaseUrl}/payments/create-order`, {
         amount: "25",
         currency: "USD",
@@ -17,16 +30,23 @@ const Pricing = () => {
 
       console.log("Response:", response.data); // Debugging
 
-      // if(businessOwner.businessOwnerAuth.businessOwnerDetails){
-        if (response.data && response.data.checkoutUrl) {
-          window.location.href = response.data.checkoutUrl;
-        } else {
-          console.error("Error: No checkout URL found.");
-        }
-      
-      
+      if (response.data && response.data.checkoutUrl) {
+        window.location.href = response.data.checkoutUrl; // Redirect to PayPal
+      } else {
+        console.error("Error: No checkout URL found.");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No checkout URL found. Please try again.",
+        });
+      }
     } catch (error) {
       console.error("Payment request failed:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Payment Failed",
+        text: error.response?.data?.message || "An error occurred during payment. Please try again.",
+      });
     }
   };
 

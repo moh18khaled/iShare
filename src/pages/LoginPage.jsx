@@ -43,7 +43,18 @@ const LoginPage = () => {
                 console.log(response);
                 const userDetails = response.data.data;
                 console.log(userDetails);
-                userNow.setAuth({ userDetails });
+                const businessOwnerDetails = response.data;
+                console.log(businessOwnerDetails);
+                if(Object.keys(userNow.auth) > 0){
+                    console.log("User is logged in:", userNow.auth.userDetails);
+                    userNow.setAuth({userDetails});
+                }
+                else if(Object.keys(userNow.businessOwnerAuth) > 0){
+                    console.log("Business Owner is logged in:", userNow.businessOwnerAuth.businessOwnerDetails);
+                    userNow.setBusinessOwnerAuth({businessOwnerDetails});
+                }
+                // userNow.setAuth({ userDetails });
+                
                 // Store the user's email in a cookie
                 Cookies.set("userEmail", email, { expires: 7 }); // Expires in 7 days
 

@@ -62,17 +62,45 @@ const UpdateProfilePage = () => {
     }
   };
 
+  // Upload image to Cloudinary
+  const uploadImageToCloudinary = async (file) => {
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "original"); // Replace with your upload preset
+    data.append("cloud_name", "dqmp5l622"); // Replace with your cloud name
+
+    try {
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/dqmp5l622/image/upload",
+        {
+          method: "POST",
+          body: data,
+        }
+      );
+      const result = await response.json();
+      return result.secure_url; // Return the URL of the uploaded image
+    } catch (error) {
+      console.error("Error uploading image to Cloudinary:", error);
+      throw error;
+    }
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let profilePictureUrl = formData.profilePicture;
+
+      // If a new profile picture is selected, upload it to Cloudinary
+      if (formData.profilePicture instanceof File) {
+        profilePictureUrl = await uploadImageToCloudinary(formData.profilePicture);
+      }
+
       const data = new FormData();
       data.append("username", formData.username);
       data.append("email", formData.email);
       data.append("password", formData.password);
-      if (formData.profilePicture) {
-        data.append("profilePicture", formData.profilePicture);
-      }
+      data.append("profilePicture", profilePictureUrl);
 
       const response = await axios.patch(`${apiBaseUrl}/user/account`, data, {
         headers: {
@@ -94,7 +122,7 @@ const UpdateProfilePage = () => {
       Swal.fire({
         icon: "error",
         title: "Failed to Update Profile",
-        text: error.response.data.error,
+        text: error.response?.data?.error || "An error occurred",
       });
     }
   };

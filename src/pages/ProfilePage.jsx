@@ -203,7 +203,7 @@ const ProfilePage = () => {
           <div className="flex flex-col min-h-screen p-4">
             <h3 className="text-lg font-semibold text-center p-4 mb-4">Mentioned Posts</h3>
             <div className="flex-grow flex justify-center flex-wrap gap-10">
-              {userAccount.mentionedPosts.map((post) => (
+              {userAccount.mentionedPosts?.map((post) => (
                 <div
                   key={post._id}
                   className="max-w-48 h-auto rounded-lg overflow-hidden shadow-lg bg-white relative group"
