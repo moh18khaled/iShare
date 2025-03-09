@@ -1,9 +1,13 @@
-import { FiSearch, FiBell, FiCreditCard, FiUser } from 'react-icons/fi';
-import { FaPlus } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { FiSearch, FiBell, FiCreditCard, FiUser } from "react-icons/fi";
+import { FaPlus } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import logo from "../../assets/images/weinfluence.png";
+import { useContext } from "react";
+import { User } from "../../context/context";
 
 const Header = ({ searchQuery, onSearch }) => {
+  const user = useContext(User);
+
   const handleSearchInputChange = (e) => {
     const query = e.target.value;
     onSearch(query); // Call the onSearch function passed from the parent
@@ -16,13 +20,13 @@ const Header = ({ searchQuery, onSearch }) => {
         <div className="max-w-7xl mx-auto flex items-center justify-between h-full">
           {/* Logo */}
           <Link to="/">
-          <div className="flex items-center">
-          <img
-        className="w-52 h-40 lg:w-48 lg:h-36 lg:ml-24 ml-1 rounded-full object-cover"
-        src={logo}
-        alt="weinfluence logo"
-        />
-          </div>
+            <div className="flex items-center">
+              <img
+                className="w-52 h-40 lg:w-48 lg:h-36 lg:ml-24 ml-1 rounded-full object-cover"
+                src={logo}
+                alt="weinfluence logo"
+              />
+            </div>
           </Link>
 
           {/* Search Bar */}
@@ -40,37 +44,28 @@ const Header = ({ searchQuery, onSearch }) => {
           </div>
 
           {/* Icons Section */}
-          <div className='hidden md:block'>
+          <div className="hidden md:block">
             <div className="flex items-center space-x-4 md:space-x-10">
-              {/* Transactions Icon */}
-              <Link to="/transactions">
-                <button className="p-2 rounded-full hover:bg-gray-100 relative">
-                  <FiCreditCard className="text-gray-600 text-xl" />
-                </button>
-              </Link>
-
-              {/* Notification Icon */}
-              <button className="p-2 rounded-full hover:bg-gray-100 relative">
-                <FiBell className="text-gray-600 text-xl" />
-                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                  3
-                </span>
-              </button>
-
               {/* Create Post Icon */}
-              <Link to="/create-post">
-                <button className="p-2 rounded-full hover:bg-gray-100">
-                  <FaPlus className="text-gray-600 text-xl" />
-                </button>
-              </Link>
+              {user.businessOwnerAuth.businessOwnerDetails ? "" : (
+                <Link to="/create-post">
+                  <button className="p-2 rounded-full hover:bg-gray-100">
+                    <FaPlus className="text-gray-600 text-xl" />
+                  </button>
+                </Link>
+              )}
 
-            {/* User Account Icon */}
-            <Link to="/profile">
-              <button className="p-2 rounded-full hover:bg-gray-100">
-                <FiUser className="text-gray-600 text-xl" />
-              </button>
-            </Link>
-          </div>
+              {/* User Account Icon */}
+              {user.profilePicture ? (
+                <Link to="/profile">
+                  <button className="p-2 rounded-full hover:bg-gray-100">
+                    <img src={user.profilePicture} className="w-10 h-10 rounded-full" />
+                  </button>
+                </Link>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
         </div>
       </nav>
@@ -78,34 +73,25 @@ const Header = ({ searchQuery, onSearch }) => {
       {/* Bottom Navigation Bar for Small Screens */}
       <div className="fixed bottom-0 left-0 w-full bg-white shadow-sm z-10 md:hidden">
         <div className="flex justify-around items-center p-2">
-          {/* Transactions Icon */}
-          <Link to="/transactions">
-            <button className="p-2 rounded-full hover:bg-gray-100 relative">
-              <FiCreditCard className="text-gray-600 text-xl" />
-            </button>
-          </Link>
-
-          {/* Notification Icon */}
-          <button className="p-2 rounded-full hover:bg-gray-100 relative">
-            <FiBell className="text-gray-600 text-xl" />
-            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-              3
-            </span>
-          </button>
-
           {/* Create Post Icon */}
-          <Link to="/create-post">
-            <button className="p-2 rounded-full hover:bg-gray-100">
-              <FaPlus className="text-gray-600 text-xl" />
-            </button>
-          </Link>
+          {user.businessOwnerAuth.businessOwnerDetails ? "" : (
+            <Link to="/create-post">
+              <button className="p-2 rounded-full hover:bg-gray-100">
+                <FaPlus className="text-gray-600 text-xl" />
+              </button>
+            </Link>
+          )}
 
           {/* User Account Icon */}
-          <Link to="/account">
-            <button className="p-2 rounded-full hover:bg-gray-100">
-              <FiUser className="text-gray-600 text-xl" />
-            </button>
-          </Link>
+          {user.profilePicture ? (
+            <Link to="/profile">
+              <button className="p-2 rounded-full hover:bg-gray-100">
+                <img src={user.profilePicture} className="w-10 h-10 rounded-full" />
+              </button>
+            </Link>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </>

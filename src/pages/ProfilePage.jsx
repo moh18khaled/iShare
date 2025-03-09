@@ -15,7 +15,6 @@ import ExpandableBoxForUsers from "../components/ExpandableBoxForUsers";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const ProfilePage = () => {
-  const userProfilePicture = useContext(User);
   const user = useContext(User);
   const location = useLocation();
   const navigate = useNavigate();
@@ -53,7 +52,6 @@ const ProfilePage = () => {
           role: response.data.data.role,
           mentionedPosts: response.data.data.mentionedPosts,
         });
-        userProfilePicture.setProfilePicture(response.data.data.profilePicture.url); // Set profile picture in context
       } catch (error) {
         console.error("Error fetching user data:", error);
       }

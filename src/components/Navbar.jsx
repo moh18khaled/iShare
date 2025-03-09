@@ -13,11 +13,9 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [profilePicture, setProfilePicture] = useState("");
 
   useEffect(() => {
-    const userEmail = Cookies.get("userEmail");
-    setProfilePicture("https://res.cloudinary.com/dknokwido/image/upload/v1737968225/profilePicture/tdnvzliie0wty93ihodf.jpg");
+    const userEmail = Cookies.get("user");
     if (userEmail) {
       setIsLoggedIn(true);
     }
@@ -37,8 +35,18 @@ const Navbar = () => {
       if (isConfirmed) {
         const response = await axios.post(`${apiBaseUrl}/user/logout`, {}, { withCredentials: true });
         if (response.status === 200) {
-          Cookies.remove("userEmail");
-          setIsLoggedIn(false);
+          // Clear cookies
+          Cookies.remove("auth");
+          Cookies.remove("businessOwnerAuth");
+          Cookies.remove("profilePicture");
+          Cookies.remove("user");
+
+          // Clear context state
+          user.setAuth({});
+          user.setBusinessOwnerAuth({});
+          user.setProfilePicture("");
+
+          // Navigate to login page
           navigate("/login");
           Swal.fire({
             title: "Logged Out!",
@@ -85,11 +93,11 @@ const Navbar = () => {
     <nav className="bg-[#F9F9F9] font-roboto z-50 shadow-md fixed w-full top-0 border-b border-gray-200 lg:h-32 h-24">
       <div className="max-w-[100%] mx-auto px-3 h-full flex flex-wrap items-center justify-between">
         <a href="/" className="flex items-center">
-        <img
-        className="w-52 h-40 lg:w-48 lg:h-36 lg:ml-24 ml-1 pb-10 lg:pb-0 rounded-full object-cover"
-        src={logo}
-        alt="weinfluence logo"
-        />
+          <img
+            className="w-52 h-40 lg:w-48 lg:h-36 lg:ml-24 ml-1 pb-10 lg:pb-0 rounded-full object-cover"
+            src={logo}
+            alt="weinfluence logo"
+          />
         </a>
 
         {/* Mobile Menu Button */}
@@ -106,7 +114,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu */}
-        <div className={`${isMenuOpen ? "block" : "hidden"} absolute top-full  left-0 w-full bg-white shadow-lg border border-gray-200 lg:hidden`}>
+        <div className={`${isMenuOpen ? "block" : "hidden"} absolute top-full left-0 w-full bg-white shadow-lg border border-gray-200 lg:hidden`}>
           <ul className="flex flex-col p-4 space-y-2">
             {navLinks.map((link) => (
               <li key={link.text}>
@@ -129,11 +137,11 @@ const Navbar = () => {
             {(user.auth.userDetails || user.businessOwnerAuth.businessOwnerDetails) ? (
               <div className="flex flex-col items-center space-y-3">
                 <Link to="/profile">
-                <img
-                  src={profilePicture}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full object-cover"
-                />
+                  <img
+                    src={user.profilePicture}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
                 </Link>
                 <button
                   onClick={handleLogout}
@@ -186,11 +194,11 @@ const Navbar = () => {
           {(user.auth.userDetails || user.businessOwnerAuth.businessOwnerDetails) ? (
             <div className="flex items-center space-x-4">
               <Link to="/profile">
-              <img
-                src={profilePicture || "default-profile-picture-url"}
-                alt="Profile"
-                className="w-10 h-10 rounded-full object-cover"
-              />
+                <img
+                  src={user.profilePicture || "default-profile-picture-url"}
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full object-cover"
+                />
               </Link>
               <button
                 onClick={handleLogout}
