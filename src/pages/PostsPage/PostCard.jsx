@@ -70,7 +70,7 @@ const PostCard = () => {
           onClick={() => handleCardClick(post._id)}
         >
           {/* Title - Always visible above the media */}
-          <div className="absolute top-0 left-0 right-0 z-10 p-2 bg-black bg-opacity-50">
+          <div className=" top-0 left-0 right-0 z-10 p-2 bg-black bg-opacity-50">
             <h2 className="text-white text-center text-xl font-bold truncate">
               {post.title}
             </h2>

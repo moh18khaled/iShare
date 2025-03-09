@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import SelesctRPage from "./pages/SelesctRPage";
 import BusinessOwnerRegisterPage from "./pages/BusinessOwnerRegisterPage";
 import ProfilePage from "./pages/ProfilePage";
+import UpdatePasswordPage from "./pages/UpdatePasswordPage";
 import PostsPage from "./pages/PostsPage";
 import CreatePostPage from "./pages/PostsPage/CreatePost";
 import ViewPosts from "./pages/PostsPage/ViewPosts";
@@ -40,6 +41,7 @@ const App = () => {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/profile/:id" element={<OtherUserProfilePage />} />
           <Route path="/profile/update" element={<UpdateProfilePage />} />
+          <Route path="/profile/update-password" element={<UpdatePasswordPage />} />
           <Route path="/otherUser/account/:id" element={<UserProfile />} /> {/* Fixed the issue */}
           <Route path="/posts" element={<PostsPage />} />
           <Route path="/post/:id" element={<ViewPosts />} />

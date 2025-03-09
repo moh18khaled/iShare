@@ -45,7 +45,7 @@ const Pricing = () => {
       Swal.fire({
         icon: "error",
         title: "Payment Failed",
-        text: error.response?.data?.message || "An error occurred during payment. Please try again.",
+        text: error.response?.data?.error || "An error occurred during payment. Please try again.",
       });
     }
   };

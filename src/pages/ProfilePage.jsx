@@ -179,11 +179,17 @@ const ProfilePage = () => {
                 />
               </div>
               <div className="flex items-center gap-4">
-                <Link
+              <Link
                   to="/profile/update"
-                  className="flex-grow-[8] bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition text-center"
+                  className="flex-grow bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition text-center"
                 >
                   Update Profile
+                </Link>
+                <Link
+                  to="/profile/update-password"
+                  className="flex-grow bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition text-center"
+                >
+                  Update Password
                 </Link>
                 <button
                   type="button"
