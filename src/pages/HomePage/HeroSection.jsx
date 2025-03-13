@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import backgroundImage from "../../assets/images/re.jpg";
 import { FaPlay } from "react-icons/fa"; // Import the play icon from react-icons
 import { motion } from 'framer-motion'; // Import Framer Motion
+import { Link } from "react-router-dom"; // Import Link for navigation
+import { User } from '../../context/context';
 
 const HeroSection = () => {
+  const user = useContext(User); // Access user context
+
   // Animation variants for the container
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -33,7 +37,7 @@ const HeroSection = () => {
 
         {/* Content */}
         <motion.div
-          className="col-start-1 row-start-1 mx-auto my-auto w-full max-w-[1200px] px-4 pt-16 lg:pt-32" // Adjusted padding for navbar height
+          className="col-start-1 row-start-1 mx-auto my-auto w-full max-w-[1200px] px-4 pt-28 lg:pt-36" // Adjusted padding for navbar height
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -53,20 +57,47 @@ const HeroSection = () => {
             variants={childVariants}
             className="mt-4 text-xl md:text-2xl text-gray-300 text-left leading-snug" // Align text to the left
           >
-            Join iShare.com to connect with top experiences and insights across F&B, Fashion,
+            Join weinfluence.com to connect with top experiences and insights across F&B, Fashion,
             <br /> healthcare, and education.
           </motion.p>
 
-          {/* Buttons */}
+          {/* Buttons Container with Padding */}
           <motion.div
             variants={childVariants}
-            className="mt-8 flex flex-col md:flex-row items-start gap-12" // Align items to the start
+            className="mt-8 flex flex-col items-start gap-8 pb-12" // Added pb-12 for padding after buttons
           >
             {/* Watch Video Button */}
             <button className="flex items-center text-white hover:text-mainColor transition duration-300">
               <FaPlay className="w-6 h-6 mr-2 text-mainColor" /> {/* Play Icon */}
               watch the video to learn how to make money
             </button>
+
+            {/* Conditionally render "View Posts", "Go to Dashboard", or "Register" button */}
+            {user.auth.userDetails ? (
+              // If logged in as a regular user, show "View Posts" button
+              <Link
+                to="/posts"
+                className="text-white bg-mainColor hover:bg-hoverColor px-12 py-3 rounded-lg transition-colors"
+              >
+                View Posts
+              </Link>
+            ) : user.businessOwnerAuth.businessOwnerDetails ? (
+              // If logged in as a business owner, show "Go to Dashboard" button
+              <Link
+                to="/user/dashboard"
+                className="text-white bg-mainColor hover:bg-hoverColor px-8 py-3 rounded-lg transition-colors"
+              >
+                Go to Dashboard
+              </Link>
+            ) : (
+              // If not logged in, show "Register" button
+              <Link
+                to="/register"
+                className="text-white bg-mainColor hover:bg-hoverColor px-8 py-3 rounded-lg transition-colors"
+              >
+                Create an account
+              </Link>
+            )}
           </motion.div>
         </motion.div>
       </div>

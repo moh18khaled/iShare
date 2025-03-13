@@ -33,7 +33,11 @@ const Navbar = () => {
       });
 
       if (isConfirmed) {
-        const response = await axios.post(`${apiBaseUrl}/user/logout`, {}, { withCredentials: true });
+        const response = await axios.post(
+          `${apiBaseUrl}/user/logout`,
+          {},
+          { withCredentials: true }
+        );
         if (response.status === 200) {
           // Clear cookies
           Cookies.remove("auth");
@@ -91,30 +95,60 @@ const Navbar = () => {
 
   return (
     <nav className="bg-[#F9F9F9] font-roboto z-50 shadow-md fixed w-full top-0 border-b border-gray-200 lg:h-32 h-24">
-      <div className="max-w-[100%] mx-auto px-3 h-full flex flex-wrap items-center justify-between">
+      <div className="max-w-[100%] mx-auto px-3 h-full flex items-center justify-between">
+        {/* Logo */}
         <a href="/" className="flex items-center">
           <img
-            className="w-52 h-40 lg:w-48 lg:h-36 lg:ml-24 ml-1 pb-10 lg:pb-0 rounded-full object-cover"
+            className="w-52 h-40 lg:w-48 lg:h-36 lg:ml-24 ml-1 lg:pb-0 rounded-full object-cover"
             src={logo}
             alt="weinfluence logo"
           />
         </a>
 
-        {/* Mobile Menu Button */}
-        <div className="lg:hidden">
+        {/* Mobile Menu Button and Profile Picture/Login Button */}
+        <div className="lg:hidden flex items-center gap-4">
+          {/* Profile Picture or Login Button */}
+          {user.auth.userDetails || user.businessOwnerAuth.businessOwnerDetails ? (
+            <Link to="/profile" className="flex items-center">
+              <img
+                src={user.profilePicture}
+                alt="Profile"
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            </Link>
+          ) : (
+            <Link
+              to="/login"
+              className="text-white bg-mainColor hover:bg-hoverColor px-4 py-2 rounded-lg transition-colors"
+            >
+              Login
+            </Link>
+          )}
+
+          {/* Mobile Menu Button */}
           <button
             onClick={toggleMenu}
-            className="inline-flex items-center w-10 h-10 pb-10 lg:pb-0 justify-center text-gray-500 rounded-lg focus:outline-none"
+            className="inline-flex items-center w-10 h-10 justify-center text-gray-500 rounded-lg focus:outline-none"
             aria-label="Toggle navigation"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 17 14">
-              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15"/>
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M1 1h15M1 7h15M1 13h15"
+              />
             </svg>
           </button>
         </div>
 
         {/* Mobile Menu */}
-        <div className={`${isMenuOpen ? "block" : "hidden"} absolute top-full left-0 w-full bg-white shadow-lg border border-gray-200 lg:hidden`}>
+        <div
+          className={`${
+            isMenuOpen ? "block" : "hidden"
+          } absolute top-full left-0 w-full bg-white shadow-lg border border-gray-200 lg:hidden`}
+        >
           <ul className="flex flex-col p-4 space-y-2">
             {navLinks.map((link) => (
               <li key={link.text}>
@@ -134,15 +168,9 @@ const Navbar = () => {
 
           {/* Mobile Auth Buttons */}
           <div className="p-4 border-t border-gray-300">
-            {(user.auth.userDetails || user.businessOwnerAuth.businessOwnerDetails) ? (
+            {user.auth.userDetails ||
+            user.businessOwnerAuth.businessOwnerDetails ? (
               <div className="flex flex-col items-center space-y-3">
-                <Link to="/profile">
-                  <img
-                    src={user.profilePicture}
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                </Link>
                 <button
                   onClick={handleLogout}
                   className="w-full text-white bg-red-600 hover:bg-red-700 py-2 px-4 rounded-lg"
@@ -150,24 +178,7 @@ const Navbar = () => {
                   Logout
                 </button>
               </div>
-            ) : (
-              <div className="flex flex-col space-y-2">
-                <Link
-                  to="/register"
-                  onClick={closeMenu}
-                  className="w-full text-center text-white bg-mainColor hover:bg-hoverColor py-2 px-4 rounded-lg"
-                >
-                  Register
-                </Link>
-                <Link
-                  to="/login"
-                  onClick={closeMenu}
-                  className="w-full text-center text-white bg-mainColor hover:bg-hoverColor py-2 px-4 rounded-lg"
-                >
-                  Login
-                </Link>
-              </div>
-            )}
+            ) : ""}
           </div>
         </div>
 
@@ -191,7 +202,8 @@ const Navbar = () => {
           </ul>
 
           {/* Desktop Auth Buttons */}
-          {(user.auth.userDetails || user.businessOwnerAuth.businessOwnerDetails) ? (
+          {user.auth.userDetails ||
+          user.businessOwnerAuth.businessOwnerDetails ? (
             <div className="flex items-center space-x-4">
               <Link to="/profile">
                 <img
@@ -209,12 +221,6 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="flex space-x-4">
-              <Link
-                to="/register"
-                className="text-white bg-mainColor hover:bg-hoverColor px-4 py-2 rounded-lg transition-colors"
-              >
-                Register
-              </Link>
               <Link
                 to="/login"
                 className="text-white bg-mainColor hover:bg-hoverColor px-4 py-2 rounded-lg transition-colors"
