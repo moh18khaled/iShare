@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FaHeart, FaComment, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import { User } from "../../context/context";
+import Swal from "sweetalert2";
 
 const ViewPosts = () => {
   const { id } = useParams();
@@ -47,7 +48,13 @@ const ViewPosts = () => {
       setIsFollowingAuthor(data.post.author.isFollowed || false); 
       setIsFollowingBusinessOwner(data.post.businessOwner.user_id.isFollowed || false); 
     } catch (error) {
-      setError(error.message);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: error.response.data?.error,
+        confirmButtonColor: "#d33",
+      })
+      navigate("/posts");
     } finally {
       setLoading(false);
     }
@@ -90,7 +97,7 @@ const ViewPosts = () => {
   const handleDeletePost = async () => {
     try {
       await axios.delete(`${apiBaseUrl}/postss/${id}`);
-      navigate("/all/posts");
+      navigate("/posts");
     } catch (error) {
       console.error("Failed to delete post:", error);
     }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { FaImage, FaVideo, FaStar, FaCheckCircle } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -45,7 +46,12 @@ const CreatePostPage = () => {
 
       const response = await axios.post(`${apiBaseUrl}/postss`, postData);
       if (response.status === 200 || response.status === 201) {
-        alert("Post created successfully!");
+        Swal.fire({
+          icon: "success",
+          title: "Post Created!",
+          text: "Your post has been successfully created.",
+          confirmButtonColor: "#3085d6",
+        });
         // Reset the form
         setTitle("");
         setContent("");
@@ -54,11 +60,21 @@ const CreatePostPage = () => {
         setImageData({ url: "", publicId: "" });
         setVideoData({ url: "", publicId: "" });
       } else {
-        alert("Failed to create post. Please try again.");
+        Swal.fire({
+          icon: "error",
+          title: "Failed!",
+          text: "Failed to create post. Please try again.",
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error creating post:", error);
-      alert("An error occurred. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: error.response.data?.error,
+        confirmButtonColor: "#d33",
+      });
     }
   };
 
