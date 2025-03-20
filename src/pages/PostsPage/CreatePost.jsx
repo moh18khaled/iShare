@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { FaImage, FaVideo, FaStar, FaCheckCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { BsExclamationCircle } from "react-icons/bs";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -152,6 +153,7 @@ const CreatePostPage = () => {
                     checked={businessName === business}
                     onChange={(e) => setBusinessName(e.target.value)}
                     className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300"
+                    required
                   />
                   <span className="ml-2 text-sm text-[#8B4513]">{business}</span>
                 </label>
