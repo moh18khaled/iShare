@@ -45,7 +45,7 @@ const HeroSection = () => {
           {/* Heading */}
           <motion.h1
             variants={childVariants}
-            className="font-bold text-3xl md:text-5xl text-left leading-snug md:leading-snug" // Align text to the left
+            className="font-bold text-2xl md:text-4xl text-left leading-snug md:leading-snug" // Align text to the left
           >
             Share your <br />
             digital experience now <br />
@@ -66,12 +66,6 @@ const HeroSection = () => {
             variants={childVariants}
             className="mt-8 flex flex-col items-start gap-8 pb-12" // Added pb-12 for padding after buttons
           >
-            {/* Watch Video Button */}
-            <button className="flex items-center text-white hover:text-mainColor transition duration-300">
-              <FaPlay className="w-6 h-6 mr-2 text-mainColor" /> {/* Play Icon */}
-              watch the video to learn how to make money
-            </button>
-
             {/* Conditionally render "View Posts", "Go to Dashboard", or "Register" button */}
             {user.auth.userDetails ? (
               // If logged in as a regular user, show "View Posts" button
@@ -98,6 +92,12 @@ const HeroSection = () => {
                 Create an account
               </Link>
             )}
+
+            {/* Watch Video Button */}
+            <button className="flex items-center text-white hover:text-mainColor transition duration-300">
+              <FaPlay className="w-6 h-6 mr-2 text-mainColor" /> {/* Play Icon */}
+              watch the video to learn how to make money
+            </button>
           </motion.div>
         </motion.div>
       </div>

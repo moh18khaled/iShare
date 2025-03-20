@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
-import logo from "../assets/images/weinfluence.png";
+import logo from "../assets/images/WeinfluenceLogo.png";
 import { User } from "../context/context";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -94,12 +94,12 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-[#F9F9F9] font-roboto z-50 shadow-md fixed w-full top-0 border-b border-gray-200 lg:h-32 h-24">
+    <nav className="bg-[#F9F9F9] font-roboto z-50 shadow-md fixed w-full top-0 border-b border-gray-200 lg:h-24 h-20">
       <div className="max-w-[100%] mx-auto px-3 h-full flex items-center justify-between">
         {/* Logo */}
         <a href="/" className="flex items-center">
           <img
-            className="w-52 h-40 lg:w-48 lg:h-36 lg:ml-24 ml-1 lg:pb-0 rounded-full object-cover"
+            className="w-36 h-24 lg:w-48 lg:h-28 lg:ml-16 ml-1 object-contain"
             src={logo}
             alt="weinfluence logo"
           />

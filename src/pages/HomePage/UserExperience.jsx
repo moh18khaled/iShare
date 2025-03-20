@@ -104,9 +104,27 @@ const UsersExperience = () => {
             >
               Fashion
             </motion.button>
+            <motion.button
+              className="filter-btn px-10 py-4 bg-white shadow-lg text-gray-700 rounded-full hover:bg-[#FF7D5F] hover:text-white text-lg transition-all duration-300"
+              variants={filterButtonVariants}
+            >
+              Movies
+            </motion.button>
+            <motion.button
+              className="filter-btn px-10 py-4 bg-white shadow-lg text-gray-700 rounded-full hover:bg-[#FF7D5F] hover:text-white text-lg transition-all duration-300"
+              variants={filterButtonVariants}
+            >
+              Books
+            </motion.button>
           </div>
         </motion.div>
-
+          {/* Title */}
+        <motion.h2
+          className="text-4xl font-bold mb-4 pt-4 text-center"
+          variants={titleVariants}
+        >
+          Trending Experiences now ..
+        </motion.h2>
         {/* Portfolio Grid */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16"

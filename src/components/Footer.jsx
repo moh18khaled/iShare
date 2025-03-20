@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Footer About */}
           <div>
-            <a href="index.html" className="text-mainColor text-2xl font-bold">
+            <a href="index.html" className="text-2xl font-bold">
             weinfluence.
             </a>
             <div className="mt-4">
@@ -38,7 +38,7 @@ const Footer = () => {
           </div>
           {/* Useful Links */}
           <div>
-            <h4 className="text-mainColor text-lg font-bold mb-4">Useful Links</h4>
+            <h4 className="text-lg font-bold mb-4">Useful Links</h4>
             <ul className="space-y-2">
               <li>
                 <a href="#" className="hover:text-mainColor">
@@ -59,7 +59,7 @@ const Footer = () => {
           </div>
           {/* Our Services */}
           <div>
-            <h4 className="text-mainColor text-lg font-bold mb-4">Our Services</h4>
+            <h4 className="text-lg font-bold mb-4">Our Services</h4>
             <ul className="space-y-2">
               <li>
                 <a href="#" className="hover:text-mainColor">
@@ -90,7 +90,7 @@ const Footer = () => {
           </div>
           {/* Newsletter */}
           <div>
-            <h4 className="text-mainColor text-lg font-bold mb-4">Our Newsletter</h4>
+            <h4 className="text-lg font-bold mb-4">Our Newsletter</h4>
             <p className="mb-4">
               Subscribe to our newsletter and receive the latest news about our
               products and services!
@@ -116,9 +116,9 @@ const Footer = () => {
         </div>
       </div>
       {/* Footer Bottom */}
-      <div className="mt-12 text-center text-gray-500">
+      <div className="mt-12 text-center">
         <p>
-          Copyright <strong className="text-mainColor">weinfluence.</strong> All Rights Reserved
+          Copyright <strong className="font-bold text-black">weinfluence.</strong> All Rights Reserved
         </p>
       </div>
     </footer>

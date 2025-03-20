@@ -134,7 +134,7 @@ const TeamSection = () => {
         {teamMembers.map((member, index) => (
           <motion.div
             key={index}
-            className="group max-w-sm bg-[#E6D5C1] rounded-lg shadow-lg overflow-hidden"
+            className="group max-w-[270px] bg-[#E6D5C1] rounded-lg shadow-lg overflow-hidden"
             variants={itemVariants}
             transition={{ type: "spring", stiffness: 300 }}
           >
@@ -142,7 +142,7 @@ const TeamSection = () => {
               <img
                 src={member.image}
                 alt={member.name}
-                className="w-full h-auto rounded-t-lg"
+                className="w-full h-60 rounded-t-lg"
               />
               <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="flex gap-4">

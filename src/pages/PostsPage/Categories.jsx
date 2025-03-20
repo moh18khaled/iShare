@@ -57,6 +57,18 @@ const Categories = () => {
             >
               Fashion
             </motion.button>
+            <motion.button
+              className="filter-btn px-10 py-4 bg-white shadow-lg text-gray-700 rounded-full hover:bg-[#FF7D5F] hover:text-white text-lg transition-all duration-300"
+              variants={filterButtonVariants}
+            >
+              Movies
+            </motion.button>
+            <motion.button
+              className="filter-btn px-10 py-4 bg-white shadow-lg text-gray-700 rounded-full hover:bg-[#FF7D5F] hover:text-white text-lg transition-all duration-300"
+              variants={filterButtonVariants}
+            >
+              Books
+            </motion.button>
           </div>
         </motion.div>
     </div>

@@ -1,7 +1,7 @@
 import { FiSearch, FiBell, FiCreditCard, FiUser } from "react-icons/fi";
 import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import logo from "../../assets/images/weinfluence.png";
+import logo from "../../assets/images/WeinfluenceLogo.png";
 import { useContext } from "react";
 import { User } from "../../context/context";
 
@@ -21,11 +21,11 @@ const Header = ({ searchQuery, onSearch }) => {
           {/* Logo */}
           <Link to="/">
             <div className="flex items-center">
-              <img
-                className="w-52 h-40 lg:w-48 lg:h-36 lg:ml-24 ml-1 rounded-full object-cover"
-                src={logo}
-                alt="weinfluence logo"
-              />
+            <img
+            className="w-36 h-24 lg:w-48 lg:h-28 lg:ml-16 ml-1 object-contain"
+            src={logo}
+            alt="weinfluence logo"
+          />
             </div>
           </Link>
 

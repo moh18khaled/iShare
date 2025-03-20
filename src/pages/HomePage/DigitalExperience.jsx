@@ -31,7 +31,7 @@ const DigitalExperience = () => {
     <div className="tab-content mt-12 font-roboto">
       <div className="tab-pane fade active show w-[90%] mx-auto" id="tabs-tab-1">
         <motion.div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
+          className="grid grid-cols-1 lg:grid-cols-2 lg:space-x-36 items-center"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -117,7 +117,7 @@ const DigitalExperience = () => {
 
           {/* Right Image */}
           <motion.div
-            className="order-1 w-[100%] md:w-[80%] lg:order-2 text-center"
+            className="order-1 w-[100%] sm:w-[60%] lg:order-2 text-center"
             variants={rightImageVariants}
           >
             <img

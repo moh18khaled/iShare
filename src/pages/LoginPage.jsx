@@ -5,7 +5,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import Cookies from "js-cookie"; // Import js-cookie
 import Swal from "sweetalert2";
 import { User } from "../context/context";
-
+import logo from "../assets/images/WeinfluenceLogo.png"
 const LoginPage = () => {
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState(false);
@@ -91,8 +91,15 @@ const LoginPage = () => {
     <div className="h-screen bg-light-gray">
       <div className="bg-white">
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-full lg:py-0">
-          <Link to="/" className="flex items-center mb-6 mt-6 text-3xl font-bold sm:text-4xl text-[#8B4513]">
-            weinfluence
+          {/* Logo */}
+          <Link to="/">
+            <div className="flex items-center">
+            <img
+            className="w-36 h-24 lg:w-48 lg:h-28 lg:ml-16 ml-1 object-contain"
+            src={logo}
+            alt="weinfluence logo"
+          />
+            </div>
           </Link>
           <div className="w-full bg-[#E8D8C5] rounded-lg shadow-md sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6">
