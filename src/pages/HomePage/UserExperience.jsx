@@ -25,7 +25,7 @@ const UsersExperience = () => {
     <section id="users-experience" className="font-roboto section py-16 bg-gray-50">
       {/* Section Title */}
       <motion.div
-        className="w-[90%] section-title text-center"
+        className="section-title text-center"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
@@ -122,6 +122,7 @@ const UsersExperience = () => {
         <motion.h2
           className="text-4xl font-bold mb-4 pt-4 text-center"
           variants={titleVariants}
+          data-aos="fade-up" data-aos-delay="100"
         >
           Trending Experiences now ..
         </motion.h2>

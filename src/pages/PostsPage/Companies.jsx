@@ -30,7 +30,11 @@ const Companies = () => {
 
   return (
     <section id="clients" className="clients section py-12">
-      <div className="container mx-auto px-4 mt-16" data-aos="fade-up" data-aos-delay="100">
+      <div data-aos="fade-up" data-aos-delay="100">
+            <h1 className='text-2xl lg:text-4xl text-center font-semibold pt-20 pb-4' lang='ar'>برعاية</h1>
+
+      <div className="container mx-auto px-4 mt-16" >
+
         <Swiper
           modules={[Autoplay, Pagination]}
           loop={true}
@@ -75,6 +79,7 @@ const Companies = () => {
           ))}
           <div className="swiper-pagination mt-4"></div>
         </Swiper>
+      </div>
       </div>
     </section>
   );

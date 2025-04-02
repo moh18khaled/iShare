@@ -1,30 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
-const PostCard = () => {
+const PostCard = ({ posts, loading, error }) => {
   const navigate = useNavigate();
-  const [postedData, setPostedData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${apiBaseUrl}/postss`);
-        console.log(response.data); // Debugging
-        setPostedData(response.data.posts || []); // Ensure it's always an array
-
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const handleCardClick = (id) => {
     navigate(`/post/${id}`);
@@ -60,9 +38,17 @@ const PostCard = () => {
     return <div className="text-center mt-16 text-red-500">Error: {error}</div>;
   }
 
+  if (posts.length === 0) {
+    return (
+      <div className="text-center mt-16 text-gray-500">
+        No posts found matching your criteria.
+      </div>
+    );
+  }
+
   return (
     <div className="w-[95%] mx-auto mt-16 flex justify-center flex-wrap gap-10">
-      {postedData.map((post) => (
+      {posts.map((post) => (
         <div
           key={post._id}
           className="max-w-72 h-auto rounded-lg overflow-hidden shadow-lg bg-white relative group cursor-pointer"
@@ -70,7 +56,7 @@ const PostCard = () => {
           onClick={() => handleCardClick(post._id)}
         >
           {/* Title - Always visible above the media */}
-          <div className=" top-0 left-0 right-0 z-10 p-2 bg-black bg-opacity-50">
+          <div className="top-0 left-0 right-0 z-10 p-2 bg-black bg-opacity-50">
             <h2 className="text-white text-center text-xl font-bold truncate">
               {post.title}
             </h2>

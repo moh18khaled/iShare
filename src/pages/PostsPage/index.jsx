@@ -7,6 +7,7 @@ import PostCard from './PostCard';
 
 const PostsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [postedData, setPostedData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,9 +18,9 @@ const PostsPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiBaseUrl}/posts`);
+        const response = await axios.get(`${apiBaseUrl}/postss`);
         setPostedData(response.data.posts);
-        setFilteredData(response.data.posts); // Initialize filteredData with all posts
+        setFilteredData(response.data.posts);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -30,32 +31,66 @@ const PostsPage = () => {
     fetchData();
   }, []);
 
-  // Handle search
-  const handleSearch = async (query) => {
-    setSearchQuery(query);
-    if (query) {
+  // Handle combined search and filtering
+  useEffect(() => {
+    const filterPosts = async () => {
       try {
-        const response = await axios.get(`${apiBaseUrl}/posts/search?query=${encodeURIComponent(query)}`);
-        setFilteredData(response.data.posts);
+        setLoading(true);
+        
+        // Build query parameters
+        const params = new URLSearchParams();
+        
+        if (searchQuery) {
+          params.append('query', searchQuery);
+        }
+        
+        if (selectedCategory && selectedCategory !== 'all') {
+          params.append('categoryNames', selectedCategory);
+        }
+
+        // Only make API call if we have filters
+        if (searchQuery || (selectedCategory && selectedCategory !== 'all')) {
+          const response = await axios.get(`${apiBaseUrl}/postss/search?${params.toString()}`);
+          console.log(response);
+          setFilteredData(response.data.posts);
+        } else {
+          // No filters - show all posts
+          setFilteredData(postedData);
+        }
       } catch (error) {
         setError(error.message);
+      } finally {
+        setLoading(false);
       }
-    } else {
-      // If the search query is empty, show all posts
-      setFilteredData(postedData);
-    }
-  };
+    };
+
+    // Add debounce to prevent too many API calls
+    const debounceTimer = setTimeout(() => {
+      filterPosts();
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery, selectedCategory, postedData]);
 
   return (
     <div className='bg-[#F9F9F9]'>
-      {/* Pass the search query and handleSearch function to the Header component */}
-      <Header searchQuery={searchQuery} onSearch={handleSearch} />
-
+      <Header 
+        searchQuery={searchQuery} 
+        onSearch={(query) => setSearchQuery(query)} 
+      />
+      
       <Companies />
-      <Categories />
-
-      {/* Pass the filtered posts to the PostCard component */}
-      <PostCard posts={filteredData} loading={loading} error={error} />
+      
+      <Categories 
+        selectedCategory={selectedCategory} 
+        setSelectedCategory={setSelectedCategory} 
+      />
+      
+      <PostCard 
+        posts={filteredData} 
+        loading={loading} 
+        error={error} 
+      />
     </div>
   );
 };

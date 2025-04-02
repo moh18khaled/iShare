@@ -9,26 +9,41 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const CreatePostPage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [businessName, setBusinessName] = useState("");
   const [rating, setRating] = useState(0);
-  const [businessNames, setBusinessNames] = useState([]);
+  // const [businessNames, setBusinessNames] = useState([]);
+  const [bussinessName,setBussinessName] = useState("");
+  const [availableCategories, setAvailableCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
   // Separate states for image and video uploads
   const [imageData, setImageData] = useState({ url: "", publicId: "" });
   const [videoData, setVideoData] = useState({ url: "", publicId: "" });
 
   // Fetch business names from the backend
+  // useEffect(() => {
+  //   const fetchBusinessNames = async () => {
+  //     try {
+  //       const response = await axios.get(`${apiBaseUrl}/businessOwner/business-names`);
+  //       setBusinessNames(response.data.businessNames);
+  //     } catch (error) {
+  //       console.error("Error fetching business names:", error);
+  //     }
+  //   };
+  //   fetchBusinessNames();
+  // }, []);
+
   useEffect(() => {
-    const fetchBusinessNames = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiBaseUrl}/businessOwner/business-names`);
-        setBusinessNames(response.data.businessNames);
+        const response = await axios.get(`${apiBaseUrl}/businessOwner/signup-data`);
+        setAvailableCategories(response.data.categories);
       } catch (error) {
-        console.error("Error fetching business names:", error);
+        console.error("Error fetching signup data:", error);
       }
     };
-    fetchBusinessNames();
-  }, []);
+
+    fetchData();
+  }, [apiBaseUrl]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -115,6 +130,14 @@ const CreatePostPage = () => {
     setRating(selectedRating);
   };
 
+  const handleCategoryChange = (value) => {
+    if (selectedCategories.includes(value)) {
+      setSelectedCategories(selectedCategories.filter((item) => item !== value));
+    } else {
+      setSelectedCategories([...selectedCategories, value]);
+    }
+  };
+
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-2xl mx-auto bg-red-200 rounded-lg shadow-lg p-8 mt-32">
@@ -140,8 +163,18 @@ const CreatePostPage = () => {
             required
           ></textarea>
 
+          {/* Bussiness Name */}
+          <input
+            type="text"
+            className="w-full p-3 rounded-lg border border-red-200 focus:ring-2 focus:ring-red-300 bg-white mb-4"
+            placeholder="Enter the Bussiness Name"
+            value={bussinessName}
+            onChange={(e) => setBussinessName(e.target.value)}
+            required
+          />
+
           {/* Business Name Selection */}
-          <div>
+          {/* <div>
             <label className="block mb-2 text-sm font-medium text-[#8B4513]">Select a Business Name</label>
             <div className="space-y-2">
               {businessNames.map((business, idx) => (
@@ -159,7 +192,31 @@ const CreatePostPage = () => {
                 </label>
               ))}
             </div>
-          </div>
+          </div> */}
+
+          {/* Business Categories Field */}
+          <div>
+                  <label className="block mb-2 text-lg font-medium text-[#8B4513]">
+                    Select Business Categories
+                  </label>
+                  <div className="space-y-2">
+                    {availableCategories.map((option) => (
+                      <label key={option} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          value={option}
+                          checked={selectedCategories.includes(option)}
+                          onChange={(e) => handleCategoryChange(e.target.value)}
+                          className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300 rounded"
+                        />
+                        <span className="ml-2 text-sm text-[#8B4513]">{option}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {/* {selectedCategories.length === 0 && (
+                    <p className="text-red-500 mt-1">Please select at least one category</p>
+                  )} */}
+                </div>
 
           {/* Star Rating */}
           <div className="flex items-center space-x-2 mb-4 mt-4">

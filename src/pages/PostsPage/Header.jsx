@@ -1,4 +1,4 @@
-import { FiSearch, FiBell, FiCreditCard, FiUser } from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
 import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import logo from "../../assets/images/WeinfluenceLogo.png";
@@ -10,7 +10,7 @@ const Header = ({ searchQuery, onSearch }) => {
 
   const handleSearchInputChange = (e) => {
     const query = e.target.value;
-    onSearch(query); // Call the onSearch function passed from the parent
+    onSearch(query);
   };
 
   return (
@@ -21,11 +21,11 @@ const Header = ({ searchQuery, onSearch }) => {
           {/* Logo */}
           <Link to="/">
             <div className="flex items-center">
-            <img
-            className="w-36 h-24 lg:w-48 lg:h-28 lg:ml-16 ml-1 object-contain"
-            src={logo}
-            alt="weinfluence logo"
-          />
+              <img
+                className="w-36 h-24 lg:w-48 lg:h-28 lg:ml-16 ml-1 object-contain"
+                src={logo}
+                alt="weinfluence logo"
+              />
             </div>
           </Link>
 
@@ -59,7 +59,7 @@ const Header = ({ searchQuery, onSearch }) => {
               {user.profilePicture ? (
                 <Link to="/profile">
                   <button className="p-2 rounded-full hover:bg-gray-100">
-                    <img src={user.profilePicture} className="w-10 h-10 rounded-full" />
+                    <img src={user.profilePicture} className="w-10 h-10 rounded-full" alt="Profile" />
                   </button>
                 </Link>
               ) : (
@@ -86,7 +86,7 @@ const Header = ({ searchQuery, onSearch }) => {
           {user.profilePicture ? (
             <Link to="/profile">
               <button className="p-2 rounded-full hover:bg-gray-100">
-                <img src={user.profilePicture} className="w-10 h-10 rounded-full" />
+                <img src={user.profilePicture} className="w-10 h-10 rounded-full" alt="Profile" />
               </button>
             </Link>
           ) : (

@@ -11,12 +11,14 @@ import ContactSection from './ContactSection'
 import Footer from '../../components/Footer'
 import Testimonials from './TestominalsSection'
 import UsersExperience from './UserExperience'
+import Companies from '../PostsPage/Companies'
 
 const HomePage = () => {
   return (
     <div className='bg-[#F9F9F9]'>
       <Navbar />
       <HeroSection />
+      <Companies />
       <StatsSection />
       <TabsSection />
       <DigitalExperience />

@@ -1,11 +1,12 @@
 import axios from "axios";
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import { FaEye, FaEyeSlash, FaPlus } from "react-icons/fa"; // Import icons
+import { FaEye, FaEyeSlash, FaGlobe } from "react-icons/fa";
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
 import { User } from "../context/context";
 import logo from "../assets/images/WeinfluenceLogo.png"
+
 const BusinesssOwnerRegisterPage = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -16,24 +17,26 @@ const BusinesssOwnerRegisterPage = () => {
   const [businessName, setBusinessName] = useState("");
   const [availableCategories, setAvailableCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [customCategory, setCustomCategory] = useState("");
-  const [businessType, setBusinessType] = useState("");
   const [addresscountry, setAddresscountry] = useState("");
   const [addressCity, setAddressCity] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [websiteError, setWebsiteError] = useState("");
   const [description, setDescription] = useState("");
   const [accept, setAccept] = useState(false);
   const [errorHandler, setErrorHandler] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // State to manage loading spinner
+  const [isLoading, setIsLoading] = useState(false);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const businessOwnerNow = useContext(User);
-  console.log(businessOwnerNow);
 
   // Password validation regex
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  
+  // Website URL validation regex
+  const websiteRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,12 +51,25 @@ const BusinesssOwnerRegisterPage = () => {
     fetchData();
   }, [apiBaseUrl]);
 
+  const validateWebsiteUrl = (url) => {
+    if (!url) return true; // Empty is allowed
+    if (!websiteRegex.test(url)) {
+      setWebsiteError("Please enter a valid website URL (e.g., https://example.com)");
+      return false;
+    }
+    setWebsiteError("");
+    return true;
+  };
+
   const submitRules = async (event) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     let flag = true;
     event.preventDefault();
     setAccept(true);
 
+    // Validate website URL
+    const isWebsiteValid = validateWebsiteUrl(websiteUrl);
+    
     if (
       userName.length === 0 ||
       !emailPattern.test(email) ||
@@ -64,14 +80,15 @@ const BusinesssOwnerRegisterPage = () => {
       selectedCategories.length === 0 ||
       addresscountry.length === 0 ||
       addressCity.length === 0 ||
-      phoneNumber.length === 0
+      phoneNumber.length === 0 ||
+      !isWebsiteValid
     ) {
       flag = false;
     }
 
     try {
       if (flag) {
-        setIsLoading(true); // Set loading to true when the form is being submitted
+        setIsLoading(true);
         const response = await axios.post(`${apiBaseUrl}/businessOwner/signup`, {
           username: userName,
           email: email,
@@ -85,29 +102,25 @@ const BusinesssOwnerRegisterPage = () => {
             city: addressCity,
           },
           phoneNumber: phoneNumber,
+          website: websiteUrl,
           description: description,
         });
 
-        console.log(response);
         const businessOwnerDetails = response.data;
-        console.log(businessOwnerDetails);
         businessOwnerNow.setBusinessOwnerAuth({ businessOwnerDetails });
 
-        // Show toast for verification of email
         if (response.status === 201) {
           Swal.fire({
             title: "Success!",
-            text: response.data.message, // Display the message from the backend
+            text: response.data.message,
             icon: "info",
             confirmButtonText: "OK",
           }).then((result) => {
             if (result.isConfirmed) {
-              // Redirect to the home page after email verification
               window.location.href = "/login";
             }
           });
 
-          // Store user email in a cookie
           Cookies.set("userEmail", email, { expires: 7 });
         }
       }
@@ -123,7 +136,7 @@ const BusinesssOwnerRegisterPage = () => {
         setErrorHandler(error.response.data.error);
       }
     } finally {
-      setIsLoading(false); // Set loading to false after the request is completed
+      setIsLoading(false);
     }
   };
 
@@ -135,14 +148,6 @@ const BusinesssOwnerRegisterPage = () => {
     }
   };
 
-  const handleCustomCategoryAdd = () => {
-    if (customCategory.trim() && !availableCategories.includes(customCategory)) {
-      setAvailableCategories([...availableCategories, customCategory]); // Add to available categories
-      setSelectedCategories([...selectedCategories, customCategory]); // Select it by default
-      setCustomCategory(""); // Clear input after adding
-    }
-  };
-
   return (
     <div className="h-screen bg-light-gray">
       <div className="bg-white">
@@ -150,11 +155,11 @@ const BusinesssOwnerRegisterPage = () => {
           {/* Logo */}
           <Link to="/">
             <div className="flex items-center">
-            <img
-            className="w-36 h-24 lg:w-48 lg:h-28 lg:ml-16 ml-1 object-contain"
-            src={logo}
-            alt="weinfluence logo"
-          />
+              <img
+                className="w-36 h-24 lg:w-48 lg:h-28 lg:ml-16 ml-1 object-contain"
+                src={logo}
+                alt="weinfluence logo"
+              />
             </div>
           </Link>
           <div className="w-full bg-[#E8D8C5] rounded-lg shadow-md sm:max-w-md xl:p-0">
@@ -169,7 +174,7 @@ const BusinesssOwnerRegisterPage = () => {
               </h1>
               <form className="space-y-4 md:space-y-6" onSubmit={submitRules}>
                 {/* Username Field */}
-                <div>
+                {/* <div>
                   <label
                     htmlFor="username"
                     className="block mb-2 text-sm font-medium text-[#8B4513]"
@@ -188,6 +193,30 @@ const BusinesssOwnerRegisterPage = () => {
                   {userName.length === 0 && accept && (
                     <p className="text-red-500 mt-1">Username is required</p>
                   )}
+                </div> */}
+
+                {/* Business Name Field */}
+                <div>
+                  <label
+                    htmlFor="business-name"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
+                  >
+                    Business Name
+                  </label>
+                  <input
+                    type="text"
+                    value={businessName}
+                    name="business-name"
+                    id="business-name"
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
+                    required=""
+                  />
+                  {businessName.length === 0 && accept ? (
+                    <p className="text-red-500 mt-1">
+                      BusinessName is Required
+                    </p>
+                  ) : null}
                 </div>
 
                 {/* Email Field */}
@@ -318,29 +347,7 @@ const BusinesssOwnerRegisterPage = () => {
                   ) : null}
                 </div>
 
-                {/* Business Name Field */}
-                <div>
-                  <label
-                    htmlFor="business-name"
-                    className="block mb-2 text-sm font-medium text-[#8B4513]"
-                  >
-                    Business Name
-                  </label>
-                  <input
-                    type="text"
-                    value={businessName}
-                    name="business-name"
-                    id="business-name"
-                    onChange={(e) => setBusinessName(e.target.value)}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
-                    required=""
-                  />
-                  {businessName.length === 0 && accept ? (
-                    <p className="text-red-500 mt-1">
-                      BusinessName is Required
-                    </p>
-                  ) : null}
-                </div>
+                
 
                 {/* Business Categories Field */}
                 <div>
@@ -361,24 +368,6 @@ const BusinesssOwnerRegisterPage = () => {
                       </label>
                     ))}
                   </div>
-
-                  {/* Custom category input */}
-                  <div className="mt-4">
-                    <input
-                      type="text"
-                      value={customCategory}
-                      onChange={(e) => setCustomCategory(e.target.value)}
-                      placeholder="Enter custom category"
-                      className="w-full p-2 border rounded-md text-sm focus:ring-[#8B4513] focus:border-[#8B4513]"
-                    />
-                    <button
-                      onClick={handleCustomCategoryAdd}
-                      className="mt-2 bg-[#8B4513] text-white px-4 py-1 rounded-md text-sm"
-                    >
-                      Add Category
-                    </button>
-                  </div>
-
                   {accept && selectedCategories.length === 0 && (
                     <p className="text-red-500 mt-1">Please select at least one category</p>
                   )}
@@ -456,6 +445,36 @@ const BusinesssOwnerRegisterPage = () => {
                   ) : null}
                 </div>
 
+                {/* Website URL Field */}
+                <div>
+                  <label
+                    htmlFor="websiteUrl"
+                    className="block mb-2 text-sm font-medium text-[#8B4513]"
+                  >
+                    Website URL (Optional)
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FaGlobe className="text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      value={websiteUrl}
+                      name="websiteUrl"
+                      id="websiteUrl"
+                      onChange={(e) => {
+                        setWebsiteUrl(e.target.value);
+                        if (accept) validateWebsiteUrl(e.target.value);
+                      }}
+                      placeholder="https://example.com"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full pl-10 p-2.5"
+                    />
+                  </div>
+                  {websiteError && (
+                    <p className="text-red-500 mt-1">{websiteError}</p>
+                  )}
+                </div>
+
                 {/* Description Field */}
                 <div>
                   <label
@@ -479,7 +498,7 @@ const BusinesssOwnerRegisterPage = () => {
                 <button
                   type="submit"
                   className="w-full text-white bg-[#8B4513] hover:bg-[#030303] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center justify-center"
-                  disabled={isLoading} // Disable the button when loading
+                  disabled={isLoading}
                 >
                   {isLoading ? (
                     <div className="flex items-center">
