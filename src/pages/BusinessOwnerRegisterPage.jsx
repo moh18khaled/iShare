@@ -69,9 +69,8 @@ const BusinesssOwnerRegisterPage = () => {
 
     // Validate website URL
     const isWebsiteValid = validateWebsiteUrl(websiteUrl);
-    
+
     if (
-      userName.length === 0 ||
       !emailPattern.test(email) ||
       !passwordRegex.test(password) ||
       confirmPassword !== password ||
@@ -102,7 +101,7 @@ const BusinesssOwnerRegisterPage = () => {
             city: addressCity,
           },
           phoneNumber: phoneNumber,
-          website: websiteUrl,
+          websiteUrl,
           description: description,
         });
 

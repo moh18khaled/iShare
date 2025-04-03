@@ -58,23 +58,23 @@ const ProfilePage = () => {
         });
         
         const data = id ? response.data.user : response.data.data;
-        
+        console.log(data);
         setUserAccount({
           id: data._id || data.id,
-          username: data.username,
+          username: data.username|| "",
           email: data.email,
-          profilePicture: data.profilePicture?.url || "",
+          profilePicture: data.profilePicture || "",
           postsCount: data.postsCount,
           likedPostsCount: data.likedPostsCount,
           followersCount: data.followersCount,
           followingCount: data.followingCount,
           role: data.role,
-          mentionedPosts: data.mentionedPosts || [],
-          businessName: data.businessName || "",
-          phoneNumber: data.phoneNumber || "",
-          website: data.website || "",
-          address: data.address || "",
-          businessEmail: data.businessEmail || ""
+          mentionedPosts: data.mentionedPosts || [], 
+          businessName: data.businessDetails?.businessName || "",
+          phoneNumber: data.businessDetails?.phoneNumber || "",
+          website: data.businessDetails?.websiteUrl || "",
+          address: data.businessDetails?.address || "",
+          businessEmail: data.businessDetails?.email || ""
         });
 
         setIsFollowing(data.isFollowed || false);
@@ -245,12 +245,12 @@ const ProfilePage = () => {
             )}
 
             <div className="mt-6 flex justify-between text-center">
-              <ExpandableBox
+            {userAccount.role !== "businessOwner" && (<ExpandableBox
                 icon={<FaNewspaper className="text-2xl text-gray-700 mx-auto" />}
                 title="Posts"
                 value={userAccount.postsCount}
                 endpoint={id ? `${apiBaseUrl}/user/${id}/posts` : `${apiBaseUrl}/user/account/posts`}
-              />
+              />)}
               <ExpandableBox
                 icon={<FaThumbsUp className="text-2xl text-gray-700 mx-auto" />}
                 title="Liked Posts"
@@ -319,7 +319,7 @@ const ProfilePage = () => {
           </>
         )}
 
-        {userAccount.role === "businessOwner" && (
+        {userAccount.role === "businessOwner" && userAccount.mentionedPosts.length !== 0 && (
           <div className="flex flex-col min-h-screen p-4">
             <h3 className="text-lg font-semibold text-center p-4 mb-4">Mentioned Posts</h3>
             <div className="flex-grow flex justify-center flex-wrap gap-10">

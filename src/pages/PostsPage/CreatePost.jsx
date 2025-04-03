@@ -11,7 +11,7 @@ const CreatePostPage = () => {
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(0);
   // const [businessNames, setBusinessNames] = useState([]);
-  const [bussinessName,setBussinessName] = useState("");
+  const [businessName,setBusinessName] = useState("");
   const [availableCategories, setAvailableCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
@@ -47,7 +47,15 @@ const CreatePostPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (selectedCategories.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Required!",
+        text: "Please select at least one category.",
+        confirmButtonColor: "#d33",
+      });
+      return;
+    }
     try {
       const postData = {
         title,
@@ -58,6 +66,7 @@ const CreatePostPage = () => {
         videoUrl: videoData.url,
         videoPublicId: videoData.publicId,
         rating,
+        categories:selectedCategories,
       };
 
       const response = await axios.post(`${apiBaseUrl}/postss`, postData);
@@ -168,8 +177,8 @@ const CreatePostPage = () => {
             type="text"
             className="w-full p-3 rounded-lg border border-red-200 focus:ring-2 focus:ring-red-300 bg-white mb-4"
             placeholder="Enter the Bussiness Name"
-            value={bussinessName}
-            onChange={(e) => setBussinessName(e.target.value)}
+            value={businessName}
+            onChange={(e) => setBusinessName(e.target.value)}
             required
           />
 

@@ -32,7 +32,8 @@ const ViewPosts = () => {
     try {
       const response = await axios.get(`${apiBaseUrl}/postss/${id}`);
       const data = response.data;
-      setBusinessOwner(data.post.businessOwner.user_id);
+      setBusinessOwner(data.post.businessOwner);
+      console.log(data.post.businessOwner);
       setPost(data.post);
       setIsLiked(data.isLiked);
       setLikesCount(data.likesCount);
@@ -187,20 +188,41 @@ const ViewPosts = () => {
       </div>
 
       {/* Business Owner Section */}
-      <div
-        className="flex items-center justify-between mb-6 mt-6 cursor-pointer"
-        onClick={() => businessOwner?.isCurrentUser ? navigate("/profile") : navigate(`/profile/${businessOwner?._id}`)}
-      >
-        <div className="flex items-center">
-          <img
-            src={businessOwner?.profilePicture?.url || "/default-profile.png"}
-            alt={businessOwner?.username || "Unknown User"}
-            className="w-12 h-12 rounded-full object-cover"
-          />
-          <p className="text-lg font-semibold">{businessOwner?.username || "Unknown User"}</p>
-          {/* <p className="text-lg font-semibold">Contact {businessOwner?.bussinessName || "Unknown User"} Now</p> */}
-        </div>
+
+      
+      {businessOwner && (
+  <div>
+    <div className="text-lg font-semibold text-gray-600 text-left">
+      Business Owner
+    </div>
+
+    <div
+      className="flex items-center justify-between mb-6 mt-6 cursor-pointer"
+      onClick={() =>
+        businessOwner?.user_id?.isCurrentUser
+          ? navigate("/profile")
+          : navigate(`/profile/${businessOwner?.user_id?._id}`)
+      }
+    >
+      <div className="flex items-center">
+        <img
+          src={businessOwner?.user_id?.profilePicture?.url || "/default-profile.png"}
+          alt={businessOwner?.businessName || "Unknown User"}
+          className="w-12 h-12 rounded-full object-cover"
+        />
+        <p className="text-lg font-semibold">
+          {businessOwner?.businessName || "Unknown User"}
+        </p>
       </div>
+
+      <p className="text-lg px-4 py-2 font-semibold">
+        Contact {businessOwner?.businessName || "Unknown User"} Now
+      </p>
+    </div>
+  </div>
+)}
+
+
 
       {/* Actions */}
       <div className="flex justify-between items-center mt-6 p-4 border-t border-gray-200">

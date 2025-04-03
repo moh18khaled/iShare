@@ -12,12 +12,12 @@ const Categories = ({ selectedCategory, setSelectedCategory }) => {
 
     const categories = [
         { name: "All Categories", value: "all" },
-        { name: "Dining", value: "dining" },
-        { name: "Healthcare", value: "healthcare" },
-        { name: "Education", value: "education" },
-        { name: "Fashion", value: "fashion" },
-        { name: "Movies", value: "movies" },
-        { name: "Books", value: "books" }
+        { name: "Dining", value: "Dining" },
+        { name: "Healthcare", value: "Healthcare" },
+        { name: "Education", value: "Education" },
+        { name: "Fashion", value: "Fashion" },
+        { name: "Movies", value: "Movies" },
+        { name: "Books", value: "Books" }
     ];
 
     return (

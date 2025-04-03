@@ -4,6 +4,7 @@ import Header from './Header';
 import Companies from './Companies';
 import Categories from './Categories';
 import PostCard from './PostCard';
+import Swal from "sweetalert2";
 
 const PostsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,7 +23,7 @@ const PostsPage = () => {
         setPostedData(response.data.posts);
         setFilteredData(response.data.posts);
       } catch (error) {
-        setError(error.message);
+        setError(error.response?.data?.error || "Failed to load posts.");
       } finally {
         setLoading(false);
       }
@@ -36,14 +37,15 @@ const PostsPage = () => {
     const filterPosts = async () => {
       try {
         setLoading(true);
-        
+        setError(null); // Reset error when a new search is triggered
+
         // Build query parameters
         const params = new URLSearchParams();
-        
+
         if (searchQuery) {
           params.append('query', searchQuery);
         }
-        
+
         if (selectedCategory && selectedCategory !== 'all') {
           params.append('categoryNames', selectedCategory);
         }
@@ -51,14 +53,16 @@ const PostsPage = () => {
         // Only make API call if we have filters
         if (searchQuery || (selectedCategory && selectedCategory !== 'all')) {
           const response = await axios.get(`${apiBaseUrl}/postss/search?${params.toString()}`);
-          console.log(response);
           setFilteredData(response.data.posts);
         } else {
           // No filters - show all posts
           setFilteredData(postedData);
         }
       } catch (error) {
-        setError(error.message);
+        const errorMessage = error.response?.data?.error || "An error occurred while searching.";
+        setError(errorMessage);
+        setSelectedCategory('all');
+        setFilteredData([]); // Clear posts when an error occurs
       } finally {
         setLoading(false);
       }
@@ -86,11 +90,15 @@ const PostsPage = () => {
         setSelectedCategory={setSelectedCategory} 
       />
       
-      <PostCard 
-        posts={filteredData} 
-        loading={loading} 
-        error={error} 
-      />
+      {loading ? (
+        <p className="text-center text-gray-500">Loading posts...</p>
+      ) : error ? (
+        <div className="text-center text-red-500 text-lg">{error}</div>
+      ) : filteredData.length === 0 ? (
+        <p className="text-center text-gray-600">No posts found based on your search criteria.</p>
+      ) : (
+        <PostCard posts={filteredData} />
+      )}
     </div>
   );
 };
