@@ -45,7 +45,7 @@ const HeroSection = () => {
           {/* Heading */}
           <motion.h1
             variants={childVariants}
-            className="font-bold text-2xl md:text-4xl text-left leading-snug md:leading-snug" // Align text to the left
+            className="font-bold text-[27px] md:text-4xl text-left leading-snug md:leading-snug" // Align text to the left
           >
             Share your <br />
             digital experience now <br />

@@ -102,37 +102,49 @@ const ServicesSection = () => {
 
         {/* Service Cards */}
         <motion.div
-          className="flex flex-wrap justify-center gap-16"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 max-w-7xl mx-auto px-4 place-items-center"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }} // Ensures the animation only happens once
+          viewport={{ once: true }}
         >
           {services.map((service, index) => (
             <motion.div
               key={index}
-              className="relative max-w-xs md:w-auto bg-[#E8D8C5] border-2 z-20 border-mainColor rounded-3xl shadow-md p-6 px-4 transition-transform transform hover:scale-105 min-h-[380px]"
+              className="relative w-full max-w-[350px] h-[450px] bg-gradient-to-br from-[#E8D8C5] to-[#F5E6D3] border-2 z-20 border-mainColor rounded-[2rem] shadow-lg p-8 transition-transform transform hover:scale-105 backdrop-blur-sm hover:shadow-2xl"
               variants={cardVariants}
               whileHover="hover"
             >
-              <div className="absolute inset-1 border-2 border-mainColor rounded-3xl pointer-events-none"></div>
+              {/* Decorative elements */}
+              <div className="absolute top-0 right-0 w-20 h-20 bg-mainColor opacity-10 rounded-tr-[2rem] rounded-bl-[5rem]"></div>
+              <div className="absolute bottom-0 left-0 w-20 h-20 bg-mainColor opacity-10 rounded-bl-[2rem] rounded-tr-[5rem]"></div>
 
               {/* Icon Container */}
-              <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-[#E8D8C5] border-2 border-mainColor rounded-full h-20 w-20 flex items-center justify-center shadow-md">
-                <div className="border-2 border-mainColor rounded-full h-16 w-16 flex items-center justify-center">
-                  <img
-                    src={service.icon}
-                    alt={service.alt}
-                    className="h-12 w-12 rounded-full"
-                  />
+              <div className="absolute -top-10 left-1/2 transform -translate-x-1/2">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-mainColor to-hoverColor rounded-full blur-md opacity-50"></div>
+                  <div className="relative bg-gradient-to-br from-[#E8D8C5] to-[#F5E6D3] border-2 border-mainColor rounded-full p-4 shadow-xl">
+                    <img
+                      src={service.icon}
+                      alt={service.alt}
+                      className="h-16 w-16 rounded-full object-cover transform transition-transform hover:scale-110"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Service Content */}
-              <h3 className="mt-12 text-xl font-semibold font-nunito mb-4">
-                {service.title}
-              </h3>
-              <p className="text-med text-gray-600 mb-6 px-2 font-nunito">{service.description}</p>
+              <div className="mt-16">
+                <h3 className="text-xl font-bold font-nunito mb-3 bg-gradient-to-r from-mainColor to-hoverColor bg-clip-text text-transparent">
+                  {service.title}
+                </h3>
+                <p className="text-gray-700 leading-relaxed font-nunito text-base">
+                  {service.description}
+                </p>
+              </div>
+
+              {/* Bottom decoration */}
+              <div className="absolute bottom-4 right-4 w-12 h-12 border-2 border-mainColor rounded-full opacity-20"></div>
             </motion.div>
           ))}
         </motion.div>

@@ -188,41 +188,55 @@ const ViewPosts = () => {
       </div>
 
       {/* Business Owner Section */}
-
-      
       {businessOwner && (
-  <div>
-    <div className="text-lg font-semibold text-gray-600 text-left">
-      Business Owner
-    </div>
+        <div className="mt-8 bg-gradient-to-r from-[#f8f4f0] to-[#fff] rounded-2xl shadow-lg p-6 border border-gray-200">
+          <div className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            Business Owner
+          </div>
 
-    <div
-      className="flex items-center justify-between mb-6 mt-6 cursor-pointer"
-      onClick={() =>
-        businessOwner?.user_id?.isCurrentUser
-          ? navigate("/profile")
-          : navigate(`/profile/${businessOwner?.user_id?._id}`)
-      }
-    >
-      <div className="flex items-center">
-        <img
-          src={businessOwner?.user_id?.profilePicture?.url || "/default-profile.png"}
-          alt={businessOwner?.businessName || "Unknown User"}
-          className="w-12 h-12 rounded-full object-cover"
-        />
-        <p className="text-lg font-semibold">
-          {businessOwner?.businessName || "Unknown User"}
-        </p>
-      </div>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div
+              className="flex items-center gap-4 cursor-pointer transform hover:scale-105 transition-transform"
+              onClick={() =>
+                businessOwner?.user_id?.isCurrentUser
+                  ? navigate("/profile")
+                  : navigate(`/profile/${businessOwner?.user_id?._id}`)
+              }
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-red-500 rounded-full blur opacity-20"></div>
+                <img
+                  src={businessOwner?.user_id?.profilePicture?.url || "/default-profile.png"}
+                  alt={businessOwner?.businessName || "Unknown User"}
+                  className="w-16 h-16 rounded-full object-cover border-2 border-red-500 relative z-10"
+                />
+              </div>
+              <div className="flex flex-col">
+                <p className="text-xl font-bold text-gray-800">
+                  {businessOwner?.businessName || "Unknown User"}
+                </p>
+              </div>
+            </div>
 
-      <p className="text-lg px-4 py-2 font-semibold">
-        Contact {businessOwner?.businessName || "Unknown User"} Now
-      </p>
-    </div>
-  </div>
-)}
-
-
+            <button
+              className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transform hover:scale-105 transition-all flex items-center gap-2"
+              onClick={() =>
+                businessOwner?.user_id?.isCurrentUser
+                  ? navigate("/profile")
+                  : navigate(`/profile/${businessOwner?.user_id?._id}`)
+              }
+            >
+              <span>Contact {businessOwner?.businessName} Now</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex justify-between items-center mt-6 p-4 border-t border-gray-200">
