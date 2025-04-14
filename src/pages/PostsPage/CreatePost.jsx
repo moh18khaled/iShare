@@ -16,35 +16,102 @@ const CreatePostPage = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   // Separate states for image and video uploads
+  // Add new state for video thumbnail
   const [imageData, setImageData] = useState({ url: "", publicId: "" });
   const [videoData, setVideoData] = useState({ url: "", publicId: "" });
-
-  // Fetch business names from the backend
-  // useEffect(() => {
-  //   const fetchBusinessNames = async () => {
-  //     try {
-  //       const response = await axios.get(`${apiBaseUrl}/businessOwner/business-names`);
-  //       setBusinessNames(response.data.businessNames);
-  //     } catch (error) {
-  //       console.error("Error fetching business names:", error);
-  //     }
-  //   };
-  //   fetchBusinessNames();
-  // }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${apiBaseUrl}/businessOwner/signup-data`);
-        setAvailableCategories(response.data.categories);
-      } catch (error) {
-        console.error("Error fetching signup data:", error);
+  const [thumbnailData, setThumbnailData] = useState({ url: "", publicId: "" });
+  
+  const handleMediaUpload = async (event, type) => {
+    event.preventDefault();
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    if (type === "video" && !thumbnailData.url) {
+      Swal.fire({
+        icon: "warning",
+        title: "Thumbnail Required",
+        text: "Please upload a thumbnail image for your video first",
+        showCancelButton: true,
+        confirmButtonText: "Upload Thumbnail",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Create and trigger a hidden input for thumbnail
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.accept = 'image/*';
+          input.onchange = (e) => handleThumbnailUpload(e);
+          input.click();
+        }
+      });
+      event.target.value = "";
+      return;
+    }
+  
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "original");
+    data.append("cloud_name", "dqmp5l622");
+  
+    const endpoint = type === "image"
+      ? "https://api.cloudinary.com/v1_1/dqmp5l622/image/upload"
+      : "https://api.cloudinary.com/v1_1/dqmp5l622/video/upload";
+  
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: data,
+      });
+  
+      const uploadData = await response.json();
+  
+      if (type === "image") {
+        setImageData({ url: uploadData.url, publicId: uploadData.public_id });
+      } else {
+        setVideoData({ url: uploadData.url, publicId: uploadData.public_id });
       }
-    };
-
-    fetchData();
-  }, [apiBaseUrl]);
-
+    } catch (error) {
+      console.error("Error uploading media:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Upload Failed",
+        text: "Failed to upload media. Please try again.",
+        confirmButtonColor: "#d33",
+      });
+    }
+  };
+  
+  // Add new handler for thumbnail upload
+  const handleThumbnailUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "original");
+    data.append("cloud_name", "dqmp5l622");
+  
+    try {
+      const response = await fetch("https://api.cloudinary.com/v1_1/dqmp5l622/image/upload", {
+        method: "POST",
+        body: data,
+      });
+  
+      const uploadData = await response.json();
+      setThumbnailData({ url: uploadData.url, publicId: uploadData.public_id });
+    } catch (error) {
+      console.error("Error uploading thumbnail:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Upload Failed",
+        text: "Failed to upload thumbnail. Please try again.",
+        confirmButtonColor: "#d33",
+      });
+    }
+  };
+  
+  // Update handleSubmit to include thumbnailData
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (selectedCategories.length === 0) {
@@ -65,8 +132,10 @@ const CreatePostPage = () => {
         imagePublicId: imageData.publicId,
         videoUrl: videoData.url,
         videoPublicId: videoData.publicId,
+        thumbnailUrl: thumbnailData.url,
+        thumbnailPublicId: thumbnailData.publicId,
         rating,
-        categories:selectedCategories,
+        categories: selectedCategories,
       };
 
       const response = await axios.post(`${apiBaseUrl}/postss`, postData);
@@ -100,38 +169,6 @@ const CreatePostPage = () => {
         text: error.response.data?.error,
         confirmButtonColor: "#d33",
       });
-    }
-  };
-
-  const handleMediaUpload = async (event, type) => {
-    event.preventDefault();
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const data = new FormData();
-    data.append("file", file);
-    data.append("upload_preset", "original");
-    data.append("cloud_name", "dqmp5l622");
-
-    const endpoint = type === "image"
-      ? "https://api.cloudinary.com/v1_1/dqmp5l622/image/upload"
-      : "https://api.cloudinary.com/v1_1/dqmp5l622/video/upload";
-
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        body: data,
-      });
-
-      const uploadData = await response.json();
-
-      if (type === "image") {
-        setImageData({ url: uploadData.url, publicId: uploadData.public_id });
-      } else {
-        setVideoData({ url: uploadData.url, publicId: uploadData.public_id });
-      }
-    } catch (error) {
-      console.error("Error uploading media:", error);
     }
   };
 
@@ -252,7 +289,12 @@ const CreatePostPage = () => {
               />
               <FaImage className="text-red-500 text-2xl" />
               <span className="ml-2 text-red-700">Image</span>
-              {imageData.url && <FaCheckCircle className="text-green-500 ml-2" />}
+              {imageData.url && (
+                <div className="flex items-center">
+                  <FaCheckCircle className="text-green-500 ml-2" />
+                  <span className="text-green-500 ml-1">Uploaded</span>
+                </div>
+              )}
             </label>
 
             {/* Video Upload */}
@@ -265,7 +307,20 @@ const CreatePostPage = () => {
               />
               <FaVideo className="text-red-500 text-2xl" />
               <span className="ml-2 text-red-700">Video</span>
-              {videoData.url && <FaCheckCircle className="text-green-500 ml-2" />}
+              <div className="flex items-center">
+                {thumbnailData.url && (
+                  <div className="flex items-center">
+                    <FaCheckCircle className="text-green-500 ml-2" />
+                    <span className="text-green-500 ml-1">Thumbnail</span>
+                  </div>
+                )}
+                {videoData.url && (
+                  <div className="flex items-center">
+                    <FaCheckCircle className="text-green-500 ml-2" />
+                    <span className="text-green-500 ml-1">Video</span>
+                  </div>
+                )}
+              </div>
             </label>
           </div>
 
