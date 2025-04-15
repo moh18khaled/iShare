@@ -8,6 +8,7 @@ import BusinessOwnerRegisterPage from "./pages/BusinessOwnerRegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import UpdatePasswordPage from "./pages/UpdatePasswordPage";
 import PostsPage from "./pages/PostsPage";
+import EditPost from "./pages/PostsPage/EditPost";
 import CreatePostPage from "./pages/PostsPage/CreatePost";
 import ViewPosts from "./pages/PostsPage/ViewPosts";
 import VerifyAccount from "./pages/VerifyAccount";
@@ -45,6 +46,7 @@ const App = () => {
           <Route path="/otherUser/account/:id" element={<UserProfile />} /> {/* Fixed the issue */}
           <Route path="/posts" element={<PostsPage />} />
           <Route path="/post/:id" element={<ViewPosts />} />
+          <Route path="/editPost/:id" element={<EditPost />} />
           <Route element = {<RequireAuth />}>
           <Route path="/create-post" element={<CreatePostPage />} />
           <Route path="/transactions" element={<TransActions />} />

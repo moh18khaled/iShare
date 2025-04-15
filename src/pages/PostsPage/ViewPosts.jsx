@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaHeart, FaComment, FaTrash } from "react-icons/fa";
+import { FaHeart, FaComment, FaTrash, FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { User } from "../../context/context";
 import Swal from "sweetalert2";
@@ -33,7 +33,6 @@ const ViewPosts = () => {
       const response = await axios.get(`${apiBaseUrl}/postss/${id}`);
       const data = response.data;
       setBusinessOwner(data.post.businessOwner);
-      console.log(data.post.businessOwner);
       setPost(data.post);
       setIsLiked(data.isLiked);
       setLikesCount(data.likesCount);
@@ -177,7 +176,7 @@ const ViewPosts = () => {
           />
         )}
 
-        {post?.image?.url && (
+        {post?.image?.url && !post.image.url.startsWith("thumbnail.") && (
           <img
             src={post.image.url}
             alt={post.title}
@@ -185,7 +184,17 @@ const ViewPosts = () => {
             onClick={() => handleImageClick(post.image.url)}
           />
         )}
+
       </div>
+      {isOwner && (
+    <>
+      <button
+        className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transform hover:scale-105 transition-all flex items-center gap-2 m-4"
+        onClick={() =>navigate(`/editPost/${id}`)}
+      >
+        <FaEdit />
+        Edit Post
+      </button></>)}
 
       {/* Business Owner Section */}
       {businessOwner && (

@@ -4,6 +4,15 @@ import { useNavigate } from "react-router-dom";
 const PostCard = ({ posts, loading, error }) => {
   const navigate = useNavigate();
 
+    // Clean thumbnail. prefix from image URLs if present
+    const cleanedPosts = posts.map(post => {
+      const cleanedImageUrl = post.image?.url?.replace(/^thumbnail\./, "");
+      return {
+        ...post,
+        image: post.image ? { ...post.image, url: cleanedImageUrl } : undefined,
+      };
+    });
+
   const handleCardClick = (id) => {
     navigate(`/post/${id}`);
   };
@@ -38,7 +47,7 @@ const PostCard = ({ posts, loading, error }) => {
     return <div className="text-center mt-16 text-red-500">Error: {error}</div>;
   }
 
-  if (posts.length === 0) {
+  if (cleanedPosts.length === 0) {
     return (
       <div className="text-center mt-16 text-gray-500">
         No posts found matching your criteria.
@@ -48,7 +57,7 @@ const PostCard = ({ posts, loading, error }) => {
 
   return (
     <div className="w-[95%] mx-auto mt-16 flex justify-center flex-wrap gap-10">
-      {posts.map((post) => (
+      {cleanedPosts.map((post) => (
         <div
           key={post._id}
           className="max-w-72 h-auto rounded-lg overflow-hidden shadow-lg bg-white relative group cursor-pointer"

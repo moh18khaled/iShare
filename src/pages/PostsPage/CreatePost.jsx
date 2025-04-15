@@ -26,7 +26,7 @@ const CreatePostPage = () => {
     const file = event.target.files[0];
     if (!file) return;
   
-    if (type === "video" && !thumbnailData.url) {
+    if (type === "video" && !thumbnailData.url && !imageData.url) {
       Swal.fire({
         icon: "warning",
         title: "Thumbnail Required",
@@ -65,7 +65,7 @@ const CreatePostPage = () => {
       });
   
       const uploadData = await response.json();
-  
+
       if (type === "image") {
         setImageData({ url: uploadData.url, publicId: uploadData.public_id });
       } else {
@@ -110,7 +110,22 @@ const CreatePostPage = () => {
       });
     }
   };
-  
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+try{
+  const response = await axios.get(`${apiBaseUrl}/businessOwner/signup-data`);
+  setAvailableCategories(response.data.categories);
+} catch (error) {
+  console.error("Error fetching signup data:", error);
+}
+};
+
+fetchData();
+}, [apiBaseUrl]);
+
+
   // Update handleSubmit to include thumbnailData
   const handleSubmit = async (e) => {
     e.preventDefault();
