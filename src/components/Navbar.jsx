@@ -94,7 +94,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-[#F9F9F9]  backdrop-blur-sm font-roboto z-50 shadow-md fixed w-full top-0 border-b border-gray-200 lg:h-24 h-20">
+    <nav className="bg-white  backdrop-blur-sm font-roboto z-50 shadow-md fixed w-full top-0 border-b border-gray-200 lg:h-24 h-20">
       <div className="max-w-[100%] mx-auto px-3 h-full flex items-center justify-between">
         {/* Logo */}
         <a href="/" className="flex items-center">

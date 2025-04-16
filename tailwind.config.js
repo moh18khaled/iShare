@@ -14,6 +14,7 @@ export default {
         roboto: ['Roboto', 'sans-serif'],
         poppins: ['Poppins', 'sans-serif'],
         raleway: ['Raleway', 'sans-serif'],
+        'ge-ss-two-light': ['GE SS Two Light', 'sans-serif'],
         sans: ['Proxima Nova', 'sans-serif'], // Set Proxima Nova as the default sans font
       },
     },
