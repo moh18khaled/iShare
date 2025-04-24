@@ -3,37 +3,71 @@ import Cookies from "js-cookie";
 import { io } from "socket.io-client";
 import { 
   getNotifications, 
-  markAsRead as apiMarkAsRead,
-} from "../api/notificationsApi";
+  markAsRead as apiMarkAsRead
+} from "../pages/PostsPage/NotificationsApi";
 
 export const User = createContext({});
 
 export const UserProvider = ({ children }) => {
-  // ... existing state ...
+  const [auth, setAuth] = useState({});
+  const [businessOwnerAuth, setBusinessOwnerAuth] = useState({});
+  const [profilePicture, setProfilePicture] = useState("");
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Load state from cookies on initial render
+  useEffect(() => {
+    const storedAuth = Cookies.get("auth");
+    const storedBusinessOwnerAuth = Cookies.get("businessOwnerAuth");
+    const storedProfilePicture = Cookies.get("profilePicture");
+
+    if (storedAuth) setAuth(JSON.parse(storedAuth));
+    if (storedBusinessOwnerAuth) setBusinessOwnerAuth(JSON.parse(storedBusinessOwnerAuth));
+    if (storedProfilePicture) setProfilePicture(storedProfilePicture);
+  }, []);
+
+  // Save state to cookies when it changes
+  useEffect(() => {
+    if (Object.keys(auth).length > 0) {
+      Cookies.set("auth", JSON.stringify(auth), { expires: 7 });
+    }
+  }, [auth]);
+
+  useEffect(() => {
+    if (Object.keys(businessOwnerAuth).length > 0) {
+      Cookies.set("businessOwnerAuth", JSON.stringify(businessOwnerAuth), { expires: 7 });
+    }
+  }, [businessOwnerAuth]);
+
+  useEffect(() => {
+    if (profilePicture) {
+      Cookies.set("profilePicture", profilePicture, { expires: 7 });
+    }
+  }, [profilePicture]);
+
   // Fetch notifications from API
   const fetchNotifications = useCallback(async () => {
+    if (!auth.user?._id) return;
     
     setIsLoading(true);
     try {
-      const data = await getNotifications();
-      setNotifications(data.notifications);
-      setUnreadCount(data.unreadCount);
+      const data = await getNotifications(); // withCredentials is handled in the API file
+      setNotifications(data.notifications || []);
+      setUnreadCount(data.unreadCount || 0);
     } catch (error) {
       console.error("Error fetching notifications:", error);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [auth.user?._id]);
 
-  // Initialize socket connection
+  // Socket.io connection for real-time notifications
   useEffect(() => {
+    if (!auth.user?._id) return;
 
     const socket = io('http://localhost:5000', {
-      withCredentials : true,
+      withCredentials: true,
       transports: ['websocket']
     });
 
@@ -47,45 +81,51 @@ export const UserProvider = ({ children }) => {
       setUnreadCount(prev => prev + 1);
     });
 
+    socket.on('disconnect', () => {
+      console.log('Socket disconnected');
+    });
+
     return () => {
       socket.disconnect();
     };
-  }, [ auth.user?._id]);
+  }, [auth.user?._id]);
 
-  // Mark all notifications as read
-  const markAllAsRead = useCallback(async () => {
-    if (!auth.token) return;
-    
+  // Mark single notification as read
+  const markAsRead = useCallback(async (notificationId) => {
     try {
-      await apiMarkAllAsRead();
-      setUnreadCount(0);
-      setNotifications(prev => 
-        prev.map(n => ({ ...n, read: true })));
+      await apiMarkAsRead(notificationId); // withCredentials is handled in the API file
+      setNotifications(prev =>
+        prev.map(n =>
+          n._id === notificationId ? { ...n, read: true } : n
+        )
+      );
+      setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
-      console.error("Error marking notifications as read:", error);
+      console.error("Error marking notification as read:", error);
     }
   }, []);
-
- 
-
-  
 
   // Initial fetch and periodic refresh
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 60000); // Refresh every minute
+    const interval = setInterval(fetchNotifications, 60000);
     return () => clearInterval(interval);
   }, [fetchNotifications]);
 
   return (
     <User.Provider
       value={{
-        // ... existing values ...
+        auth,
+        setAuth,
+        businessOwnerAuth,
+        setBusinessOwnerAuth,
+        profilePicture,
+        setProfilePicture,
         notifications,
         unreadCount,
         isLoading,
         fetchNotifications,
-        markAsRead,
+        markAsRead
       }}
     >
       {children}
