@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import SignUpPage from "./pages/SignUpPage";
@@ -24,9 +24,13 @@ import RequireAuth from "./Auth/RequireAuth";
 import TransActions from "./pages/PostsPage/TransActions";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+// import Notifications from "./pages/PostsPage/Notifications";
+
+
 // import UpdateUser from "./pages/UpdateUser";
 
 const App = () => {
+  
   return (
     <UserProvider>
       <div className="scroll-smooth font-sans">
@@ -47,6 +51,7 @@ const App = () => {
           <Route path="/posts" element={<PostsPage />} />
           <Route path="/post/:id" element={<ViewPosts />} />
           <Route path="/editPost/:id" element={<EditPost />} />
+          {/* <Route path="/notifications" element={<Notifications />} /> */}
           <Route element = {<RequireAuth />}>
           <Route path="/create-post" element={<CreatePostPage />} />
           <Route path="/transactions" element={<TransActions />} />

@@ -1,16 +1,26 @@
 import { FiSearch } from "react-icons/fi";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import logo from "../../assets/images/WeinfluenceLogo.png";
 import { useContext } from "react";
 import { User } from "../../context/context";
 
 const Header = ({ searchQuery, onSearch }) => {
-  const user = useContext(User);
+  const { 
+    auth, 
+    businessOwnerAuth, 
+    profilePicture, 
+    unreadCount,
+    markAsRead
+  } = useContext(User);
 
   const handleSearchInputChange = (e) => {
     const query = e.target.value;
     onSearch(query);
+  };
+
+  const handleNotificationClick = () => {
+    markAsRead(); // Mark notifications as read when clicking the bell icon
   };
 
   return (
@@ -46,8 +56,20 @@ const Header = ({ searchQuery, onSearch }) => {
           {/* Icons Section */}
           <div className="hidden md:block">
             <div className="flex items-center space-x-4 md:space-x-10">
+              {/* Notification Icon */}
+              <Link to="/notifications" onClick={handleNotificationClick}>
+                <button className="p-2 rounded-full hover:bg-gray-100 relative">
+                  <FaBell className="text-gray-600 text-xl" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+              </Link>
+
               {/* Create Post Icon */}
-              {user.businessOwnerAuth.businessOwnerDetails ? "" : (
+              {businessOwnerAuth.businessOwnerDetails ? "" : (
                 <Link to="/create-post">
                   <button className="p-2 rounded-full hover:bg-gray-100">
                     <FaPlus className="text-gray-600 text-xl" />
@@ -56,14 +78,26 @@ const Header = ({ searchQuery, onSearch }) => {
               )}
 
               {/* User Account Icon */}
-              {user.profilePicture ? (
+              {profilePicture ? (
                 <Link to="/profile">
                   <button className="p-2 rounded-full hover:bg-gray-100">
-                    <img src={user.profilePicture} className="w-10 h-10 rounded-full" alt="Profile" />
+                    <img 
+                      src={profilePicture} 
+                      className="w-10 h-10 rounded-full" 
+                      alt="Profile" 
+                    />
                   </button>
                 </Link>
               ) : (
-                ""
+                <Link to="/profile">
+                  <button className="p-2 rounded-full hover:bg-gray-100">
+                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-600 text-lg">
+                        {auth.user?.name?.charAt(0).toUpperCase() || 'U'}
+                      </span>
+                    </div>
+                  </button>
+                </Link>
               )}
             </div>
           </div>
@@ -73,8 +107,20 @@ const Header = ({ searchQuery, onSearch }) => {
       {/* Bottom Navigation Bar for Small Screens */}
       <div className="fixed bottom-0 left-0 w-full bg-white shadow-sm z-10 md:hidden">
         <div className="flex justify-around items-center p-2">
+          {/* Notification Icon */}
+          <Link to="/notifications" onClick={handleNotificationClick}>
+            <button className="p-2 rounded-full hover:bg-gray-100 relative">
+              <FaBell className="text-gray-600 text-xl" />
+              {unreadCount > 0 && (
+                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </button>
+          </Link>
+
           {/* Create Post Icon */}
-          {user.businessOwnerAuth.businessOwnerDetails ? "" : (
+          {businessOwnerAuth.businessOwnerDetails ? "" : (
             <Link to="/create-post">
               <button className="p-2 rounded-full hover:bg-gray-100">
                 <FaPlus className="text-gray-600 text-xl" />
@@ -83,14 +129,26 @@ const Header = ({ searchQuery, onSearch }) => {
           )}
 
           {/* User Account Icon */}
-          {user.profilePicture ? (
+          {profilePicture ? (
             <Link to="/profile">
               <button className="p-2 rounded-full hover:bg-gray-100">
-                <img src={user.profilePicture} className="w-10 h-10 rounded-full" alt="Profile" />
+                <img 
+                  src={profilePicture} 
+                  className="w-10 h-10 rounded-full" 
+                  alt="Profile" 
+                />
               </button>
             </Link>
           ) : (
-            ""
+            <Link to="/profile">
+              <button className="p-2 rounded-full hover:bg-gray-100">
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-600 text-lg">
+                    {auth.user?.name?.charAt(0).toUpperCase() || 'U'}
+                  </span>
+                </div>
+              </button>
+            </Link>
           )}
         </div>
       </div>
