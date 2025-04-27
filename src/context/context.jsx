@@ -1,9 +1,9 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import Cookies from "js-cookie";
-import { io } from "socket.io-client";
-import { 
-  getNotifications, 
-  markAsRead as apiMarkAsRead
+import { io } from "https://cdn.socket.io/4.8.1/socket.io.esm.min.js";
+import {
+  getNotifications,
+  markAsRead as apiMarkAsRead,
 } from "../pages/PostsPage/NotificationsApi";
 
 export const User = createContext({});
@@ -15,6 +15,7 @@ export const UserProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   // Load state from cookies on initial render
   useEffect(() => {
@@ -22,15 +23,30 @@ export const UserProvider = ({ children }) => {
     const storedBusinessOwnerAuth = Cookies.get("businessOwnerAuth");
     const storedProfilePicture = Cookies.get("profilePicture");
 
-    if (storedAuth) setAuth(JSON.parse(storedAuth));
-    if (storedBusinessOwnerAuth) setBusinessOwnerAuth(JSON.parse(storedBusinessOwnerAuth));
+    if (storedAuth) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(storedAuth));
+        setAuth(parsed);
+      } catch (e) {
+        console.error("Error parsing auth cookie:", e);
+      }
+    }
+
+    if (storedBusinessOwnerAuth) {
+      try {
+        setBusinessOwnerAuth(JSON.parse(storedBusinessOwnerAuth));
+      } catch (e) {
+        console.error("Error parsing business owner auth cookie:", e);
+      }
+    }
+
     if (storedProfilePicture) setProfilePicture(storedProfilePicture);
   }, []);
 
   // Save state to cookies when it changes
   useEffect(() => {
     if (Object.keys(auth).length > 0) {
-      Cookies.set("auth", JSON.stringify(auth), { expires: 7 });
+      Cookies.set("auth", encodeURIComponent(JSON.stringify(auth)), { expires: 7 });
     }
   }, [auth]);
 
@@ -48,8 +64,8 @@ export const UserProvider = ({ children }) => {
 
   // Fetch notifications from API
   const fetchNotifications = useCallback(async () => {
-    if (!auth.user?._id) return;
-    
+    if (!auth?.userDetails?.id) return;
+
     setIsLoading(true);
     try {
       const data = await getNotifications(); // withCredentials is handled in the API file
@@ -60,46 +76,46 @@ export const UserProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [auth.user?._id]);
+  }, [auth?.userDetails?.id]);
 
   // Socket.io connection for real-time notifications
   useEffect(() => {
-    if (!auth.user?._id) return;
+    if (!auth?.userDetails?.id) return;
 
-    const socket = io('http://localhost:5000', {
+    console.log("Socket ID:", auth.userDetails.id);
+
+    const socket = io(`${apiBaseUrl}`, {
       withCredentials: true,
-      transports: ['websocket']
+      transports: ["websocket"],
     });
 
-    socket.on('connect', () => {
-      console.log('Socket connected');
-      socket.emit('join', auth.user._id);
+    socket.on("connect", () => {
+      console.log("Socket connected");
+      socket.emit("join", auth.userDetails.id);
     });
 
-    socket.on('new-notification', (notification) => {
-      setNotifications(prev => [notification, ...prev]);
-      setUnreadCount(prev => prev + 1);
+    socket.on("new-notification", (notification) => {
+      setNotifications((prev) => [notification, ...prev]);
+      setUnreadCount((prev) => prev + 1);
     });
 
-    socket.on('disconnect', () => {
-      console.log('Socket disconnected');
+    socket.on("disconnect", () => {
+      console.log("Socket disconnected");
     });
 
     return () => {
       socket.disconnect();
     };
-  }, [auth.user?._id]);
+  }, [auth?.userDetails?.id]);
 
   // Mark single notification as read
   const markAsRead = useCallback(async (notificationId) => {
     try {
       await apiMarkAsRead(notificationId); // withCredentials is handled in the API file
-      setNotifications(prev =>
-        prev.map(n =>
-          n._id === notificationId ? { ...n, read: true } : n
-        )
+      setNotifications((prev) =>
+        prev.map((n) => (n._id === notificationId ? { ...n, read: true } : n))
       );
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (error) {
       console.error("Error marking notification as read:", error);
     }
@@ -125,7 +141,7 @@ export const UserProvider = ({ children }) => {
         unreadCount,
         isLoading,
         fetchNotifications,
-        markAsRead
+        markAsRead,
       }}
     >
       {children}

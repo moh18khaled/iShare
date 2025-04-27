@@ -37,7 +37,7 @@ const LoginPage = () => {
         }, {
           withCredentials: true, // Include cookies in the request
         });
-
+        console.log("<><>><", response);
         const role = response.data.data.user.role;
         const userDetails = response.data.data.user;
         const businessOwnerDetails = response.data.data.user;

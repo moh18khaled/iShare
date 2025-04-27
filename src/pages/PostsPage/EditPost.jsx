@@ -30,7 +30,7 @@ const EditPostPage = () => {
         const post = postRes.data.post;
         setTitle(post.title);
         setContent(post.content);
-        setBusinessName(post.businessOwner.businessName);
+        setBusinessName(post?.businessOwner?.businessName);
         setRating(post.rating || 0);
         setSelectedCategories(post.categories || []);
         setVideoData(post.video || { url: "", publicId: "" });
@@ -100,32 +100,34 @@ const EditPostPage = () => {
     }
   };
 
-  const handleRemoveMedia = (type) => {
+const handleRemoveMedia = (type) => {
     let currentMedia;
     let publicId = "";
-
+  
     switch (type) {
       case "image":
         currentMedia = imageData;
+        publicId = imageData.publicId;
         setImageData({ url: "", publicId: "" });
         break;
       case "video":
         currentMedia = videoData;
+        publicId = videoData.publicId;
         setVideoData({ url: "", publicId: "" });
         break;
       case "thumbnail":
         currentMedia = thumbnailData;
+        publicId = thumbnailData.publicId;
         setThumbnailData({ url: "", publicId: "" });
         break;
       default:
         return;
     }
-
-    if (currentMedia.publicId) {
-      publicId = currentMedia.publicId;
+  
+    if (publicId) {
       setRemovedMedia(prev => [...prev, { type, publicId }]);
     }
-
+  
     Swal.fire("Success", `${type} removed successfully. It will be deleted when you save your changes.`, "success");
   };
 
