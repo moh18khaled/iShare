@@ -5,6 +5,7 @@ import Companies from './Companies';
 import Categories from './Categories';
 import PostCard from './PostCard';
 import Swal from "sweetalert2";
+import { Socket } from 'socket.io-client';
 
 const PostsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -81,6 +82,7 @@ const PostsPage = () => {
       <Header 
         searchQuery={searchQuery} 
         onSearch={(query) => setSearchQuery(query)} 
+        
       />
       
       <Companies />

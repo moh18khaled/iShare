@@ -31,7 +31,7 @@ const Companies = () => {
   return (
     <section id="clients" className="clients section py-12">
       <div data-aos="fade-up" data-aos-delay="100">
-            <h1 className='font-ge-ss-two-light text-2xl lg:text-4xl text-center font-semibold pt-20 pb-2 font-GESSTwoBold' lang='ar'>برعاية</h1>
+            <h1 className='font-ge-ss-two-light text-3xl lg:text-4xl text-center font-semibold pt-20 pb-1 font-GESSTwoBold' lang='ar'>برعاية</h1>
 
       <div className="container mx-auto px-4 mt-16" >
 
@@ -72,7 +72,7 @@ const Companies = () => {
             <SwiperSlide key={index} className="flex items-center justify-center pb-8">
               <img 
                 src={company} 
-                className="w-full h-full max-w-[120px] lg:max-w-[150px] object-contain opacity-60 hover:opacity-100 transition-opacity duration-300" 
+                className="w-[70%] h-[70%] md:w-[130%] md:h-[130%]  object-contain opacity-60 hover:opacity-100 transition-opacity duration-300" 
                 alt={`Client ${index + 1}`} 
               />
             </SwiperSlide>

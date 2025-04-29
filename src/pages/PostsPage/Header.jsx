@@ -1,5 +1,5 @@
-import { FiSearch } from "react-icons/fi";
-import { FaPlus, FaBell } from "react-icons/fa";
+import { FiSearch, FiHome } from "react-icons/fi"; // Added FiHome
+import { FaPlus, FaBell, FaWallet } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import logo from "../../assets/images/WeinfluenceLogo.png";
 import { useContext } from "react";
@@ -11,7 +11,8 @@ const Header = ({ searchQuery, onSearch }) => {
     businessOwnerAuth, 
     profilePicture, 
     unreadCount,
-    markAsRead
+    markAsRead,
+    walletBalance
   } = useContext(User);
 
   const handleSearchInputChange = (e) => {
@@ -20,8 +21,12 @@ const Header = ({ searchQuery, onSearch }) => {
   };
 
   const handleNotificationClick = () => {
-    markAsRead(); // Mark notifications as read when clicking the bell icon
+    markAsRead();
   };
+
+  const formattedBalance = walletBalance !== undefined 
+    ? `$${walletBalance.toFixed(2)}` 
+    : "$0.00";
 
   return (
     <>
@@ -56,6 +61,23 @@ const Header = ({ searchQuery, onSearch }) => {
           {/* Icons Section */}
           <div className="hidden md:block">
             <div className="flex items-center space-x-4 md:space-x-10">
+              {/* Home Icon */}
+              <Link to="/posts">
+                <button className="p-2 rounded-full hover:bg-gray-100">
+                  <FiHome className="text-gray-600 text-xl" />
+                </button>
+              </Link>
+
+              {/* Wallet Balance */}
+              <Link to="/wallet">
+                <button className="flex items-center p-2 rounded-full hover:bg-gray-100">
+                  <FaWallet className="text-gray-600 text-xl mr-2" />
+                  <span className="text-gray-700 font-medium">
+                    {formattedBalance}
+                  </span>
+                </button>
+              </Link>
+
               {/* Notification Icon */}
               <Link to="/notifications" onClick={handleNotificationClick}>
                 <button className="p-2 rounded-full hover:bg-gray-100 relative">
@@ -107,6 +129,20 @@ const Header = ({ searchQuery, onSearch }) => {
       {/* Bottom Navigation Bar for Small Screens */}
       <div className="fixed bottom-0 left-0 w-full bg-white shadow-sm z-10 md:hidden">
         <div className="flex justify-around items-center p-2">
+          {/* Home Icon for mobile */}
+          <Link to="/posts">
+            <button className="p-2 rounded-full hover:bg-gray-100">
+              <FiHome className="text-gray-600 text-xl" />
+            </button>
+          </Link>
+
+          {/* Wallet Icon for mobile */}
+          <Link to="/wallet">
+            <button className="p-2 rounded-full hover:bg-gray-100">
+              <FaWallet className="text-gray-600 text-xl" />
+            </button>
+          </Link>
+
           {/* Notification Icon */}
           <Link to="/notifications" onClick={handleNotificationClick}>
             <button className="p-2 rounded-full hover:bg-gray-100 relative">
