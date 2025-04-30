@@ -19,7 +19,7 @@ const EditPostPage = () => {
   const [imageData, setImageData] = useState({ url: "", publicId: "" });
   const [videoData, setVideoData] = useState({ url: "", publicId: "" });
   const [thumbnailData, setThumbnailData] = useState({ url: "", publicId: "" });
-  const [removedMedia, setRemovedMedia] = useState([]);
+  const [removedMedia, setRemovedMedia] = useState([]); // Global array to track removed media
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -28,6 +28,7 @@ const EditPostPage = () => {
         const catRes = await axios.get(`${apiBaseUrl}/businessOwner/signup-data`);
 
         const post = postRes.data.post;
+        console.log(post);
         setTitle(post.title);
         setContent(post.content);
         setBusinessName(post?.businessOwner?.businessName);
@@ -36,11 +37,12 @@ const EditPostPage = () => {
         setVideoData(post.video || { url: "", publicId: "" });
         setAvailableCategories(catRes.data.categories);
 
-        if (post.imageUrl && post.imageUrl.startsWith("thumbnail.")) {
+        if (post.image.url && post.image.url.startsWith("thumbnail.")) {
           setThumbnailData(post.image || { url: "", publicId: "" });
         } else {
           setImageData(post.image || { url: "", publicId: "" });
         }
+
       } catch (error) {
         console.error("Error loading post:", error);
         Swal.fire("Error", "Could not load post data", "error");
@@ -100,24 +102,27 @@ const EditPostPage = () => {
     }
   };
 
-const handleRemoveMedia = (type) => {
+  // Updated media removal handler
+  const handleRemoveMedia = (type) => {
     let currentMedia;
     let publicId = "";
-  
+    console.log(imageData," ", videoData," ");
+    console.log(imageData.public_id," ", videoData.public_id," ");
+
     switch (type) {
       case "image":
         currentMedia = imageData;
-        publicId = imageData.publicId;
+        publicId = imageData.public_id;
         setImageData({ url: "", publicId: "" });
         break;
       case "video":
         currentMedia = videoData;
-        publicId = videoData.publicId;
+        publicId = videoData.public_id;
         setVideoData({ url: "", publicId: "" });
         break;
       case "thumbnail":
         currentMedia = thumbnailData;
-        publicId = thumbnailData.publicId;
+        publicId = thumbnailData.public_id;
         setThumbnailData({ url: "", publicId: "" });
         break;
       default:
@@ -125,29 +130,31 @@ const handleRemoveMedia = (type) => {
     }
   
     if (publicId) {
-      setRemovedMedia(prev => [...prev, { type, publicId }]);
+      // Track the removed media
+      setRemovedMedia((prev) => {
+        const updatedMedia = [...prev,  {publicId} ];
+        console.log("Removed Media Array:", updatedMedia); // Print to console
+        return updatedMedia;
+      });
+      Swal.fire("Success", `${type} removed successfully. It will be deleted when you save your changes.`, "success");
     }
-  
-    Swal.fire("Success", `${type} removed successfully. It will be deleted when you save your changes.`, "success");
   };
-
-  // Add this to your state declarations at the top
-  const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Modify the handleSubmit function
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    if (isSubmitting) return; // Prevent multiple submissions
+
+    if (isSubmitting) return;
     setIsSubmitting(true);
-  
+
     if (selectedCategories.length === 0) {
       Swal.fire("Missing Data", "Please select at least one category.", "error");
       setIsSubmitting(false);
       return;
     }
-  
-    // Check if there's at least one media (image or video with thumbnail)
+
     if (!imageData.url && !videoData.url && !thumbnailData.url) {
       Swal.fire({
         icon: "error",
@@ -157,8 +164,7 @@ const handleRemoveMedia = (type) => {
       setIsSubmitting(false);
       return;
     }
-  
-    // Thumbnail is only required if there's a video and no image
+
     if (videoData.url && !thumbnailData.url && !imageData.url) {
       Swal.fire({
         icon: "error",
@@ -168,7 +174,7 @@ const handleRemoveMedia = (type) => {
       setIsSubmitting(false);
       return;
     }
-  
+
     try {
       const updatedPost = {
         title,
@@ -182,12 +188,12 @@ const handleRemoveMedia = (type) => {
         thumbnailPublicId: thumbnailData.publicId,
         rating,
         categories: selectedCategories,
-        removedMedia: removedMedia.map(item => ({
+        removedMedia: removedMedia.map((item) => ({
           mediaType: item.type,
-          publicId: item.publicId
-        }))
+          publicId: item.publicId,
+        })),
       };
-  
+
       const res = await axios.patch(`${apiBaseUrl}/postss/${id}`, updatedPost);
       if (res.status === 200) {
         Swal.fire("Success", "Post updated successfully.", "success");
@@ -202,7 +208,7 @@ const handleRemoveMedia = (type) => {
       setIsSubmitting(false);
     }
   };
-  
+
   const handleCategoryChange = (value) => {
     setSelectedCategories((prev) =>
       prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
@@ -300,39 +306,32 @@ const handleRemoveMedia = (type) => {
               )}
             </label>
 
-            {/* Only show thumbnail upload if there's a video or no image */}
-            {(videoData.url || !imageData.url) && (
-              <label className="flex items-center">
-                <input type="file" accept="image/*" className="hidden" onChange={handleThumbnailUpload} />
-                <FaImage className="text-red-500 mr-2" />
-                <span>Thumbnail {videoData.url ? "(for video)" : ""}</span>
-                {thumbnailData.url && <FaCheckCircle className="text-green-500 ml-2" />}
-                {thumbnailData.url && (
-                  <button 
-                    type="button" 
-                    onClick={() => handleRemoveMedia("thumbnail")} 
-                    className="ml-2 text-red-500 hover:underline"
-                  >
-                    Remove
-                  </button>
-                )}
-              </label>
-            )}
+            <label className="flex items-center">
+              <input type="file" accept="image/*" className="hidden" onChange={handleThumbnailUpload} />
+              <FaImage className="text-red-500 mr-2" />
+              <span>Thumbnail</span>
+              {thumbnailData.url && <FaCheckCircle className="text-green-500 ml-2" />}
+              {thumbnailData.url && (
+                <button 
+                  type="button" 
+                  onClick={() => handleRemoveMedia("thumbnail")} 
+                  className="ml-2 text-red-500 hover:underline"
+                >
+                  Remove
+                </button>
+              )}
+            </label>
           </div>
 
-          
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`w-full p-3 text-white rounded-lg transition ${
-              isSubmitting 
-                ? 'bg-red-400 cursor-not-allowed' 
-                : 'bg-red-500 hover:bg-red-600'
-            }`}
-          >
-            {isSubmitting ? 'Updating...' : 'Update Post'}
-          </button>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="bg-red-500 text-white py-3 px-6 rounded-lg"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Updating..." : "Update Post"}
+            </button>
+          </div>
         </form>
       </div>
     </div>
