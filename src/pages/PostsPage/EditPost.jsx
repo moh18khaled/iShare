@@ -100,7 +100,7 @@ const EditPostPage = () => {
     }
   };
 
-const handleRemoveMedia = (type) => {
+  const handleRemoveMedia = (type) => {
     let currentMedia;
     let publicId = "";
   
@@ -130,7 +130,6 @@ const handleRemoveMedia = (type) => {
   
     Swal.fire("Success", `${type} removed successfully. It will be deleted when you save your changes.`, "success");
   };
-
   // Add this to your state declarations at the top
   const [isSubmitting, setIsSubmitting] = useState(false);
   

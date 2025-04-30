@@ -1,13 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import HomePage from "./pages/HomePage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import SelesctRPage from "./pages/SelesctRPage";
 import BusinessOwnerRegisterPage from "./pages/BusinessOwnerRegisterPage";
-import ProfilePage from "./pages/ProfilePage";
+// import ProfilePage from "./pages/ProfilePage";
+const ProfilePage = lazy(()=>import("./pages/ProfilePage"));
 import UpdatePasswordPage from "./pages/UpdatePasswordPage";
-import PostsPage from "./pages/PostsPage";
+// import PostsPage from "./pages/PostsPage";
+const PostsPage = lazy(()=>import("./pages/PostsPage"));
 import EditPost from "./pages/PostsPage/EditPost";
 import CreatePostPage from "./pages/PostsPage/CreatePost";
 import ViewPosts from "./pages/PostsPage/ViewPosts";

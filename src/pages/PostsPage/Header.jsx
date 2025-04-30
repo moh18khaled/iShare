@@ -50,7 +50,7 @@ const Header = ({ searchQuery, onSearch }) => {
   return (
     <>
       {/* Main Header */}
-      <nav className="bg-white shadow-sm p-4 fixed w-full top-0 z-10 lg:h-24 h-20">
+      <nav className="bg-white shadow-sm p-4 fixed w-full top-0 z-20 lg:h-24 h-20">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-full">
           {/* Logo */}
           <Link to="/">
@@ -81,14 +81,16 @@ const Header = ({ searchQuery, onSearch }) => {
           <div className="hidden md:block">
             <div className="flex items-center space-x-4 md:space-x-10">
               {/* Home Icon */}
-              <Link to="/posts">
+
+              {auth.userDetails && <Link to="/posts">
                 <button className="p-2 rounded-full hover:bg-gray-100">
                   <FiHome className="text-gray-600 text-xl" />
                 </button>
-              </Link>
+              </Link>}
 
               {/* Notification Icon */}
-              <Link to="/notifications" onClick={handleNotificationClick}>
+
+              {auth.userDetails && <Link to="/notifications" onClick={handleNotificationClick}>
                 <button className="p-2 rounded-full hover:bg-gray-100 relative">
                   <FaBell className="text-gray-600 text-xl" />
                   {unReadCount > 0 && (
@@ -97,7 +99,7 @@ const Header = ({ searchQuery, onSearch }) => {
                     </span>
                    )}
                 </button>
-              </Link>
+              </Link>}
 
               {/* Create Post Icon */}
               {businessOwnerAuth.businessOwnerDetails ? "" : (
@@ -119,17 +121,7 @@ const Header = ({ searchQuery, onSearch }) => {
                     />
                   </button>
                 </Link>
-              ) : (
-                <Link to="/profile">
-                  <button className="p-2 rounded-full hover:bg-gray-100">
-                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-600 text-lg">
-                        {auth.user?.name?.charAt(0).toUpperCase() || 'U'}
-                      </span>
-                    </div>
-                  </button>
-                </Link>
-              )}
+              ) : ""}
             </div>
           </div>
         </div>
@@ -139,14 +131,16 @@ const Header = ({ searchQuery, onSearch }) => {
       <div className="fixed bottom-0 left-0 w-full bg-white shadow-sm z-10 md:hidden">
         <div className="flex justify-around items-center p-2">
           {/* Home Icon for mobile */}
-          <Link to="/posts">
+
+          {auth.userDetails && <Link to="/posts">
             <button className="p-2 rounded-full hover:bg-gray-100">
               <FiHome className="text-gray-600 text-xl" />
             </button>
-          </Link>
+          </Link>}
 
           {/* Notification Icon */}
-          <Link to="/notifications" onClick={handleNotificationClick}>
+
+          {auth.userDetails && <Link to="/notifications" onClick={handleNotificationClick}>
             <button className="p-2 rounded-full hover:bg-gray-100 relative">
               <FaBell className="text-gray-600 text-xl" />
               {unReadCount > 0 && (
@@ -155,7 +149,7 @@ const Header = ({ searchQuery, onSearch }) => {
                 </span>
               )}
             </button>
-          </Link>
+          </Link>}
 
           {/* Create Post Icon */}
           {businessOwnerAuth.businessOwnerDetails ? "" : (
@@ -177,17 +171,7 @@ const Header = ({ searchQuery, onSearch }) => {
                 />
               </button>
             </Link>
-          ) : (
-            <Link to="/profile">
-              <button className="p-2 rounded-full hover:bg-gray-100">
-                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-600 text-lg">
-                    {auth.user?.name?.charAt(0).toUpperCase() || 'U'}
-                  </span>
-                </div>
-              </button>
-            </Link>
-          )}
+          ) : ""}
         </div>
       </div>
     </>

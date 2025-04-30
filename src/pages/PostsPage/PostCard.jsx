@@ -4,14 +4,14 @@ import { useNavigate } from "react-router-dom";
 const PostCard = ({ posts, loading, error }) => {
   const navigate = useNavigate();
 
-    // Clean thumbnail. prefix from image URLs if present
-    const cleanedPosts = posts.map(post => {
-      const cleanedImageUrl = post.image?.url?.replace(/^thumbnail\./, "");
-      return {
-        ...post,
-        image: post.image ? { ...post.image, url: cleanedImageUrl } : undefined,
-      };
-    });
+  // Clean thumbnail. prefix from image URLs if present
+  const cleanedPosts = posts.map(post => {
+    const cleanedImageUrl = post.image?.url?.replace(/^thumbnail\./, "");
+    return {
+      ...post,
+      image: post.image ? { ...post.image, url: cleanedImageUrl } : undefined,
+    };
+  });
 
   const handleCardClick = (id) => {
     navigate(`/post/${id}`);
@@ -19,7 +19,7 @@ const PostCard = ({ posts, loading, error }) => {
 
   if (loading) {
     return (
-      <div className="text-center mt-32">
+      <div className="text-center mt-32 mb-10 z-10">
         <div role="status">
           <svg
             aria-hidden="true"
@@ -60,21 +60,23 @@ const PostCard = ({ posts, loading, error }) => {
       {cleanedPosts.map((post) => (
         <div
           key={post._id}
-          className="max-w-72 h-auto rounded-lg overflow-hidden shadow-lg bg-white relative group cursor-pointer"
-          style={{ width: "fit-content" }}
+          className="w-72 h-96 rounded-lg overflow-hidden shadow-lg bg-white relative group cursor-pointer flex flex-col"
           onClick={() => handleCardClick(post._id)}
         >
           {/* Title - Always visible above the media */}
-          <div className="top-0 left-0 right-0 z-10 p-2 bg-black bg-opacity-50">
+          <div className="z-10 p-2 bg-black bg-opacity-50">
             <h2 className="text-white text-center text-xl font-bold truncate">
               {post.title}
             </h2>
           </div>
 
           {/* Media container with hover overlay */}
-          <div className="relative">
+          <div className="flex-1 relative overflow-hidden">
             {post.mediaType === "video" ? (
-              <video className="w-fit h-full object-cover" controls>
+              <video 
+                className="w-full h-full object-cover" 
+                controls
+              >
                 <source
                   src={post.video?.url}
                   type={`video/${post.video?.url?.split(".").pop()}`}
@@ -83,7 +85,7 @@ const PostCard = ({ posts, loading, error }) => {
               </video>
             ) : (
               <img
-                className="w-fit h-full object-cover"
+                className="w-full h-full object-cover"
                 src={post.image?.url}
                 alt={post.title}
               />
