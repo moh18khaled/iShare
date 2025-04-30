@@ -8,13 +8,12 @@ import { getNotifications } from "./NotificationsApi";
 
 const Header = ({ searchQuery, onSearch }) => {
   const [notifications,setNotifications] = useState([]);
+  const [unReadCount,setUnReadCount] = useState(0);
   const { 
     auth, 
     businessOwnerAuth, 
     profilePicture, 
-    unreadCount,
     markAsRead,
-    walletBalance
   } = useContext(User);
 
   const handleSearchInputChange = (e) => {
@@ -39,6 +38,12 @@ const Header = ({ searchQuery, onSearch }) => {
   const handleNotificationClick = () => {
     markAsRead();
   };
+
+  useEffect(() => {
+    const unReadCount = notifications.filter(notify => !notify.isRead).length;
+    setUnReadCount(unReadCount);
+  }, [notifications])
+  console.log(unReadCount);
 
   
 
@@ -86,11 +91,11 @@ const Header = ({ searchQuery, onSearch }) => {
               <Link to="/notifications" onClick={handleNotificationClick}>
                 <button className="p-2 rounded-full hover:bg-gray-100 relative">
                   <FaBell className="text-gray-600 text-xl" />
-                  {/* {getNotifications.length > 0 && ( */}
+                  {unReadCount > 0 && (
                     <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {notifications.length || 0}
+                      {unReadCount}
                     </span>
-                  {/* )} */}
+                   )}
                 </button>
               </Link>
 
@@ -140,20 +145,13 @@ const Header = ({ searchQuery, onSearch }) => {
             </button>
           </Link>
 
-          {/* Wallet Icon for mobile */}
-          <Link to="/wallet">
-            <button className="p-2 rounded-full hover:bg-gray-100">
-              <FaWallet className="text-gray-600 text-xl" />
-            </button>
-          </Link>
-
           {/* Notification Icon */}
           <Link to="/notifications" onClick={handleNotificationClick}>
             <button className="p-2 rounded-full hover:bg-gray-100 relative">
               <FaBell className="text-gray-600 text-xl" />
-              {unreadCount > 0 && (
+              {unReadCount > 0 && (
                 <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {unreadCount > 9 ? '9+' : unreadCount}
+                  {unReadCount}
                 </span>
               )}
             </button>
