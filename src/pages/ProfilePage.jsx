@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import Swal from "sweetalert2";
 import { User } from "../context/context";
 import {
   FaThumbsUp,
@@ -15,19 +14,20 @@ import {
   FaMapMarkerAlt,
   FaBuilding,
   FaUserPlus,
-  FaUserMinus
+  FaUserMinus,
+  FaWallet
 } from "react-icons/fa";
 import ExpandableBox from "../components/ExpandableBox";
 import ExpandableBoxForUsers from "../components/ExpandableBoxForUsers";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const ProfilePage = () => {
   const { id } = useParams();
   const user = useContext(User);
   const location = useLocation();
   const navigate = useNavigate();
   const isUpdatePage = location.pathname.includes("/profile/update");
-  const [handleError, setHandleError] = useState("");
   const [isFollowing, setIsFollowing] = useState(false);
   const [isCurrentUser, setIsCurrentUser] = useState(false);
 
@@ -46,7 +46,10 @@ const ProfilePage = () => {
     phoneNumber: "",
     website: "",
     address: "",
-    businessEmail: ""
+    businessEmail: "",
+    walletNumber: "",
+    walletType: "",
+    walletAmount : 0,
   });
 
   useEffect(() => {
@@ -56,25 +59,27 @@ const ProfilePage = () => {
         const response = await axios.get(endpoint, {
           withCredentials: true,
         });
-        
+        console.log(response.data);
         const data = id ? response.data.user : response.data.data;
-        console.log(data);
         setUserAccount({
           id: data._id || data.id,
-          username: data.username|| "",
+          username: data.username || "",
           email: data.email,
-          profilePicture: data.profilePicture || "",
+          profilePicture: data.profilePicture || "/default-profile.png",
           postsCount: data.postsCount,
           likedPostsCount: data.likedPostsCount,
           followersCount: data.followersCount,
           followingCount: data.followingCount,
+          walletNumber: data.walletNumber || "",
+          walletType: data.walletType || "",
+          walletAmount : data.walletAmount || 0,
           role: data.role,
-          mentionedPosts: data.mentionedPosts || [], 
+          mentionedPosts: data.mentionedPosts || [],
           businessName: data.businessDetails?.businessName || "",
           phoneNumber: data.businessDetails?.phoneNumber || "",
           website: data.businessDetails?.websiteUrl || "",
           address: data.businessDetails?.address || "",
-          businessEmail: data.businessDetails?.email || ""
+          businessEmail: data.businessDetails?.email || "",
         });
 
         setIsFollowing(data.isFollowed || false);
@@ -101,51 +106,13 @@ const ProfilePage = () => {
     }
   };
 
-  // const deleteAccount = async () => {
-  //   try {
-  //     const response = await axios.delete(`${apiBaseUrl}/user/account`, {
-  //       withCredentials: true,
-  //     });
-  //     if (response.status === 200) {
-  //       Swal.fire({
-  //         title: "Are you sure to delete your account?",
-  //         text: "You won't be able to revert this!",
-  //         icon: "warning",
-  //         showCancelButton: true,
-  //         confirmButtonColor: "#3085d6",
-  //         cancelButtonColor: "#d33",
-  //         confirmButtonText: "Yes, delete it!",
-  //       }).then((result) => {
-  //         if (result.isConfirmed) {
-  //           user.setAuth({});
-  //           Swal.fire({
-  //             title: "Deleted!",
-  //             text: "Your account has been deleted.",
-  //             icon: "success",
-  //           }).then(() => navigate("/"));
-  //         }
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     setHandleError(error.response.data.error);
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Failed to Delete Account",
-  //       text: `${handleError}`,
-  //     });
-  //   }
-  // };
-
   const handleCardClick = (postId) => {
     navigate(`/post/${postId}`);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div
-        className={`w-full max-w-[100%] md:max-w-[80%] min-h-[calc(100vh+${userAccount.mentionedPosts?.length * 50}px)] bg-white rounded-lg shadow-lg p-6 relative`}
-      >
+      <div className={`w-full max-w-[100%] md:max-w-[80%] min-h-[calc(100vh+${userAccount.mentionedPosts?.length * 50}px)] bg-white rounded-lg shadow-lg p-6 relative`}>
         {!isUpdatePage && (
           <>
             {!isCurrentUser && (
@@ -158,15 +125,8 @@ const ProfilePage = () => {
                       : "bg-blue-500 text-white hover:bg-blue-600"
                   }`}
                 >
-                  {isFollowing ? (
-                    <>
-                      <FaUserMinus /> Unfollow
-                    </>
-                  ) : (
-                    <>
-                      <FaUserPlus /> Follow
-                    </>
-                  )}
+                  {isFollowing ? <FaUserMinus /> : <FaUserPlus />}
+                  {isFollowing ? "Unfollow" : "Follow"}
                 </button>
               </div>
             )}
@@ -187,7 +147,7 @@ const ProfilePage = () => {
               <div className="relative">
                 <img
                   className="w-24 h-24 rounded-full object-cover border-4 border-gray-300"
-                  src={userAccount.profilePicture || "/default-profile.png"}
+                  src={userAccount.profilePicture}
                   alt="Profile"
                 />
               </div>
@@ -199,6 +159,39 @@ const ProfilePage = () => {
                 </div>
               )}
             </div>
+
+            {/* Wallet Information - Displayed for all users */}
+            {(userAccount.walletNumber || userAccount.walletType) && (
+              <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 shadow-sm">
+                <div className="flex items-center justify-center space-x-4">
+                  <div className=" p-3 rounded-full flex items-center gap-4">
+                    <FaWallet className="text-blue-600 text-xl" />
+                    <p>{userAccount.walletAmount}$</p>
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-semibold text-blue-800">Payment Details</h3>
+                    <div className="flex flex-wrap justify-center gap-4 mt-2">
+                    {userAccount.walletType && (
+  <div className="bg-white px-4 py-2 rounded-lg shadow-xs">
+    <span className="text-gray-500 text-sm">Wallet Type</span>
+    <p className="font-medium">
+      {Array.isArray(userAccount.walletType) 
+        ? userAccount.walletType.join(', ') // Add comma+space between array items
+        : userAccount.walletType}
+    </p>
+  </div>
+)}
+                      {userAccount.walletNumber && (
+                        <div className="bg-white px-4 py-2 rounded-lg shadow-xs">
+                          <span className="text-gray-500 text-sm">Wallet Number</span>
+                          <p className="font-mono font-bold">{userAccount.walletNumber}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Business Owner Contact Information */}
             {userAccount.role === "businessOwner" && (
@@ -245,12 +238,14 @@ const ProfilePage = () => {
             )}
 
             <div className="mt-6 flex justify-between text-center">
-            {userAccount.role !== "businessOwner" && (<ExpandableBox
-                icon={<FaNewspaper className="text-2xl text-gray-700 mx-auto" />}
-                title="Posts"
-                value={userAccount.postsCount}
-                endpoint={id ? `${apiBaseUrl}/user/${id}/posts` : `${apiBaseUrl}/user/account/posts`}
-              />)}
+              {userAccount.role !== "businessOwner" && (
+                <ExpandableBox
+                  icon={<FaNewspaper className="text-2xl text-gray-700 mx-auto" />}
+                  title="Posts"
+                  value={userAccount.postsCount}
+                  endpoint={id ? `${apiBaseUrl}/user/${id}/posts` : `${apiBaseUrl}/user/account/posts`}
+                />
+              )}
               <ExpandableBox
                 icon={<FaThumbsUp className="text-2xl text-gray-700 mx-auto" />}
                 title="Liked Posts"
@@ -306,13 +301,6 @@ const ProfilePage = () => {
                   >
                     Update Password
                   </Link>
-                  {/* <button
-                  type="button"
-                  className="flex-grow-[2] bg-mainColor text-white py-2 px-4 rounded-lg hover:bg-hoverColor transition"
-                  onClick={() => deleteAccount(userAccount.id)}
-                >
-                  Delete the account
-                </button> */}
                 </div>
               </form>
             )}

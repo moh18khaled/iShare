@@ -1,32 +1,88 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { User } from '../../context/context';
 import { FaBell, FaRegBell } from 'react-icons/fa';
-// import { formatDistanceToNow } from 'date-fns';
+import { getNotifications, markAsRead } from './NotificationsApi';
+import axios from 'axios';
+import Header from './Header';
 
 const Notifications = () => {
-  const { 
-    notifications,
-    unreadCount,
-    isLoading,
-    markAsRead,
-    fetchNotifications
-  } = useContext(User);
+  const [notifications, setNotifications] = useState([]);
+  const [localLoading, setLocalLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isMarkingRead, setIsMarkingRead] = useState(false);
+  const [clickedNotificationId, setClickedNotificationId] = useState(null);
 
-  // Refresh notifications when component mounts
+  const { unreadCount, isLoading } = useContext(User);
+
+  // Fetch notifications on component mount
   useEffect(() => {
-    fetchNotifications();
-  }, [fetchNotifications]);
+    const loadNotifications = async () => {
+      try {
+        setLocalLoading(true);
+        const data = await getNotifications();
+        setNotifications(data);
+      } catch (err) {
+        setError(err.message || 'Failed to load notifications');
+      } finally {
+        setLocalLoading(false);
+      }
+    };
 
-  const handleNotificationClick = async (notificationId) => {
-    if (!notifications.find(n => n._id === notificationId)?.read) {
-      await markAsRead(notificationId);
-    }
+    loadNotifications();
+  }, []);
+
+  useEffect(() => {
+    const markNotificationAsRead = async () => {
+      if (!clickedNotificationId) return;
+  
+      const notification = notifications.find(n => n._id === clickedNotificationId);
+      if (!notification || notification.isRead) {
+        setClickedNotificationId(null);
+        return;
+      }
+  
+      try {
+        setIsMarkingRead(true);
+        
+        // Optimistic UI update
+        setNotifications(prev => 
+          prev.map(n => 
+            n._id === clickedNotificationId ? { ...n, isRead: true } : n
+          )
+        );
+        
+        await markAsRead(clickedNotificationId);
+        
+      } catch (err) {
+        // Revert optimistic update on error
+        setNotifications(prev => 
+          prev.map(n => 
+            n._id === clickedNotificationId ? { ...n, isRead: false } : n
+          )
+        );
+        setError('Failed to mark notification as read');
+      } finally {
+        setIsMarkingRead(false);
+        setClickedNotificationId(null); // Reset after handling
+      }
+    };
+  
+    markNotificationAsRead();
+  }, [clickedNotificationId, notifications, markAsRead]);
+  
+  // Updated click handler
+  const handleNotificationClick = (notificationId) => {
+    setClickedNotificationId(notificationId);
   };
 
+  // Combined loading state
+  const isProcessing = isLoading || localLoading;
+
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div>
+      <Header />
+    <div className="max-w-4xl mx-auto p-4 pt-24">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Notifications</h1>
         {unreadCount > 0 && (
           <span className="bg-mainColor text-white px-3 py-1 rounded-full text-sm">
             {unreadCount} unread
@@ -34,15 +90,28 @@ const Notifications = () => {
         )}
       </div>
 
+      {/* Error Banner */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+          <button 
+            onClick={() => setError(null)} 
+            className="float-right font-bold"
+          >
+            &times;
+          </button>
+        </div>
+      )}
+
       {/* Loading State */}
-      {isLoading && (
+      {isProcessing && (
         <div className="flex justify-center p-8">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-mainColor"></div>
         </div>
       )}
 
       {/* Notifications List */}
-      {!isLoading && (
+      {!isProcessing && (
         <div className="bg-white rounded-lg shadow">
           {notifications.length === 0 ? (
             <div className="p-8 text-center">
@@ -59,12 +128,16 @@ const Notifications = () => {
               {notifications.map((notification) => (
                 <li 
                   key={notification._id} 
-                  className={`px-4 py-3 hover:bg-gray-50 ${!notification.read ? 'bg-blue-50' : ''}`}
-                  onClick={() => handleNotificationClick(notification._id)}
+                  className={`px-4 py-3 hover:bg-gray-50 transition-colors ${
+                    !notification.isRead ? 'bg-red-50' : ''
+                  } ${
+                    isMarkingRead ? 'opacity-75 cursor-wait' : 'cursor-pointer'
+                  }`}
+                  onClick={() => !isMarkingRead && handleNotificationClick(notification._id)}
                 >
-                  <div className="flex items-start cursor-pointer">
+                  <div className="flex items-start">
                     <div className="flex-shrink-0 pt-1">
-                      {notification.read ? (
+                      {notification.isRead ? (
                         <FaBell className="h-5 w-5 text-gray-400" />
                       ) : (
                         <FaBell className="h-5 w-5 text-mainColor" />
@@ -74,20 +147,16 @@ const Notifications = () => {
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-medium text-gray-900">
                           {notification.message}
-                          {!notification.read && (
+                          {!notification.isRead && (
                             <span className="ml-2 inline-block h-2 w-2 rounded-full bg-mainColor"></span>
                           )}
                         </p>
                       </div>
                       <div className="flex justify-between items-center mt-1">
                         <p className="text-xs text-gray-400">
-                          {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                          {new Date(notification.createdAt).toLocaleString()}
                         </p>
-                        {notification.type && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                            {notification.type}
-                          </span>
-                        )}
+                        
                       </div>
                     </div>
                   </div>
@@ -97,6 +166,7 @@ const Notifications = () => {
           )}
         </div>
       )}
+    </div>
     </div>
   );
 };

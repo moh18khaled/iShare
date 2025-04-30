@@ -100,7 +100,7 @@ const EditPostPage = () => {
     }
   };
 
-  const handleRemoveMedia = (type) => {
+const handleRemoveMedia = (type) => {
     let currentMedia;
     let publicId = "";
   
