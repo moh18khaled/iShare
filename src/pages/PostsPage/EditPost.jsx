@@ -19,7 +19,8 @@ const EditPostPage = () => {
   const [imageData, setImageData] = useState({ url: "", publicId: "" });
   const [videoData, setVideoData] = useState({ url: "", publicId: "" });
   const [thumbnailData, setThumbnailData] = useState({ url: "", publicId: "" });
-  const [removedMedia, setRemovedMedia] = useState([]); // Global array to track removed media
+  const [removedMedia, setRemovedMedia] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -54,6 +55,17 @@ const EditPostPage = () => {
 
   const handleMediaUpload = async (event, type) => {
     event.preventDefault();
+    
+    // Check if there's existing media of the same type
+    if ((type === "image" && imageData.url) || (type === "video" && videoData.url)) {
+      Swal.fire({
+        icon: "warning",
+        title: "Media Exists",
+        text: `Please remove the existing ${type} before uploading a new one.`,
+      });
+      return;
+    }
+
     const file = event.target.files[0];
     if (!file) return;
 
@@ -82,6 +94,18 @@ const EditPostPage = () => {
   };
 
   const handleThumbnailUpload = async (event) => {
+    event.preventDefault();
+    
+    // Check if there's existing thumbnail
+    if (thumbnailData.url) {
+      Swal.fire({
+        icon: "warning",
+        title: "Thumbnail Exists",
+        text: "Please remove the existing thumbnail before uploading a new one.",
+      });
+      return;
+    }
+
     const file = event.target.files[0];
     if (!file) return;
 
@@ -102,26 +126,24 @@ const EditPostPage = () => {
     }
   };
 
-const handleRemoveMedia = (type) => {
+  const handleRemoveMedia = (type) => {
     let currentMedia;
     let publicId = "";
-    console.log(imageData," ", videoData," ");
-    console.log(imageData.public_id," ", videoData.public_id," ");
 
     switch (type) {
       case "image":
         currentMedia = imageData;
-        publicId = imageData.public_id;
+        publicId = imageData.publicId || imageData.public_id;
         setImageData({ url: "", publicId: "" });
         break;
       case "video":
         currentMedia = videoData;
-        publicId = videoData.public_id;
+        publicId = videoData.publicId || videoData.public_id;
         setVideoData({ url: "", publicId: "" });
         break;
       case "thumbnail":
         currentMedia = thumbnailData;
-        publicId = thumbnailData.public_id;
+        publicId = thumbnailData.publicId || thumbnailData.public_id;
         setThumbnailData({ url: "", publicId: "" });
         break;
       default:
@@ -134,9 +156,6 @@ const handleRemoveMedia = (type) => {
   
     Swal.fire("Success", `${type} removed successfully. It will be deleted when you save your changes.`, "success");
   };
-
-  // Add this to your state declarations at the top
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -176,11 +195,11 @@ const handleRemoveMedia = (type) => {
         content,
         businessName,
         imageUrl: imageData.url,
-        imagePublicId: imageData.publicId,
+        imagePublicId: imageData.publicId || imageData.public_id,
         videoUrl: videoData.url,
-        videoPublicId: videoData.publicId,
+        videoPublicId: videoData.publicId || videoData.public_id,
         thumbnailUrl: thumbnailData.url,
-        thumbnailPublicId: thumbnailData.publicId,
+        thumbnailPublicId: thumbnailData.publicId || thumbnailData.public_id,
         rating,
         categories: selectedCategories,
         removedMedia: removedMedia.map((item) => ({
@@ -188,6 +207,7 @@ const handleRemoveMedia = (type) => {
           publicId: item.publicId,
         })),
       };
+      console.log(updatedPost);
 
       const res = await axios.patch(`${apiBaseUrl}/postss/${id}`, updatedPost);
       if (res.status === 200) {
@@ -270,7 +290,13 @@ const handleRemoveMedia = (type) => {
 
           <div className="space-y-4 mb-6">
             <label className="flex items-center">
-              <input type="file" accept="image/*" className="hidden" onChange={(e) => handleMediaUpload(e, "image")} />
+              <input 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                onChange={(e) => handleMediaUpload(e, "image")} 
+                id="image-upload"
+              />
               <FaImage className="text-red-500 mr-2" />
               <span>Image</span>
               {imageData.url && <FaCheckCircle className="text-green-500 ml-2" />}
@@ -283,10 +309,24 @@ const handleRemoveMedia = (type) => {
                   Remove
                 </button>
               )}
+              {!imageData.url && (
+                <label 
+                  htmlFor="image-upload" 
+                  className="ml-2 text-blue-500 hover:underline cursor-pointer"
+                >
+                  Upload
+                </label>
+              )}
             </label>
 
             <label className="flex items-center">
-              <input type="file" accept="video/*" className="hidden" onChange={(e) => handleMediaUpload(e, "video")} />
+              <input 
+                type="file" 
+                accept="video/*" 
+                className="hidden" 
+                onChange={(e) => handleMediaUpload(e, "video")} 
+                id="video-upload"
+              />
               <FaVideo className="text-red-500 mr-2" />
               <span>Video</span>
               {videoData.url && <FaCheckCircle className="text-green-500 ml-2" />}
@@ -299,10 +339,24 @@ const handleRemoveMedia = (type) => {
                   Remove
                 </button>
               )}
+              {!videoData.url && (
+                <label 
+                  htmlFor="video-upload" 
+                  className="ml-2 text-blue-500 hover:underline cursor-pointer"
+                >
+                  Upload
+                </label>
+              )}
             </label>
 
             <label className="flex items-center">
-              <input type="file" accept="image/*" className="hidden" onChange={handleThumbnailUpload} />
+              <input 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                onChange={handleThumbnailUpload} 
+                id="thumbnail-upload"
+              />
               <FaImage className="text-red-500 mr-2" />
               <span>Thumbnail</span>
               {thumbnailData.url && <FaCheckCircle className="text-green-500 ml-2" />}
@@ -314,6 +368,14 @@ const handleRemoveMedia = (type) => {
                 >
                   Remove
                 </button>
+              )}
+              {!thumbnailData.url && (
+                <label 
+                  htmlFor="thumbnail-upload" 
+                  className="ml-2 text-blue-500 hover:underline cursor-pointer"
+                >
+                  Upload
+                </label>
               )}
             </label>
           </div>
