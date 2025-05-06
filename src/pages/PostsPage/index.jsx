@@ -4,12 +4,12 @@ import Header from './Header';
 import Companies from './Companies';
 import Categories from './Categories';
 import PostCard from './PostCard';
-import Swal from "sweetalert2";
-import { Socket } from 'socket.io-client';
+import { FiX } from 'react-icons/fi';
 
 const PostsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedBrand, setSelectedBrand] = useState(null);
   const [postedData, setPostedData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,14 +33,31 @@ const PostsPage = () => {
     fetchData();
   }, []);
 
-  // Handle combined search and filtering
+  // Handle brand selection - uses separate endpoint
+  const handleBrandSelect = async (brand) => {
+    try {
+      setLoading(true);
+      setSelectedBrand(brand);
+      setSelectedCategory('all');
+      setSearchQuery('');
+      
+      const response = await axios.get(`${apiBaseUrl}/posts/brands?brand=${encodeURIComponent(brand)}`);
+      setFilteredData(response.data.posts);
+    } catch (error) {
+      setError(error.response?.data?.error || "Failed to filter by brand.");
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle search and category filtering (original endpoint)
   useEffect(() => {
     const filterPosts = async () => {
       try {
         setLoading(true);
-        setError(null); // Reset error when a new search is triggered
+        setError(null);
 
-        // Build query parameters
         const params = new URLSearchParams();
 
         if (searchQuery) {
@@ -51,38 +68,44 @@ const PostsPage = () => {
           params.append('categoryNames', selectedCategory);
         }
 
-        // Only make API call if we have filters
+        // Only make API call if we have search or category filters
         if (searchQuery || (selectedCategory && selectedCategory !== 'all')) {
           const response = await axios.get(`${apiBaseUrl}/postss/search?${params.toString()}`);
           setFilteredData(response.data.posts);
-        } else {
+        } else if (!selectedBrand) {
           // No filters - show all posts
           setFilteredData(postedData);
         }
       } catch (error) {
         const errorMessage = error.response?.data?.error || "An error occurred while searching.";
         setError(errorMessage);
-        setSelectedCategory('all');
-        setFilteredData([]); // Clear posts when an error occurs
+        setFilteredData([]);
       } finally {
         setLoading(false);
       }
     };
 
-    // Add debounce to prevent too many API calls
     const debounceTimer = setTimeout(() => {
-      filterPosts();
+      // Only run if we're not filtering by brand
+      if (!selectedBrand) {
+        filterPosts();
+      }
     }, 300);
 
     return () => clearTimeout(debounceTimer);
-  }, [searchQuery, selectedCategory, postedData]);
+  }, [searchQuery, selectedCategory, postedData, selectedBrand]);
+
+  const clearBrandFilter = () => {
+    setSelectedBrand(null);
+    setFilteredData(postedData); // Reset to all posts
+  };
 
   return (
     <div className='bg-[#F9F9F9]'>
       <Header 
         searchQuery={searchQuery} 
-        onSearch={(query) => setSearchQuery(query)} 
-        
+        onSearch={setSearchQuery}
+        onBrandSelect={handleBrandSelect}
       />
       
       <Companies />
@@ -91,6 +114,20 @@ const PostsPage = () => {
         selectedCategory={selectedCategory} 
         setSelectedCategory={setSelectedCategory} 
       />
+      
+      {selectedBrand && (
+        <div className="text-center mt-4">
+          <span className="bg-gray-200 px-4 py-2 rounded-full inline-flex items-center">
+            Showing posts for: {selectedBrand}
+            <button 
+              onClick={clearBrandFilter} 
+              className="ml-2 text-gray-600 hover:text-gray-800"
+            >
+              <FiX />
+            </button>
+          </span>
+        </div>
+      )}
       
       {loading ? (
         <p className="text-center text-gray-500">Loading posts...</p>
