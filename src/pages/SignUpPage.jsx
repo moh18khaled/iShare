@@ -86,7 +86,7 @@ const SignUpPage = () => {
           heardAboutUs: selectedHearAboutUs,
           walletNumber,
           walletTypes: selectedWalletTypes,
-          authProvider,
+          authProvider:authProvider||"local",
         });
         console.log(response);
         const userDetails = response.data.data;

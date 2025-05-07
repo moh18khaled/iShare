@@ -104,7 +104,7 @@ const BusinesssOwnerRegisterPage = () => {
           phoneNumber: phoneNumber,
           websiteUrl,
           description: description,
-          authProvider,
+          authProvider:authProvider||"local",
         });
         const getProfilePicture = response.data.data.user.profilePicture;
 
