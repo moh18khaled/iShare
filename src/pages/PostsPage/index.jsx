@@ -41,7 +41,7 @@ const PostsPage = () => {
       setSelectedCategory('all');
       setSearchQuery('');
       
-      const response = await axios.get(`${apiBaseUrl}/posts/brands?brand=${encodeURIComponent(brand)}`);
+      const response = await axios.get(`${apiBaseUrl}/postss/brands?brand=${encodeURIComponent(brand)}`);
       setFilteredData(response.data.posts);
     } catch (error) {
       setError(error.response?.data?.error || "Failed to filter by brand.");

@@ -5,7 +5,9 @@ import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import Cookies from "js-cookie"; // Import js-cookie
 import Swal from "sweetalert2";
 import { User } from "../context/context";
-import logo from "../assets/images/WeinfluenceLogo.png"
+import logo from "../assets/images/WeinfluenceLogo.png";
+import { GoogleLogin } from '@react-oauth/google';
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState(false);
@@ -87,6 +89,46 @@ const LoginPage = () => {
     }
   };
 
+  const handleGoogleLogin = async (credentialResponse) => {
+    try {
+      const { credential } = credentialResponse;
+      // Send the Google token to your backend
+      const response = await axios.post(`${apiBaseUrl}/auth/login/google`, {
+        provider: 'google',
+        googleToken: credential,
+      }, {
+        withCredentials: true
+      });
+      const role = response.data.data.user.role;
+      const userDetails = response.data.data.user;
+      const businessOwnerDetails = response.data.data.user;
+      const getProfilePicture = response.data.data.user.profilePicture;
+      if (role === "user") {
+        userNow.setAuth({ userDetails });
+        userNow.setProfilePicture(getProfilePicture);
+      } else if (role === "businessOwner") {
+        userNow.setBusinessOwnerAuth({ businessOwnerDetails });
+        userNow.setProfilePicture(getProfilePicture);
+      }
+
+      // Store the user's email in a cookie
+      Cookies.set("user", email, { expires: 7 }); // Expires in 7 days
+
+
+      // Handle successful login (store tokens, redirect, etc.)
+      console.log('Login success:', response.data);
+      window.location.href = response.data.redirectUrl || '/';
+
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Logged in failed",
+        text: err.response?.data.error || err.message,
+      });
+      console.error('Login error:', err.response?.data || err.message);
+    }
+  };
+
   return (
     <div className="h-screen bg-light-gray">
       <div className="bg-white">
@@ -94,11 +136,11 @@ const LoginPage = () => {
           {/* Logo */}
           <Link to="/">
             <div className="flex items-center">
-            <img
-            className="w-36 h-24 lg:w-48 lg:h-28 lg:ml-16 ml-1 object-contain"
-            src={logo}
-            alt="weinfluence logo"
-          />
+              <img
+                className="w-36 h-24 lg:w-48 lg:h-28 lg:ml-16 ml-1 object-contain"
+                src={logo}
+                alt="weinfluence logo"
+              />
             </div>
           </Link>
           <div className="w-full bg-[#E8D8C5] rounded-lg shadow-md sm:max-w-md xl:p-0">
@@ -198,13 +240,22 @@ const LoginPage = () => {
                 <p className="text-sm font-light text-[#030303]">
                   Don't have an account?{" "}
                   <Link
-                    to="/register"
+                    to="/googleSignUp"
                     className="font-medium text-[#8B4513] hover:underline"
                   >
                     Register here
                   </Link>
                 </p>
               </form>
+              {/* Google Login */}
+              <div className="mt-4">
+                <GoogleLogin
+                  onSuccess={handleGoogleLogin}
+                  onError={() => {
+                    console.log('Login Failed');
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

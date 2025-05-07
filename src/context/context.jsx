@@ -11,6 +11,7 @@ export const User = createContext({});
 export const UserProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
   const [businessOwnerAuth, setBusinessOwnerAuth] = useState({});
+  const [authProvider, setAuthProvider] = useState(null);
   const [profilePicture, setProfilePicture] = useState("");
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -142,6 +143,8 @@ export const UserProvider = ({ children }) => {
         isLoading,
         fetchNotifications,
         markAsRead,
+        authProvider,        // ✅ add this
+        setAuthProvider,     // ✅ and this
       }}
     >
       {children}

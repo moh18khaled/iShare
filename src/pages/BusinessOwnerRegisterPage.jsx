@@ -29,6 +29,7 @@ const BusinesssOwnerRegisterPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+  const { authProvider ,auth} = useContext(User);
 
   const businessOwnerNow = useContext(User);
 
@@ -71,9 +72,9 @@ const BusinesssOwnerRegisterPage = () => {
     const isWebsiteValid = validateWebsiteUrl(websiteUrl);
 
     if (
-      !emailPattern.test(email) ||
-      !passwordRegex.test(password) ||
-      confirmPassword !== password ||
+      (authProvider !== "google" && !emailPattern.test(email) )||
+      (authProvider !== "google" && !passwordRegex.test(password)) ||
+      (authProvider !== "google" &&  confirmPassword !== password )||
       age === 0 ||
       businessName.length === 0 ||
       selectedCategories.length === 0 ||
@@ -90,7 +91,7 @@ const BusinesssOwnerRegisterPage = () => {
         setIsLoading(true);
         const response = await axios.post(`${apiBaseUrl}/businessOwner/signup`, {
           username: userName,
-          email: email,
+          email:auth.email||email,
           password: password,
           password_confirmation: confirmPassword,
           age: age,
@@ -103,10 +104,13 @@ const BusinesssOwnerRegisterPage = () => {
           phoneNumber: phoneNumber,
           websiteUrl,
           description: description,
+          authProvider,
         });
+        const getProfilePicture = response.data.data.user.profilePicture;
 
         const businessOwnerDetails = response.data;
         businessOwnerNow.setBusinessOwnerAuth({ businessOwnerDetails });
+        userNow.setProfilePicture(getProfilePicture);
 
         if (response.status === 201) {
           Swal.fire({
@@ -219,6 +223,7 @@ const BusinesssOwnerRegisterPage = () => {
                 </div>
 
                 {/* Email Field */}
+                {authProvider !== "google" && (
                 <div>
                   <label
                     htmlFor="email"
@@ -244,8 +249,10 @@ const BusinesssOwnerRegisterPage = () => {
                       <p className="text-red-500 mt-1">Email is not valid</p>
                     )}
                 </div>
+)}
 
                 {/* Password Field */}
+                {authProvider !== "google" && (
                 <div className="relative">
                   <label
                     htmlFor="password"
@@ -280,8 +287,10 @@ const BusinesssOwnerRegisterPage = () => {
                     </p>
                   ) : null}
                 </div>
+)}
 
                 {/* Confirm Password Field */}
+                {authProvider !== "google" && (
                 <div className="relative">
                   <label
                     htmlFor="confirm-password"
@@ -316,6 +325,7 @@ const BusinesssOwnerRegisterPage = () => {
                     <p className="text-red-500 mt-1">Password doesn't match</p>
                   ) : null}
                 </div>
+)}
 
                 {/* Age Field */}
                 <div>

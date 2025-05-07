@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { User } from "../context/context";
 import logo from "../assets/images/WeinfluenceLogo.png"
 
+
 const SignUpPage = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -27,6 +28,7 @@ const SignUpPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to toggle confirm password visibility
   const [isLoading, setIsLoading] = useState(false); // State to manage loading spinner
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+  const { authProvider ,auth} = useContext(User);
 
   const userNow = useContext(User);
   console.log(userNow);
@@ -59,9 +61,9 @@ const SignUpPage = () => {
     // Validate form fields
     if (
       userName.length === 0 ||
-      !emailPattern.test(email) ||
-      !passwordRegex.test(password) || // Validate password using regex
-      confirmPassword !== password ||
+      (authProvider !== "google" && !emailPattern.test(email)) ||
+      (authProvider !== "google" && !passwordRegex.test(password)) || // Validate password using regex
+      (authProvider !== "google" && confirmPassword !== password ) ||
       age === 0 ||
       selectedInterests.length === 0 || // Ensure at least one interest is selected
       (walletNumber.length > 0 && selectedWalletTypes.length === 0) ||
@@ -72,17 +74,19 @@ const SignUpPage = () => {
 
     try {
       if (flag) {
-        setIsLoading(true); // Set loading to true when the form is being submitted
+        setIsLoading(true); 
+        // Set loading to true when the form is being submitted
         const response = await axios.post(`${apiBaseUrl}/user/signup`, {
+         email:auth.email||email,
           username: userName,
-          email: email,
-          password: password,
+          password,
           password_confirmation: confirmPassword,
-          age: age,
-          interests: selectedInterests, // Use selectedInterests
-          heardAboutUs: selectedHearAboutUs, // Use selectedHearAboutUs
-          walletNumber: walletNumber,
-          walletTypes: selectedWalletTypes, // Use selectedWalletTypes
+          age,
+          interests: selectedInterests,
+          heardAboutUs: selectedHearAboutUs,
+          walletNumber,
+          walletTypes: selectedWalletTypes,
+          authProvider,
         });
         console.log(response);
         const userDetails = response.data.data;
@@ -182,34 +186,37 @@ const SignUpPage = () => {
                 </div>
 
                 {/* Email Field */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-[#8B4513]"
-                  >
-                    Your email
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    name="email"
-                    id="email"
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
-                    required=""
-                  />
-                  {accept && email.length === 0 && (
-                    <p className="text-red-500 mt-1">Email is required</p>
-                  )}
-                  {accept &&
-                    email.length > 0 &&
-                    !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email) && (
-                      <p className="text-red-500 mt-1">Email is not valid</p>
-                    )}
-                </div>
+                {authProvider !== "google" && (
+  <div>
+    <label
+      htmlFor="email"
+      className="block mb-2 text-sm font-medium text-[#8B4513]"
+    >
+      Your email
+    </label>
+    <input
+      type="email"
+      value={email}
+      name="email"
+      id="email"
+      onChange={(e) => setEmail(e.target.value)}
+      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-[#8B4513] block w-full p-2.5"
+      required=""
+    />
+    {accept && email.length === 0 && (
+      <p className="text-red-500 mt-1">Email is required</p>
+    )}
+    {accept &&
+      email.length > 0 &&
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email) && (
+        <p className="text-red-500 mt-1">Email is not valid</p>
+      )}
+  </div>
+)}
+
 
                 {/* Password Field */}
-                <div className="relative">
+                {authProvider !== "google" && (<div className="relative">
                   <label
                     htmlFor="password"
                     className="block mb-2 text-sm font-medium text-[#8B4513]"
@@ -242,9 +249,10 @@ const SignUpPage = () => {
                       Password must be at least 8 characters, contain at least one uppercase letter, one lowercase letter, one number, and one special character.
                     </p>
                   ) : null}
-                </div>
-
+                </div>)}
                 {/* Confirm Password Field */}
+
+                {authProvider !== "google" && (
                 <div className="relative">
                   <label
                     htmlFor="confirm-password"
@@ -278,7 +286,7 @@ const SignUpPage = () => {
                   ) : confirmPassword !== password && accept ? (
                     <p className="text-red-500 mt-1">Password doesn't match</p>
                   ) : null}
-                </div>
+                </div>)}
 
                 {/* Age Field */}
                 <div>
