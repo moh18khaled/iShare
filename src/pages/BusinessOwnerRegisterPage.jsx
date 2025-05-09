@@ -106,12 +106,15 @@ const BusinesssOwnerRegisterPage = () => {
           description: description,
           authProvider:authProvider||"local",
         });
-        const getProfilePicture = response.data.data.user.profilePicture;
+        console.log(response);
 
-        const businessOwnerDetails = response.data;
+        console.log(response.status);
+        //const getProfilePicture = response.data.user.profilePicture;
+
+        const businessOwnerDetails = response.data.businessOwner;
         businessOwnerNow.setBusinessOwnerAuth({ businessOwnerDetails });
-        userNow.setProfilePicture(getProfilePicture);
-
+      //  userNow.setProfilePicture(getProfilePicture);
+        console.log(response.status);
         if (response.status === 201) {
           Swal.fire({
             title: "Success!",
