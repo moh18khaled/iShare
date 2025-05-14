@@ -19,7 +19,7 @@ const Companies = () => {
     'https://i.postimg.cc/cK2NP8xN/client-1.png',
     'https://i.postimg.cc/8fBQFKh1/client-2.png',
     'https://i.postimg.cc/grvPBJ1f/client-3.png',
-    'https://i.postimg.cc/V0cPkQ0G/client-4.png',
+    // 'https://i.postimg.cc/V0cPkQ0G/client-4.png',
     'https://i.postimg.cc/ZBNhmKnv/client-5.png',
     'https://i.postimg.cc/Mvq8kwSX/client-6.png',
     'https://i.postimg.cc/8fBQFKh1/client-2.png',
