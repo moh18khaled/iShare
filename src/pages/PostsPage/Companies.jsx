@@ -19,7 +19,7 @@ const Companies = () => {
     'https://i.postimg.cc/cK2NP8xN/client-1.png',
     'https://i.postimg.cc/8fBQFKh1/client-2.png',
     'https://i.postimg.cc/grvPBJ1f/client-3.png',
-    'https://i.postimg.cc/V0cPkQ0G/client-4.png',
+    // 'https://i.postimg.cc/V0cPkQ0G/client-4.png',
     'https://i.postimg.cc/ZBNhmKnv/client-5.png',
     'https://i.postimg.cc/Mvq8kwSX/client-6.png',
     'https://i.postimg.cc/8fBQFKh1/client-2.png',
@@ -31,7 +31,7 @@ const Companies = () => {
   return (
     <section id="clients" className="clients section py-12">
       <div data-aos="fade-up" data-aos-delay="100">
-            <h1 className='font-ge-ss-two-light text-3xl lg:text-4xl text-center font-semibold pt-20 pb-1 font-GESSTwoBold' lang='ar'>برعاية</h1>
+            <h1 className='font-linotte text-3xl lg:text-4xl text-center font-semibold pt-20 pb-1 font-GESSTwoBold' lang='ar'>برعاية</h1>
 
       <div className="container mx-auto px-4 mt-16" >
 

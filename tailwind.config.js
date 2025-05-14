@@ -11,12 +11,17 @@ export default {
         hoverColor: '#af1d24 ',
       },
       fontFamily: {
+        linotte: ['Linotte', 'sans-serif'],
+        geometos: ['Geometos Neue', 'sans-serif'],
         roboto: ['Roboto', 'sans-serif'],
         poppins: ['Poppins', 'sans-serif'],
         raleway: ['Raleway', 'sans-serif'],
         'ge-ss-two-light': ['GE SS Two Light', 'sans-serif'],
         sans: ['Proxima Nova', 'sans-serif'], // Set Proxima Nova as the default sans font
       },
+      fontWeight: {
+        'semi-bold': '600', // Ensure this matches Linotte Semi-Bold weight
+      }
     },
   },
   plugins: [],
