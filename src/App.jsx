@@ -28,6 +28,7 @@ import TransActions from "./pages/PostsPage/TransActions";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import Notifications from "./pages/PostsPage/Notifications";
+import GoogleSignUpPage from "./pages/GoogleSignUpPage";
 // import Notifications from "./pages/PostsPage/Notifications";
 
 
@@ -40,6 +41,7 @@ const App = () => {
       <div className="scroll-smooth font-sans">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/googleSignUp" element={<GoogleSignUpPage />} />
           <Route path="/register" element={<SelesctRPage />} />
           <Route path="/user-register" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />

@@ -10,24 +10,24 @@ const Header = ({ searchQuery, onSearch, onBrandSelect }) => {
   const [notifications, setNotifications] = useState([]);
   const [unReadCount, setUnReadCount] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { 
-    auth, 
-    businessOwnerAuth, 
-    profilePicture, 
+  const {
+    auth,
+    businessOwnerAuth,
+    profilePicture,
     markAsRead,
   } = useContext(User);
 
   const brands = [
-    "بشمينة",
-    "ilNilo Cafe",
-    "Beesline - بزلين",
-    "Hbshop",
-    "Cosmopolitan WWE - Work and Travel",
-    "Defacto",
-    "PESTLO",
-    "هُنّ",
-    "TBS",
-    "Bosporus Restaurant"
+    { label: "بشمينة", value: "بشمينة" },
+    { label: "ilNilo Cafe", value: "ilNilo Cafe" },
+    { label: "Beesline - بزلين", value: "Beesline - بزلين" },
+    { label: "Hbshop", value: "Hbshop" },
+    { label: "Cosmopolitan WWE - Work and Travel", value: "Cosmopolitan WWE - Work and Travel" },
+    { label: "Defacto", value: "Defacto" },
+    { label: "PESTLO", value: "PESTLO" },
+    { label: "هُنَّ", value: "هُنَّ" },
+    { label: "TBS", value: "TBS" },
+    { label: "Bosporus Restaurant", value: "Bosporus" }
   ];
 
   const handleSearchInputChange = (e) => {
@@ -35,9 +35,9 @@ const Header = ({ searchQuery, onSearch, onBrandSelect }) => {
     onSearch(query);
   };
 
-  const handleBrandSelect = (brand) => {
+  const handleBrandSelect = (brandValue) => {
     setIsDropdownOpen(false);
-    onBrandSelect(brand);
+    onBrandSelect(brandValue); // Only send the value to the backend
   };
 
   useEffect(() => {
@@ -58,8 +58,8 @@ const Header = ({ searchQuery, onSearch, onBrandSelect }) => {
   };
 
   useEffect(() => {
-    const unReadCount = notifications.filter(notify => !notify.isRead).length;
-    setUnReadCount(unReadCount);
+    const unRead = notifications.filter(notify => !notify.isRead).length;
+    setUnReadCount(unRead);
   }, [notifications]);
 
   return (
@@ -78,23 +78,23 @@ const Header = ({ searchQuery, onSearch, onBrandSelect }) => {
 
           <div className="flex-1 max-w-xl mx-4 flex items-center">
             <div className="relative mr-4">
-              <button 
+              <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center justify-between px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 <span>Brands</span>
                 <FiChevronDown className={`ml-2 transition-transform ${isDropdownOpen ? 'transform rotate-180' : ''}`} />
               </button>
-              
+
               {isDropdownOpen && (
                 <div className="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-30 max-h-96 overflow-y-auto">
                   {brands.map((brand, index) => (
-                    <div 
+                    <div
                       key={index}
-                      onClick={() => handleBrandSelect(brand)}
+                      onClick={() => handleBrandSelect(brand.value)}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
                     >
-                      {brand}
+                      {brand.label}
                     </div>
                   ))}
                 </div>
@@ -117,24 +117,28 @@ const Header = ({ searchQuery, onSearch, onBrandSelect }) => {
 
           <div className="hidden md:block">
             <div className="flex items-center space-x-4 md:space-x-10">
-              {auth.userDetails && <Link to="/posts">
-                <button className="p-2 rounded-full hover:bg-gray-100">
-                  <FiHome className="text-gray-600 text-xl" />
-                </button>
-              </Link>}
+              {auth.userDetails && (
+                <Link to="/posts">
+                  <button className="p-2 rounded-full hover:bg-gray-100">
+                    <FiHome className="text-gray-600 text-xl" />
+                  </button>
+                </Link>
+              )}
 
-              {auth.userDetails && <Link to="/notifications" onClick={handleNotificationClick}>
-                <button className="p-2 rounded-full hover:bg-gray-100 relative">
-                  <FaBell className="text-gray-600 text-xl" />
-                  {unReadCount > 0 && (
-                    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {unReadCount}
-                    </span>
-                  )}
-                </button>
-              </Link>}
+              {auth.userDetails && (
+                <Link to="/notifications" onClick={handleNotificationClick}>
+                  <button className="p-2 rounded-full hover:bg-gray-100 relative">
+                    <FaBell className="text-gray-600 text-xl" />
+                    {unReadCount > 0 && (
+                      <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {unReadCount}
+                      </span>
+                    )}
+                  </button>
+                </Link>
+              )}
 
-              {businessOwnerAuth.businessOwnerDetails ? "" : (
+              {!businessOwnerAuth.businessOwnerDetails && (
                 <Link to="/create-post">
                   <button className="p-2 rounded-full hover:bg-gray-100">
                     <FaPlus className="text-gray-600 text-xl" />
@@ -142,17 +146,17 @@ const Header = ({ searchQuery, onSearch, onBrandSelect }) => {
                 </Link>
               )}
 
-              {profilePicture ? (
+              {profilePicture && (
                 <Link to="/profile">
                   <button className="p-2 rounded-full hover:bg-gray-100">
-                    <img 
-                      src={profilePicture} 
-                      className="w-10 h-10 rounded-full" 
-                      alt="Profile" 
+                    <img
+                      src={profilePicture}
+                      className="w-10 h-10 rounded-full"
+                      alt="Profile"
                     />
                   </button>
                 </Link>
-              ) : ""}
+              )}
             </div>
           </div>
         </div>
@@ -160,24 +164,28 @@ const Header = ({ searchQuery, onSearch, onBrandSelect }) => {
 
       <div className="fixed bottom-0 left-0 w-full bg-white shadow-sm z-10 md:hidden">
         <div className="flex justify-around items-center p-2">
-          {auth.userDetails && <Link to="/posts">
-            <button className="p-2 rounded-full hover:bg-gray-100">
-              <FiHome className="text-gray-600 text-xl" />
-            </button>
-          </Link>}
+          {auth.userDetails && (
+            <Link to="/posts">
+              <button className="p-2 rounded-full hover:bg-gray-100">
+                <FiHome className="text-gray-600 text-xl" />
+              </button>
+            </Link>
+          )}
 
-          {auth.userDetails && <Link to="/notifications" onClick={handleNotificationClick}>
-            <button className="p-2 rounded-full hover:bg-gray-100 relative">
-              <FaBell className="text-gray-600 text-xl" />
-              {unReadCount > 0 && (
-                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {unReadCount}
-                </span>
-              )}
-            </button>
-          </Link>}
+          {auth.userDetails && (
+            <Link to="/notifications" onClick={handleNotificationClick}>
+              <button className="p-2 rounded-full hover:bg-gray-100 relative">
+                <FaBell className="text-gray-600 text-xl" />
+                {unReadCount > 0 && (
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {unReadCount}
+                  </span>
+                )}
+              </button>
+            </Link>
+          )}
 
-          {businessOwnerAuth.businessOwnerDetails ? "" : (
+          {!businessOwnerAuth.businessOwnerDetails && (
             <Link to="/create-post">
               <button className="p-2 rounded-full hover:bg-gray-100">
                 <FaPlus className="text-gray-600 text-xl" />
@@ -185,17 +193,17 @@ const Header = ({ searchQuery, onSearch, onBrandSelect }) => {
             </Link>
           )}
 
-          {profilePicture ? (
+          {profilePicture && (
             <Link to="/profile">
               <button className="p-2 rounded-full hover:bg-gray-100">
-                <img 
-                  src={profilePicture} 
-                  className="w-10 h-10 rounded-full" 
-                  alt="Profile" 
+                <img
+                  src={profilePicture}
+                  className="w-10 h-10 rounded-full"
+                  alt="Profile"
                 />
               </button>
             </Link>
-          ) : ""}
+          )}
         </div>
       </div>
     </>
