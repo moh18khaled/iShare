@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import backgroundImage from "../../assets/images/re.jpg";
+import backgroundImage from "../../assets/images/hero-bg.jpg";
 import { FaPlay } from "react-icons/fa"; // Import the play icon from react-icons
 import { motion } from 'framer-motion'; // Import Framer Motion
 import { Link } from "react-router-dom"; // Import Link for navigation
@@ -33,7 +33,7 @@ const HeroSection = () => {
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         {/* Background Overlay */}
-        <div className="col-start-1 row-start-1 bg-black bg-opacity-50"></div>
+        <div className="col-start-1 row-start-1 bg-black bg-opacity-65 md:bg-opacity-55"></div>
 
         {/* Content */}
         <motion.div
@@ -45,7 +45,7 @@ const HeroSection = () => {
           {/* Heading */}
           <motion.h1
             variants={childVariants}
-            className="font-bold text-[27px] md:text-4xl text-left leading-snug md:leading-snug" // Align text to the left
+            className="font-linotte font-bold text-[27px] md:text-4xl text-left leading-snug md:leading-snug" // Align text to the left
           >
             Share your <br />
             digital experience now <br />
